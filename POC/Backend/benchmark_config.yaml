@@ -1,0 +1,29 @@
+pocs:
+  - name: next
+    base_url: http://localhost:3000
+    scripts:
+      - name: register
+        path: nextjs-poc/wrk-register.lua
+        auth: false
+      - name: login
+        path: nextjs-poc/wrk-login.lua
+        auth: false
+      - name: add_pokemon
+        path: nextjs-poc/wrk-next-pokemon.lua
+        auth: true
+      - name: get_pokemons
+        path: nextjs-poc/wrk-get-pokemon.lua
+        auth: true
+  # - name: express
+  #   base_url: http://localhost:4000
+  #   scripts:
+  #     - name: register
+  #       path: POC/Backend/express-poc/wrk-register.lua
+      # etc...
+
+  # - name: fastify
+  #   base_url: http://localhost:5000
+  #   scripts:
+  #     - name: register
+  #       path: POC/Backend/fastify-poc/wrk-register.lua
+      # etc...
