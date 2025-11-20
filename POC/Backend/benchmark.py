@@ -82,10 +82,58 @@ def run_wrk(base_url: str, script_path: str) -> str:
     return result.stdout
 
 
+def parse_wrk_output(output: str) -> dict:
+    """Extrait la latence moyenne (en ms) et le Requests/sec de la sortie wrk."""
+    latency_avg_ms = None
+    rps = None
+
+    for line in output.splitlines():
+        stripped = line.strip()
+
+        # Ligne de latence moyenne, ex:
+        # "Latency   700.36ms   97.00ms 829.95ms   94.32%"
+        if stripped.startswith("Latency"):
+            parts = stripped.split()
+            # parts[1] contient quelque chose comme "700.36ms" ou "0.70s"
+            if len(parts) >= 2:
+                value = parts[1]
+                # séparer numérique et unité
+                num_str = "".join(ch for ch in value if (ch.isdigit() or ch == "."))
+                unit = "".join(ch for ch in value if ch.isalpha())
+                try:
+                    num = float(num_str)
+                except ValueError:
+                    num = None
+
+                if num is not None:
+                    # Conversion en ms
+                    if unit == "ms" or unit == "":
+                        latency_avg_ms = num
+                    elif unit == "s":
+                        latency_avg_ms = num * 1000.0
+                    elif unit == "us":
+                        latency_avg_ms = num / 1000.0
+
+        # Ligne Requests/sec, ex:
+        # "Requests/sec:     87.76"
+        if stripped.startswith("Requests/sec:"):
+            parts = stripped.split()
+            if len(parts) >= 2:
+                try:
+                    rps = float(parts[1])
+                except ValueError:
+                    rps = None
+
+    return {"latency_avg_ms": latency_avg_ms, "rps": rps}
+
+
 def main():
     # 1. Charger le fichier YAML
     with open("benchmark_config.yaml", "r", encoding="utf-8") as f:
         config = yaml.safe_load(f)
+
+    # results[poc_name][scenario_name] = metrics_dict
+    results: dict[str, dict[str, dict]] = {}
 
     for poc in config["pocs"]:
         name = poc["name"]
@@ -95,6 +143,7 @@ def main():
 
         token = None
         user_id = None
+        results.setdefault(name, {})
 
         for scenario in poc["scripts"]:
             script_name = scenario["name"]
@@ -112,8 +161,47 @@ def main():
                 update_lua_token(script_path, token, user_id)
 
             output = run_wrk(base_url, script_path)
-            print(output)  # plus tard: parser et résumer
+            print(output)
+
+            metrics = parse_wrk_output(output)
+            results[name][script_name] = metrics
+            print(
+                f"[METRICS] {name} / {script_name} -> "
+                f"latency_avg_ms={metrics['latency_avg_ms']}, rps={metrics['rps']}"
+            )
+
             print(f"[SUCCESS] token : {token} (userId={user_id})")
+
+    # Résumé comparatif par POC
+    print("\n===== SUMMARY =====")
+    for poc_name, scenarios in results.items():
+        print(f"\nPOC: {poc_name}")
+        total_rps = 0.0
+        total_latency = 0.0
+        count_rps = 0
+        count_latency = 0
+
+        for scenario_name, m in scenarios.items():
+            lat = m.get("latency_avg_ms")
+            rps = m.get("rps")
+            print(
+                f"  - {scenario_name}: "
+                f"latency_avg_ms={lat}, rps={rps}"
+            )
+
+            if rps is not None:
+                total_rps += rps
+                count_rps += 1
+            if lat is not None:
+                total_latency += lat
+                count_latency += 1
+
+        avg_rps = total_rps / count_rps if count_rps else None
+        avg_lat = total_latency / count_latency if count_latency else None
+        print(
+            f"  => AVERAGE: latency_avg_ms={avg_lat}, rps={avg_rps}"
+        )
+
 
 if __name__ == "__main__":
     main()

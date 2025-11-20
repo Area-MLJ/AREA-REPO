@@ -14,12 +14,24 @@ pocs:
       - name: get_pokemons
         path: nextjs-poc/wrk-get-pokemon.lua
         auth: true
-  # - name: express
-  #   base_url: http://localhost:4000
-  #   scripts:
-  #     - name: register
-  #       path: POC/Backend/express-poc/wrk-register.lua
-      # etc...
+  - name: express
+    base_url: http://localhost:4000
+    scripts:
+      - name: register
+        path: express-poc/wrk-register.lua
+        auth: false
+      - name: login
+        path: express-poc/wrk-login.lua
+        auth: false
+      - name: add_pokemon
+        path: express-poc/wrk-next-pokemon.lua
+        auth: true
+      - name: get_pokemons
+        path: express-poc/wrk-get-pokemon.lua
+        auth: true
+      - name: delete_user
+        path: express-poc/wrk-delete.lua
+        auth: true
 
   # - name: fastify
   #   base_url: http://localhost:5000

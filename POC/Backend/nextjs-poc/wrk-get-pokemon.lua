@@ -1,9 +1,9 @@
 -- local token = os.getenv("TOKEN_TEST")
 wrk.method = "GET"
-wrk.path   = "/api/users/2/pokemons"
+wrk.path   = "/api/users/8/pokemons"
 wrk.headers = {
   ["Content-Type"]  = "application/json",
-  ["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYmVuY2hAZXhhbXBsZS5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc2MzU4NDc3NCwiZXhwIjoxNzYzNjcxMTc0fQ.rrukc01gwTgegDOsziqn1jzTS1GxdvW4hK5eWQLp_7I"
+  ["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjgsImVtYWlsIjoiYmVuY2hAZXhhbXBsZS5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc2MzY2NjIyNiwiZXhwIjoxNzYzNzUyNjI2fQ.j6NK-dVPGiNuQh_EH5If9fyIYA6li_J-GlnyMKTAjcY"
 }
 
 -- local body = '{"pokemonName":"pikachu"}'
