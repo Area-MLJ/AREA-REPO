@@ -32,10 +32,21 @@ pocs:
       - name: delete_user
         path: express-poc/wrk-delete.lua
         auth: true
-
-  # - name: fastify
-  #   base_url: http://localhost:5000
-  #   scripts:
-  #     - name: register
-  #       path: POC/Backend/fastify-poc/wrk-register.lua
-      # etc...
+  - name: fastify
+    base_url: http://localhost:5000
+    scripts:
+      - name: register
+        path: fastify-poc/wrk-register.lua
+        auth: false
+      - name: login
+        path: fastify-poc/wrk-login.lua
+        auth: false
+      - name: add_pokemon
+        path: fastify-poc/wrk-next-pokemon.lua
+        auth: true
+      - name: get_pokemons
+        path: fastify-poc/wrk-get-pokemon.lua
+        auth: true
+      - name: delete_user
+        path: fastify-poc/wrk-delete.lua
+        auth: true
