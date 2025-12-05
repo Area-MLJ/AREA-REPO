@@ -1,0 +1,14 @@
+/home/lukavujanovic/delivery/B5/AREA/build/linux/x64/debug/bundle/area
+/home/lukavujanovic/delivery/B5/AREA/build/linux/x64/debug/bundle/data/icudtl.dat
+/home/lukavujanovic/delivery/B5/AREA/build/linux/x64/debug/bundle/lib/libflutter_linux_gtk.so
+/home/lukavujanovic/delivery/B5/AREA/build/linux/x64/debug/bundle/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+/home/lukavujanovic/delivery/B5/AREA/build/linux/x64/debug/bundle/data/flutter_assets/shaders/ink_sparkle.frag
+/home/lukavujanovic/delivery/B5/AREA/build/linux/x64/debug/bundle/data/flutter_assets/shaders/stretch_effect.frag
+/home/lukavujanovic/delivery/B5/AREA/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.bin
+/home/lukavujanovic/delivery/B5/AREA/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.bin.json
+/home/lukavujanovic/delivery/B5/AREA/build/linux/x64/debug/bundle/data/flutter_assets/FontManifest.json
+/home/lukavujanovic/delivery/B5/AREA/build/linux/x64/debug/bundle/data/flutter_assets/NOTICES
+/home/lukavujanovic/delivery/B5/AREA/build/linux/x64/debug/bundle/data/flutter_assets/kernel_blob.bin
+/home/lukavujanovic/delivery/B5/AREA/build/linux/x64/debug/bundle/data/flutter_assets/NativeAssetsManifest.json
+/home/lukavujanovic/delivery/B5/AREA/build/linux/x64/debug/bundle/data/flutter_assets/NOTICES.Z
+/home/lukavujanovic/delivery/B5/AREA/build/linux/x64/debug/bundle/data/flutter_assets/version.json
