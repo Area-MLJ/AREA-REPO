@@ -3,7 +3,7 @@
  * Page de profil utilisateur
  */
 
-import { useAuth } from '../../Shared/SharedIndex';
+import { useAuth } from '../../temp-shared';
 import { Card } from '../../DesignSystem/components/Card';
 import { Button } from '../../DesignSystem/components/Button';
 

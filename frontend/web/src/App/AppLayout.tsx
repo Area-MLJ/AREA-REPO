@@ -4,7 +4,7 @@
  */
 
 import { ReactNode, useState } from 'react';
-import { useAuth } from '../Shared/SharedIndex';
+import { useAuth } from '../temp-shared';
 
 interface AppLayoutProps {
   children: ReactNode;

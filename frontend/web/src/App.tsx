@@ -4,7 +4,7 @@
  */
 
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './Shared/SharedIndex';
+import { AuthProvider, useAuth } from './temp-shared';
 import { AppLayout } from './App/AppLayout';
 import LoginPage from './App/Pages/LoginPage';
 import SignupPage from './App/Pages/SignupPage';

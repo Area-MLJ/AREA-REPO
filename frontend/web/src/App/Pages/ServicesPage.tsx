@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import { MOCK_SERVICES } from '../../Shared/SharedIndex';
+import { MOCK_SERVICES } from '../../temp-shared';
 import { Card } from '../../DesignSystem/components/Card';
 import { Button } from '../../DesignSystem/components/Button';
 import { Badge } from '../../DesignSystem/components/Badge';
