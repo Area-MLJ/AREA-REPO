@@ -89,7 +89,9 @@ echo -e "${BLUE}📝 Logs du conteneur:${NC}"
 echo "========================"
 
 # Lancer uniquement le service backend avec logs
-docker-compose up backend
+# docker-compose up backend
+# Lancer uniquement le service backend avec logs
+$DOCKER_COMPOSE_CMD up backend
 
 # Si le script arrive ici, c'est que le conteneur s'est arrêté
 echo ""
