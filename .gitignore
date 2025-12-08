@@ -129,3 +129,9 @@ desktop.ini
 # Runtime
 .vercel
 .netlify
+
+# Windsurf
+.windsurf
+
+# Python
+__pycache__
