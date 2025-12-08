@@ -12,7 +12,12 @@
     "build": "npm run build:backend && npm run build:web",
     "start": "concurrently \"npm run start:backend\" \"npm run start:web\"",
     "start:backend": "cd backend && npm start",
-    "start:web": "cd frontend/web && npm run preview"
+    "start:web": "cd frontend/web && npm run preview",
+    "docker:dev": "./docker-start.sh",
+    "docker:up": "docker-compose -f docker-compose.dev.yml up --build",
+    "docker:down": "docker-compose -f docker-compose.dev.yml down",
+    "docker:logs": "docker-compose -f docker-compose.dev.yml logs -f",
+    "docker:clean": "docker-compose -f docker-compose.dev.yml down -v --rmi all"
   },
   "devDependencies": {
     "concurrently": "^8.2.0"

@@ -4,11 +4,14 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 8081",
+    "dev": "vite --port 8081 --host 0.0.0.0",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview --port 8081",
-    "typecheck": "tsc --noEmit -p tsconfig.app.json"
+    "preview": "vite preview --port 8081 --host 0.0.0.0",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "docker:build": "docker build -t area-frontend-web .",
+    "docker:dev": "docker build -f Dockerfile.dev -t area-frontend-web-dev .",
+    "docker:run": "docker run -p 8081:8081 area-frontend-web"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",

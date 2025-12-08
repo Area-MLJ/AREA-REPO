@@ -187,15 +187,70 @@ export const MOCK_SERVICES = [
     id: '1',
     name: 'Gmail',
     displayName: 'Gmail',
-    description: 'Email service',
-    iconUrl: '/icons/gmail.svg'
+    description: 'Service de messagerie électronique de Google',
+    iconUrl: '/icons/gmail.svg',
+    category: 'communication',
+    isConnected: false,
+    actions: [
+      { id: '1', name: 'Nouveau email reçu' },
+      { id: '2', name: 'Email avec pièce jointe' }
+    ],
+    reactions: [
+      { id: '1', name: 'Envoyer un email' },
+      { id: '2', name: 'Transférer un email' }
+    ]
   },
   {
     id: '2', 
     name: 'GitHub',
     displayName: 'GitHub',
-    description: 'Code repository',
-    iconUrl: '/icons/github.svg'
+    description: 'Plateforme de développement collaboratif',
+    iconUrl: '/icons/github.svg',
+    category: 'productivity',
+    isConnected: true,
+    actions: [
+      { id: '3', name: 'Push sur repository' },
+      { id: '4', name: 'Nouvelle issue créée' },
+      { id: '5', name: 'Pull request mergée' }
+    ],
+    reactions: [
+      { id: '3', name: 'Créer une issue' },
+      { id: '4', name: 'Commenter une PR' }
+    ]
+  },
+  {
+    id: '3',
+    name: 'Discord',
+    displayName: 'Discord',
+    description: 'Plateforme de communication pour communautés',
+    iconUrl: '/icons/discord.svg',
+    category: 'social',
+    isConnected: false,
+    actions: [
+      { id: '6', name: 'Message reçu' },
+      { id: '7', name: 'Utilisateur rejoint un serveur' }
+    ],
+    reactions: [
+      { id: '5', name: 'Envoyer un message' },
+      { id: '6', name: 'Créer un channel' }
+    ]
+  },
+  {
+    id: '4',
+    name: 'GoogleDrive',
+    displayName: 'Google Drive',
+    description: 'Service de stockage cloud de Google',
+    iconUrl: '/icons/gdrive.svg',
+    category: 'storage',
+    isConnected: false,
+    actions: [
+      { id: '8', name: 'Fichier ajouté' },
+      { id: '9', name: 'Fichier modifié' }
+    ],
+    reactions: [
+      { id: '7', name: 'Créer un fichier' },
+      { id: '8', name: 'Partager un fichier' }
+    ]
   }
 ];
 
