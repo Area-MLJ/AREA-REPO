@@ -1,55 +1,106 @@
-// Temporary shared exports until shared module is fixed
-import { createContext, useContext, useState, ReactNode } from 'react';
+// Auth context with real backend integration
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { apiClient } from './lib/api';
 
-// Mock AuthContext
-export const AuthContext = createContext<any>(null);
+interface User {
+  id: string;
+  email: string;
+  displayName: string;
+  isVerified: boolean;
+}
+
+interface AuthContextType {
+  user: User | null;
+  isLoading: boolean;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  register: (email: string, password: string, displayName?: string) => Promise<{ success: boolean; error?: string }>;
+  logout: () => Promise<void>;
+}
+
+export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    return {
-      user: null,
-      login: async () => ({ success: false }),
-      register: async () => ({ success: false }),
-      logout: async () => {},
-      isLoading: false
-    };
+    throw new Error('useAuth must be used within AuthProvider');
   }
   return context;
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Check for existing session on mount
+  useEffect(() => {
+    const storedUser = apiClient.getStoredUser();
+    const token = apiClient.getStoredToken();
+    
+    if (storedUser && token) {
+      setUser(storedUser);
+    }
+  }, []);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // TODO: Implement actual login with backend
-      console.log('Login attempt:', { email });
-      setIsLoading(false);
-      return { success: false, error: 'Not implemented yet' };
+      const response = await apiClient.login({ email, password });
+      
+      if (response.success && response.data) {
+        setUser(response.data.user);
+        return { success: true };
+      } else {
+        return { 
+          success: false, 
+          error: response.error || 'Login failed' 
+        };
+      }
     } catch (error) {
+      console.error('Login error:', error);
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Login failed' 
+      };
+    } finally {
       setIsLoading(false);
-      return { success: false, error: 'Login failed' };
     }
   };
 
   const register = async (email: string, password: string, displayName?: string) => {
     setIsLoading(true);
     try {
-      // TODO: Implement actual registration with backend
-      console.log('Register attempt:', { email, displayName });
-      setIsLoading(false);
-      return { success: false, error: 'Not implemented yet' };
+      const response = await apiClient.register({ email, password, displayName });
+      
+      if (response.success && response.data) {
+        setUser(response.data.user);
+        return { success: true };
+      } else {
+        return { 
+          success: false, 
+          error: response.error || 'Registration failed' 
+        };
+      }
     } catch (error) {
+      console.error('Registration error:', error);
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Registration failed' 
+      };
+    } finally {
       setIsLoading(false);
-      return { success: false, error: 'Registration failed' };
     }
   };
 
   const logout = async () => {
-    setUser(null);
+    setIsLoading(true);
+    try {
+      await apiClient.logout();
+      setUser(null);
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const contextValue = {
@@ -67,19 +118,84 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Mock data exports
+// Export API client and hooks for data fetching
+export { apiClient } from './lib/api';
+
+// Hooks for data fetching (using already imported useState/useEffect)
+export const useServices = () => {
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await apiClient.getServices();
+        if (response.success && response.data) {
+          setServices(response.data);
+        } else {
+          setError(response.error || 'Failed to fetch services');
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Network error');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
+  return { services, loading, error };
+};
+
+// Hook for areas
+export const useAreas = () => {
+  const [areas, setAreas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAreas = async () => {
+      try {
+        const response = await apiClient.getAreas();
+        if (response.success && response.data) {
+          setAreas(response.data);
+        } else {
+          setError(response.error || 'Failed to fetch areas');
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Network error');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAreas();
+  }, []);
+
+  return { areas, loading, error, refetch: () => {
+    setLoading(true);
+    setError(null);
+    // Re-run effect
+  }};
+};
+
+// Fallback mock data for development
 export const MOCK_SERVICES = [
   {
     id: '1',
     name: 'Gmail',
+    displayName: 'Gmail',
     description: 'Email service',
-    connected: false
+    iconUrl: '/icons/gmail.svg'
   },
   {
     id: '2', 
     name: 'GitHub',
+    displayName: 'GitHub',
     description: 'Code repository',
-    connected: false
+    iconUrl: '/icons/github.svg'
   }
 ];
 
@@ -88,6 +204,7 @@ export const MOCK_AREAS = [
     id: '1',
     name: 'Email to GitHub',
     description: 'Create GitHub issue from email',
-    enabled: true
+    enabled: true,
+    createdAt: new Date().toISOString()
   }
 ];

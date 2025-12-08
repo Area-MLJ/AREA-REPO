@@ -8,24 +8,34 @@ import { useAuth } from '../../temp-shared';
 import { Button } from '../../DesignSystem/components/Button';
 import { Input } from '../../DesignSystem/components/Input';
 import { Card } from '../../DesignSystem/components/Card';
+import { useToast } from '../../components/Toast';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
-  const { signIn } = useAuth();
+  const { login, isLoading } = useAuth();
+  const { showToast, ToastContainer } = useToast();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
-    const { error: authError } = await signIn(email, password);
+    if (!email || !password) {
+      setError('Veuillez remplir tous les champs');
+      return;
+    }
 
-    if (authError) {
-      setError(authError.message);
-      setLoading(false);
+    const result = await login(email, password);
+
+    if (result.success) {
+      showToast('Connexion réussie !', 'success');
+      navigate('/dashboard');
+    } else {
+      setError(result.error || 'Erreur de connexion');
+      showToast(result.error || 'Erreur de connexion', 'error');
     }
   };
 
@@ -47,7 +57,7 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            disabled={loading}
+            disabled={isLoading}
           />
 
           <Input
@@ -57,7 +67,7 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            disabled={loading}
+            disabled={isLoading}
           />
 
           {error && (
@@ -69,9 +79,9 @@ export default function LoginPage() {
           <Button
             type="submit"
             fullWidth
-            disabled={loading}
+            disabled={isLoading}
           >
-            {loading ? 'Connexion...' : 'Se connecter'}
+            {isLoading ? 'Connexion...' : 'Se connecter'}
           </Button>
         </form>
 
@@ -84,6 +94,7 @@ export default function LoginPage() {
           </p>
         </div>
       </Card>
+      <ToastContainer />
     </div>
   );
 }

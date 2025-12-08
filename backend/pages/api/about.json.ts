@@ -1,8 +1,17 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { supabase } from '../../src/lib/supabase'
+import { applyCors } from '../../src/middleware/cors'
+import { Logger } from '../../src/middleware/logger'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Appliquer CORS
+  await applyCors(req, res)
+  
+  // Logger la requête
+  Logger.logRequest(req)
+  
   if (req.method !== 'GET') {
+    Logger.logResponse(res, 405, null, 'Method not allowed')
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
@@ -55,9 +64,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
+    Logger.logResponse(res, 200, response)
     res.status(200).json(response)
   } catch (error) {
-    console.error('Error in /about.json:', error)
+    Logger.logError(error, 'ABOUT_JSON_ERROR')
+    Logger.logResponse(res, 500, null, 'Internal server error')
     res.status(500).json({ error: 'Internal server error' })
   }
 }

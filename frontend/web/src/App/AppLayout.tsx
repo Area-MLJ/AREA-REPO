@@ -5,14 +5,16 @@
 
 import { ReactNode, useState } from 'react';
 import { useAuth } from '../temp-shared';
+import { Link, useLocation } from 'react-router-dom';
 
 interface AppLayoutProps {
   children: ReactNode;
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
-  const { user } = useAuth();
-  const currentPath = window.location.pathname;
+  const { user, logout } = useAuth();
+  const location = useLocation();
+  const currentPath = location.pathname;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
@@ -27,15 +29,15 @@ export function AppLayout({ children }: AppLayoutProps) {
       <nav className="bg-[#FAF9F6] border-b border-[#D1CFC8] fixed top-0 left-0 right-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 md:h-16">
-            <a href="/dashboard" className="text-lg md:text-xl font-semibold text-[#0a4a0e] truncate max-w-[60vw] md:max-w-none">
+            <Link to="/dashboard" className="text-lg md:text-xl font-semibold text-[#0a4a0e] truncate max-w-[60vw] md:max-w-none">
               ACTION-REACTION
-            </a>
+            </Link>
 
             <div className="hidden md:flex items-center gap-1">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.path}
-                  href={item.path}
+                  to={item.path}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     currentPath === item.path
                       ? 'bg-[#0a4a0e] text-white'
@@ -44,7 +46,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 >
                   <span className="mr-2">{item.icon}</span>
                   {item.label}
-                </a>
+                </Link>
               ))}
             </div>
 
@@ -65,6 +67,12 @@ export function AppLayout({ children }: AppLayoutProps) {
               <div className="text-sm text-[#6B6962] max-w-[200px] truncate">
                 {user?.email}
               </div>
+              <button
+                onClick={logout}
+                className="text-sm px-3 py-1 text-[#6B6962] hover:text-[#0a4a0e] hover:bg-[#E8E6E1] rounded-lg transition-colors"
+              >
+                Déconnexion
+              </button>
             </div>
           </div>
         </div>
@@ -73,9 +81,9 @@ export function AppLayout({ children }: AppLayoutProps) {
           <div className="md:hidden border-t border-[#D1CFC8] bg-[#FAF9F6]">
             <div className="px-4 py-3 space-y-1">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.path}
-                  href={item.path}
+                  to={item.path}
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                     currentPath === item.path
@@ -85,7 +93,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 >
                   <span className="text-xl">{item.icon}</span>
                   {item.label}
-                </a>
+                </Link>
               ))}
               <div className="pt-3 border-t border-[#D1CFC8] mt-3">
                 <div className="px-4 py-2 text-sm text-[#6B6962] truncate">
@@ -104,9 +112,9 @@ export function AppLayout({ children }: AppLayoutProps) {
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#FAF9F6] border-t border-[#D1CFC8] z-50">
         <div className="flex items-center justify-around h-16">
           {navItems.map((item) => (
-            <a
+            <Link
               key={item.path}
-              href={item.path}
+              to={item.path}
               className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
                 currentPath === item.path
                   ? 'text-[#0a4a0e] bg-[#e6f2e7]'
@@ -115,7 +123,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             >
               <span className="text-xl mb-0.5">{item.icon}</span>
               <span className="text-xs font-medium">{item.label}</span>
-            </a>
+            </Link>
           ))}
         </div>
       </nav>

@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { supabase } from '../../../src/lib/supabase'
 import { hashPassword, generateToken } from '../../../src/lib/auth'
+import { applyCors } from '../../../src/middleware/cors'
+import { Logger } from '../../../src/middleware/logger'
 import { z } from 'zod'
 
 const registerSchema = z.object({
@@ -10,14 +12,22 @@ const registerSchema = z.object({
 })
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Appliquer CORS en premier
+  await applyCors(req, res)
+  
+  // Logger la requête
+  Logger.logRequest(req)
   if (req.method !== 'POST') {
+    Logger.logResponse(res, 405, null, 'Method not allowed')
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
   try {
+    Logger.logAuth('REGISTRATION_ATTEMPT', undefined, req.body?.email)
     const body = registerSchema.parse(req.body)
     
     // Check if user already exists
+    Logger.logDatabase('SELECT id FROM users WHERE email = $1', [body.email])
     const { data: existingUser } = await supabase
       .from('users')
       .select('id')
@@ -25,13 +35,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .single()
 
     if (existingUser) {
+      Logger.logAuth('REGISTRATION_FAILED', undefined, body.email)
+      Logger.logResponse(res, 400, null, 'User already exists')
       return res.status(400).json({ error: 'User already exists' })
     }
 
     // Hash password
     const passwordHash = await hashPassword(body.password)
+    Logger.logAuth('PASSWORD_HASHED', undefined, body.email)
 
     // Create user
+    Logger.logDatabase('INSERT INTO users', { email: body.email, display_name: body.displayName })
     const { data: user, error } = await supabase
       .from('users')
       .insert({
@@ -44,13 +58,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .single()
 
     if (error) {
+      Logger.logError(error, 'USER_CREATION_FAILED')
       throw error
     }
+    
+    Logger.logAuth('USER_CREATED', user.id, user.email)
 
     // Generate token
     const token = generateToken(user.id)
+    Logger.logAuth('TOKEN_GENERATED', user.id, user.email)
 
     // Create session
+    Logger.logDatabase('INSERT INTO user_sessions', { user_id: user.id })
     await supabase
       .from('user_sessions')
       .insert({
@@ -61,7 +80,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
       })
 
-    res.status(201).json({
+    const responseData = {
       user: {
         id: user.id,
         email: user.email,
@@ -69,12 +88,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         isVerified: user.is_verified
       },
       token
-    })
+    }
+    
+    Logger.logAuth('REGISTRATION_SUCCESS', user.id, user.email)
+    Logger.logResponse(res, 201, responseData)
+    res.status(201).json(responseData)
   } catch (error) {
     if (error instanceof z.ZodError) {
+      Logger.logError(error, 'VALIDATION_ERROR')
+      Logger.logResponse(res, 400, null, { error: 'Validation error', details: error.errors })
       return res.status(400).json({ error: 'Validation error', details: error.errors })
     }
-    console.error('Registration error:', error)
+    
+    Logger.logError(error, 'REGISTRATION_ERROR')
+    Logger.logResponse(res, 500, null, 'Internal server error')
     res.status(500).json({ error: 'Internal server error' })
   }
 }

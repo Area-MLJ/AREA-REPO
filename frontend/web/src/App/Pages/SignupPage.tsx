@@ -1,6 +1,6 @@
 /**
  * SignupPage.tsx
- * Page d'inscription utilisateur
+ * Page d'inscription utilisateur avec backend integration
  */
 
 import { useState, FormEvent } from 'react';
@@ -8,19 +8,27 @@ import { useAuth } from '../../temp-shared';
 import { Button } from '../../DesignSystem/components/Button';
 import { Input } from '../../DesignSystem/components/Input';
 import { Card } from '../../DesignSystem/components/Card';
+import { useToast } from '../../components/Toast';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignupPage() {
-  const { signUp } = useAuth();
+  const { register, isLoading } = useAuth();
+  const { showToast, ToastContainer } = useToast();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
+
+    if (!email || !password || !confirmPassword || !displayName) {
+      setError('Veuillez remplir tous les champs');
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError('Les mots de passe ne correspondent pas');
@@ -32,37 +40,16 @@ export default function SignupPage() {
       return;
     }
 
-    setLoading(true);
+    const result = await register(email, password, displayName);
 
-    const { error: authError } = await signUp(email, password);
-
-    if (authError) {
-      setError(authError.message);
-      setLoading(false);
+    if (result.success) {
+      showToast('Compte créé avec succès !', 'success');
+      navigate('/dashboard');
     } else {
-      setSuccess(true);
-      setLoading(false);
+      setError(result.error || 'Erreur lors de la création du compte');
+      showToast(result.error || 'Erreur lors de la création du compte', 'error');
     }
   };
-
-  if (success) {
-    return (
-      <div className="min-h-screen bg-[#E8E6E1] flex items-center justify-center p-4">
-        <Card variant="elevated" className="w-full max-w-md text-center">
-          <div className="text-6xl mb-4">✅</div>
-          <h2 className="text-2xl font-semibold text-[#0a4a0e] mb-2">
-            Compte créé !
-          </h2>
-          <p className="text-[#6B6962] mb-6">
-            Vous pouvez maintenant vous connecter
-          </p>
-          <Button onClick={() => window.location.href = '/login'}>
-            Se connecter
-          </Button>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-[#E8E6E1] flex items-center justify-center p-4">
@@ -76,13 +63,23 @@ export default function SignupPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
+            type="text"
+            label="Nom d'affichage"
+            placeholder="Votre nom"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            required
+            disabled={isLoading}
+          />
+
+          <Input
             type="email"
             label="Email"
             placeholder="vous@exemple.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            disabled={loading}
+            disabled={isLoading}
           />
 
           <Input
@@ -92,8 +89,7 @@ export default function SignupPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            disabled={loading}
-            helperText="Minimum 6 caractères"
+            disabled={isLoading}
           />
 
           <Input
@@ -103,7 +99,7 @@ export default function SignupPage() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
-            disabled={loading}
+            disabled={isLoading}
           />
 
           {error && (
@@ -115,9 +111,9 @@ export default function SignupPage() {
           <Button
             type="submit"
             fullWidth
-            disabled={loading}
+            disabled={isLoading}
           >
-            {loading ? 'Création...' : 'Créer mon compte'}
+            {isLoading ? 'Création...' : 'Créer le compte'}
           </Button>
         </form>
 
@@ -130,6 +126,7 @@ export default function SignupPage() {
           </p>
         </div>
       </Card>
+      <ToastContainer />
     </div>
   );
 }

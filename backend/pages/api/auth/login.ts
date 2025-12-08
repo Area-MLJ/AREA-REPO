@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { supabase } from '../../../src/lib/supabase'
 import { verifyPassword, generateToken } from '../../../src/lib/auth'
+import { applyCors } from '../../../src/middleware/cors'
+import { Logger } from '../../../src/middleware/logger'
 import { z } from 'zod'
 
 const loginSchema = z.object({
@@ -9,7 +11,14 @@ const loginSchema = z.object({
 })
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Appliquer CORS
+  await applyCors(req, res)
+  
+  // Logger la requête
+  Logger.logRequest(req)
+  
   if (req.method !== 'POST') {
+    Logger.logResponse(res, 405, null, 'Method not allowed')
     return res.status(405).json({ error: 'Method not allowed' })
   }
 

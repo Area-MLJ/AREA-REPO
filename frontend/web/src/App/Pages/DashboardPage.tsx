@@ -3,14 +3,14 @@
  * Page principale avec vue d'ensemble des AREAs
  */
 
-import { useState } from 'react';
-import { MOCK_AREAS } from '../../temp-shared';
+import { useAreas, useAuth } from '../../temp-shared';
 import { Card } from '../../DesignSystem/components/Card';
 import { Button } from '../../DesignSystem/components/Button';
 import { Badge } from '../../DesignSystem/components/Badge';
 
 export default function DashboardPage() {
-  const [areas] = useState(MOCK_AREAS);
+  const { areas, loading, error } = useAreas();
+  const { user } = useAuth();
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR', {
