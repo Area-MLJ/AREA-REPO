@@ -1,35 +1,83 @@
-# AREA Mobile Client
+# AREA Mobile App
 
-Mobile application for Android/iOS providing native access to AREA platform.
+A Flutter-based mobile application for the AREA (Action-Reaction Automation) platform.
 
-## 🎯 Purpose
+## Features
 
-Mobile app allowing users to:
-- Create automations on-the-go
-- Receive push notifications
-- Quick service connections
-- Monitor automation status
+- **Authentication**: Login and registration with email/password
+- **Areas Management**: View, create, and manage automation areas
+- **Services**: Browse available services and their actions/reactions
+- **Profile**: User profile management and app information
+- **About**: View server and services information
 
-## 🏗️ Architecture
+## Architecture
+
+The app follows a clean architecture pattern with:
+
+- **Models**: Data models for User, Area, Service, etc.
+- **Providers**: State management using Provider pattern
+- **Services**: API communication layer
+- **Screens**: UI screens organized by feature
+
+## Getting Started
+
+### Prerequisites
+
+- Flutter SDK (>=2.17.0)
+- Dart SDK (>=2.17.0)
+
+### Installation
+
+1. Navigate to the mobile directory:
+   ```bash
+   cd frontend/mobile
+   ```
+
+2. Install dependencies:
+   ```bash
+   flutter pub get
+   ```
+
+3. Run the app:
+   ```bash
+   flutter run
+   ```
+
+### Configuration
+
+Update the API base URL in `lib/services/api_service.dart` to match your backend URL.
+
+## Project Structure
 
 ```
-frontend/mobile/
-├── src/
-│   ├── components/    # Reusable components
-│   ├── screens/       # App screens
-│   ├── navigation/    # Navigation setup
-│   ├── services/      # API services
-│   └── utils/         # Utilities
-├── android/          # Android-specific code
-├── ios/              # iOS-specific code (if applicable)
-└── build/            # Build outputs (APK, etc.)
+lib/
+├── main.dart                 # App entry point
+├── models/                   # Data models
+├── providers/                # State management
+├── services/                 # API services
+└── screens/                  # UI screens
 ```
 
-## 📱 Platforms
+## Dependencies
 
-- Android (primary target)
-- iOS (future consideration)
+- `provider`: State management
+- `http`: HTTP client for API calls
+- `flutter_secure_storage`: Secure token storage
+- `shared_preferences`: Local data persistence
+- `intl`: Date/time formatting
 
-## 🔧 Build
+## Testing
 
-The mobile client builds to `/build/client.apk` which is served by the web client at http://localhost:8081/client.apk as required by the project specifications.
+Run tests:
+```bash
+flutter test
+```
+
+## Building
+
+Build APK for Android:
+```bash
+flutter build apk
+```
+
+The mobile client builds to `/build/client.apk` which is served by the web client.
