@@ -1,0 +1,30 @@
+name: mirroring
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches:
+      - '*'
+      - 'ga-ignore-*'
+  pull_request:
+    branches:
+      - '*'
+      - 'ga-ignore-*'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  push_to_mirror:
+    if: github.repository == 'Area-MLJ/AREA-REPO'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Push to Mirror
+        uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          ssh_private_key: ${{ secrets.GIT_SSH_PRIVATE_KEY }}
+          target_repo_url: ${{ vars.MIRROR_URL }}
