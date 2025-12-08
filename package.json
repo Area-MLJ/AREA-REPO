@@ -1,0 +1,20 @@
+{
+  "name": "area-mvp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AREA MVP - Backend + Frontend Web",
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev",
+    "dev:web": "cd frontend/web && npm run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:web\"",
+    "build:backend": "cd backend && npm run build",
+    "build:web": "cd frontend/web && npm run build",
+    "build": "npm run build:backend && npm run build:web",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:web\"",
+    "start:backend": "cd backend && npm start",
+    "start:web": "cd frontend/web && npm run preview"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}

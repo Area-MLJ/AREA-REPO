@@ -1,0 +1,131 @@
+# ======================================
+# AREA MVP - Complete .gitignore
+# ======================================
+
+# Dependencies
+node_modules/
+*/node_modules/
+backend/node_modules/
+frontend/web/node_modules/
+frontend/mobile/node_modules/
+shared/node_modules/
+/.pnp
+.pnp.js
+
+# Package manager
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+build/
+dist/
+out/
+*/build/
+*/dist/
+*/out/
+
+# Next.js specific
+.next/
+backend/.next/
+*.tsbuildinfo
+next-env.d.ts
+
+# Vite specific
+frontend/web/.vite/
+frontend/web/dist/
+
+# React Native / Mobile
+frontend/mobile/android/app/build/
+frontend/mobile/ios/build/
+frontend/mobile/.expo/
+*.apk
+*.ipa
+*.aab
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+backend/.env*
+frontend/web/.env*
+frontend/mobile/.env*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage/
+*.lcov
+.nyc_output
+
+# Caches
+.npm/
+.eslintcache
+.stylelintcache
+.cache/
+.parcel-cache/
+.rts2_cache*/
+.rpt2_cache/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*~
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Misc
+*.pem
+*.key
+*.cert
+*.crt
+
+# Runtime
+.vercel
+.netlify
