@@ -23,9 +23,13 @@ jobs:
           pip install --upgrade pip
           pip install requests
 
-      # Si tu as besoin d’un .env spécifique en CI :
-      # - name: Prepare CI env file
-      #   run: cp .env.ci .env
+      - name: Create .env from secrets
+        run: |
+          cat > .env << 'EOF'
+          SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          EOF
 
       - name: Run backend test script
         run: |
