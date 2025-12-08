@@ -1,25 +1,26 @@
 name: mirroring
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches:
-      - '*'
-      - 'ga-ignore-*'
+      - main
   pull_request:
     branches:
-      - '*'
-      - 'ga-ignore-*'
+      - main
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  backend_tests:
+    if: github.repository == 'Area-MLJ/AREA-REPO'
+    uses: ./.github/workflows/backend-tests.yml
+
   push_to_mirror:
     if: github.repository == 'Area-MLJ/AREA-REPO'
+    needs: backend_tests       # ne tourne que si les tests OK
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
