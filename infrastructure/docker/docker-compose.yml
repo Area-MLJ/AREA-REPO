@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  server:
+    build: 
+      context: ../../backend
+      dockerfile: ../infrastructure/docker/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+    volumes:
+      - ../../backend:/app
+      - /app/node_modules
+
+  client_web:
+    build:
+      context: ../../frontend/web
+    ports:
+      - "8081:8081"
+    depends_on:
+      - server
+      - client_mobile
+    volumes:
+      - shared_volume:/app/public
+
+  client_mobile:
+    build:
+      context: ../../frontend/mobile
+    volumes:
+      - shared_volume:/app/build
+
+volumes:
+  shared_volume:
