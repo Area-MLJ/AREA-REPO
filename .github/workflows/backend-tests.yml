@@ -27,7 +27,7 @@ jobs:
         run: |
           cat > .env << 'EOF'
           SUPABASE_URL=${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           JWT_SECRET=${{ secrets.JWT_SECRET }}
           EOF
 
