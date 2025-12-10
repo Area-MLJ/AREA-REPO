@@ -3,7 +3,8 @@
  * Helper pour gérer les headers CORS dans les fonctions API Vercel
  */
 
-import type { VercelResponse } from '@vercel/node';
+
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 export function setCorsHeaders(res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -11,8 +12,11 @@ export function setCorsHeaders(res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
 
-export function handleOptionsRequest(res: VercelResponse) {
-  setCorsHeaders(res);
-  return res.status(200).end();
+// On passe req et res pour gérer correctement la requête OPTIONS
+export function handleOptionsRequest(req: VercelRequest, res: VercelResponse) {
+  if (req.method === 'OPTIONS') {
+    setCorsHeaders(res);
+    return res.status(200).end();
+  }
 }
 
