@@ -23,6 +23,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+
+    console.log('DEBUG_ENV', {
+    SUPABASE_URL: process.env.SUPABASE_URL,
+    SUPABASE_SERVICE_ROLE_KEY_LEN: process.env.SUPABASE_SERVICE_ROLE_KEY?.length,
+    JWT_SECRET_LEN: process.env.JWT_SECRET?.length,
+  })
+
+
     Logger.logAuth('REGISTRATION_ATTEMPT', undefined, req.body?.email)
     const body = registerSchema.parse(req.body)
     
