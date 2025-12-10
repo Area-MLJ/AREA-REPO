@@ -5,6 +5,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { setCorsHeaders, handleOptionsRequest } from '../cors';
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -16,6 +17,12 @@ if (!supabaseUrl || !supabaseServiceKey) {
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  setCorsHeaders(res);
+
+  if (req.method === 'OPTIONS') {
+    return handleOptionsRequest(res);
+  }
+
   // Seulement GET
   if (req.method !== 'GET') {
     return res.status(405).json({ 

@@ -15,7 +15,17 @@ if (!supabaseUrl || !supabaseServiceKey) {
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+import { setCorsHeaders, handleOptionsRequest } from './cors';
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Définir les headers CORS pour toutes les réponses
+  setCorsHeaders(res);
+
+  // Gérer les requêtes OPTIONS (preflight)
+  if (req.method === 'OPTIONS') {
+    return handleOptionsRequest(res);
+  }
+
   // Seulement GET
   if (req.method !== 'GET') {
     return res.status(405).json({ 
