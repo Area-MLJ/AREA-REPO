@@ -51,7 +51,7 @@ vercel --prod
 
 Dans votre projet Vercel, allez dans **Settings > Environment Variables** et ajoutez :
 
-- `VITE_SUPABASE_URL` ou `SUPABASE_URL` : `https://yasdtbcdtmhscfzrdveo.supabase.co`
+- `SUPABASE_URL` ou `SUPABASE_URL` : `https://yasdtbcdtmhscfzrdveo.supabase.co`
 - `SUPABASE_SERVICE_ROLE_KEY` : Votre clé service role (trouvable dans Supabase > Settings > API)
 
 ⚠️ **Important** : Utilisez la **Service Role Key** (pas l'anon key) pour bypasser RLS si nécessaire.
@@ -63,13 +63,13 @@ Une fois déployé, Vercel vous donnera une URL comme : `https://votre-projet.ve
 Mettez à jour votre fichier `.env` :
 
 ```bash
-VITE_API_URL=https://votre-projet.vercel.app
+API_URL=https://votre-projet.vercel.app
 ```
 
 Ou si vous déployez aussi le frontend sur Vercel, utilisez une variable d'environnement relative :
 
 ```bash
-VITE_API_URL=/api
+API_URL=/api
 ```
 
 ## 📝 Structure des endpoints

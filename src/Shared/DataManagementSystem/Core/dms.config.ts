@@ -7,12 +7,6 @@
 /**
  * Retourne la politique de cache pour une entité
  */
-export function getCachePolicy(entityKey: string) {
-  return {
-    ttl: 5 * 60 * 1000, // 5 minutes par défaut
-    enabled: true,
-  };
-}
 
 /**
  * Génère une clé de cache stable pour une requête
@@ -30,7 +24,7 @@ export function generateCacheKey(
  */
 export function getSupabaseConfig() {
   return {
-    url: import.meta.env.SUPABASE_URL,
-    key: import.meta.env.SUPABASE_ANON_KEY,
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_ANON_KEY,
   };
 }

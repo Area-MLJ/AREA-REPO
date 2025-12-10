@@ -13,8 +13,8 @@ let supabaseClientInstance: SupabaseClient | null = null;
  */
 function getSupabaseClient(): SupabaseClient {
   if (!supabaseClientInstance) {
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
       console.error('Variables d\'environnement Supabase manquantes:', {

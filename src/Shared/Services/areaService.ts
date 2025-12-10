@@ -5,7 +5,7 @@
 
 import { Area } from '../Constants/MockData';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_URL = process.env.API_URL || 'http://localhost:3001';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -21,7 +21,7 @@ export async function fetchAreas(): Promise<Area[]> {
   try {
     // Vérifier que l'URL de l'API est définie
     if (!API_URL || API_URL === 'undefined') {
-      console.warn('VITE_API_URL n\'est pas définie, retour d\'un tableau vide');
+      console.warn('API_URL n\'est pas définie, retour d\'un tableau vide');
       return [];
     }
 

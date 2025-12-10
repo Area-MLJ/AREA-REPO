@@ -17,7 +17,7 @@ Ce dossier contient les fonctions serverless pour gérer les AREAs.
    ```
 
 2. **Configurer les variables d'environnement sur Vercel** :
-   - `VITE_SUPABASE_URL` ou `SUPABASE_URL`
+   - `SUPABASE_URL` ou `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
 
 3. **Déployer** :
@@ -29,7 +29,7 @@ Ce dossier contient les fonctions serverless pour gérer les AREAs.
 
 ## Variables d'environnement requises
 
-- `VITE_SUPABASE_URL` ou `SUPABASE_URL` : URL de votre projet Supabase
+- `SUPABASE_URL` ou `SUPABASE_URL` : URL de votre projet Supabase
 - `SUPABASE_SERVICE_ROLE_KEY` : Clé service role de Supabase (pour bypasser RLS si nécessaire)
 
 ## Structure de la table `areas` dans Supabase
