@@ -30,7 +30,7 @@ export function generateCacheKey(
  */
 export function getSupabaseConfig() {
   return {
-    url: import.meta.env.VITE_SUPABASE_URL,
-    key: import.meta.env.VITE_SUPABASE_ANON_KEY,
+    url: import.meta.env.SUPABASE_URL,
+    key: import.meta.env.SUPABASE_ANON_KEY,
   };
 }
