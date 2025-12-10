@@ -58,14 +58,13 @@ def stop_backend(proc):
             proc.kill()
 
 def test_register_and_login():
-    # email unique pour éviter 'User already exists'
-    unique_email = f"test_{uuid.uuid4().hex[:8]}@example.com"
-    password = "password123"
-    display_name = "Test User"
+    email = TEST_EMAIL
+    password = TEST_PASSWORD
+    display_name = TEST_DISPLAY_NAME
 
     print("\n=== Test REGISTER ===")
     reg_payload = {
-        "email": unique_email,
+        "email": email,
         "password": password,
         "displayName": display_name,
     }
@@ -76,7 +75,7 @@ def test_register_and_login():
 
     print("\n=== Test LOGIN ===")
     login_payload = {
-        "email": unique_email,
+        "email": email,
         "password": password,
     }
     r2 = requests.post(LOGIN_ENDPOINT, json=login_payload)
@@ -85,6 +84,56 @@ def test_register_and_login():
     r2.raise_for_status()
 
     print("\nTests register + login OK")
+
+DELETE_USER_ENDPOINT = f"{BACKEND_URL}/api/users/delete"
+
+TEST_EMAIL = "test@example.com"
+TEST_PASSWORD = "password123"
+TEST_DISPLAY_NAME = "Test User"
+
+
+def delete_test_user_if_exists():
+    """Tente de supprimer le user de test via la route protégée /api/users/delete."""
+    print("\n=== Cleanup: DELETE test user if exists ===")
+
+    # 1) Essayer de se log in pour récupérer un token
+    login_payload = {
+        "email": TEST_EMAIL,
+        "password": TEST_PASSWORD,
+    }
+    r = requests.post(LOGIN_ENDPOINT, json=login_payload)
+    print("Cleanup login status:", r.status_code)
+    print("Cleanup login body:", r.text)
+
+    if r.status_code != 200:
+        # Pas de user ou mauvais mot de passe -> rien à supprimer, on sort
+        print("No existing user to delete (login failed).")
+        return
+
+    try:
+        body = r.json()
+    except Exception:
+        print("Impossible de parser la réponse login en JSON, abandon du cleanup.")
+        return
+
+    token = body.get("token")
+    if not token:
+        print("Pas de token dans la réponse login, abandon du cleanup.")
+        return
+
+    # 2) Appeler DELETE /api/users/delete avec le token
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
+    }
+    dr = requests.delete(DELETE_USER_ENDPOINT, headers=headers)
+    print("Delete user status:", dr.status_code)
+    print("Delete user body:", dr.text)
+
+    if dr.status_code in (200, 404):
+        print("Cleanup OK (user deleted ou inexistant).")
+    else:
+        print("Cleanup: suppression utilisateur a échoué (non bloquant pour le test).")
 
 def main():
     backend_proc = None
@@ -95,8 +144,11 @@ def main():
             print("Backend non joignable après timeout")
             sys.exit(1)
 
-        test_register_and_login()
+        # Supprimer le user de test s'il existe déjà
+        delete_test_user_if_exists()
 
+        # Puis faire le scénario register + login
+        test_register_and_login()
     except KeyboardInterrupt:
         print("Interruption par l'utilisateur.")
     finally:
