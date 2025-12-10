@@ -11,6 +11,13 @@ const requiredEnvVars = ["DISCORD_TOKEN"];
 
 const missingVars = requiredEnvVars.filter((varName) => !process.env[varName]);
 
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
 if (missingVars.length > 0) {
   console.error(
     "❌ Variables d'environnement manquantes:",
