@@ -5,7 +5,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { handleOptionsRequest } from '../../cors.js';
+import { handleOptionsRequest } from '../../cors.ts';
 
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
