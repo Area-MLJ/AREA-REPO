@@ -28,9 +28,10 @@ export default function DashboardPage() {
       setAreas(fetchedAreas);
     } catch (err) {
       console.error('Erreur lors du chargement des AREAs:', err);
-      setError(err instanceof Error ? err.message : 'Erreur lors du chargement des AREAs');
-      // En cas d'erreur, on peut utiliser les données mockées en fallback
-      // setAreas(MOCK_AREAS);
+      const errorMessage = err instanceof Error ? err.message : 'Erreur lors du chargement des AREAs';
+      setError(errorMessage);
+      // En cas d'erreur, on initialise avec un tableau vide pour éviter le crash
+      setAreas([]);
     } finally {
       setLoading(false);
     }

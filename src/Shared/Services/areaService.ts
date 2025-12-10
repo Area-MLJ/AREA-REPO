@@ -19,12 +19,23 @@ interface ApiResponse<T> {
  */
 export async function fetchAreas(): Promise<Area[]> {
   try {
+    // Vérifier que l'URL de l'API est définie
+    if (!API_URL || API_URL === 'undefined') {
+      console.warn('VITE_API_URL n\'est pas définie, retour d\'un tableau vide');
+      return [];
+    }
+
     const response = await fetch(`${API_URL}/api/areas`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     });
+
+    // Vérifier si la réponse est OK
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
     const result: ApiResponse<Area[]> = await response.json();
 
@@ -35,7 +46,8 @@ export async function fetchAreas(): Promise<Area[]> {
     return result.data;
   } catch (error) {
     console.error('Erreur lors de la récupération des AREAs:', error);
-    throw error;
+    // Retourner un tableau vide au lieu de throw pour éviter de casser l'app
+    return [];
   }
 }
 

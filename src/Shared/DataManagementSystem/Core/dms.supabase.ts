@@ -17,10 +17,19 @@ function getSupabaseClient(): SupabaseClient {
     const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
-      throw new Error('Variables d\'environnement Supabase manquantes. Vérifiez votre fichier .env');
+      console.error('Variables d\'environnement Supabase manquantes:', {
+        hasUrl: !!supabaseUrl,
+        hasKey: !!supabaseKey,
+      });
+      // Créer un client avec des valeurs par défaut pour éviter le crash
+      // L'utilisateur verra des erreurs mais l'app ne crashera pas
+      supabaseClientInstance = createClient(
+        supabaseUrl || 'https://placeholder.supabase.co',
+        supabaseKey || 'placeholder-key'
+      );
+    } else {
+      supabaseClientInstance = createClient(supabaseUrl, supabaseKey);
     }
-
-    supabaseClientInstance = createClient(supabaseUrl, supabaseKey);
   }
 
   return supabaseClientInstance;
