@@ -1,0 +1,19 @@
+{
+  "name": "@area/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "SharedIndex.ts",
+  "types": "SharedIndex.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.4",
+    "react": "^18.3.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.3",
+    "@types/react": "^18.3.5"
+  }
+}
