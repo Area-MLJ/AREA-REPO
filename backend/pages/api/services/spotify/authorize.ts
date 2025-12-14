@@ -1,11 +1,9 @@
 import type { NextApiResponse } from 'next'
-import { withAuth, type AuthenticatedRequest } from '../../../../src/middleware/auth'
 import { applyCors } from '../../../../src/middleware/cors'
 import { Logger } from '../../../../src/middleware/logger'
 import { buildAuthorizeUrl, generateOAuthState } from '../../../../src/services/spotify/oauth'
-import { createOAuthState } from '../../../../src/services/spotify/stateStore'
 
-export default withAuth(async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
+export default async function handler(req: any, res: NextApiResponse) {
   await applyCors(req, res)
   Logger.logRequest(req)
 
@@ -16,15 +14,23 @@ export default withAuth(async function handler(req: AuthenticatedRequest, res: N
 
   try {
     const state = generateOAuthState()
-    await createOAuthState(req.userId, state)
+    res.setHeader(
+      'Set-Cookie',
+      `spotify_oauth_state=${state}; HttpOnly; Path=/; Max-Age=600; SameSite=Lax`
+    )
 
     const url = buildAuthorizeUrl(state)
     Logger.logResponse(res, 302, { redirect: url })
     res.writeHead(302, { Location: url })
     res.end()
   } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
     Logger.logError(error, 'SPOTIFY_AUTHORIZE_ERROR')
-    Logger.logResponse(res, 500, null, 'Internal server error')
-    res.status(500).json({ error: 'Internal server error' })
+    const isDev = process.env.NODE_ENV !== 'production'
+    Logger.logResponse(res, 500, null, message)
+    res.status(500).json({
+      error: 'Internal server error',
+      ...(isDev ? { details: message } : {})
+    })
   }
-})
+}

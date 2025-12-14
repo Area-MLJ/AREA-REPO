@@ -6,7 +6,11 @@ export default async function handler(_req: NextApiRequest, res: NextApiResponse
       authorize: '/api/services/spotify/authorize',
       callback: '/api/services/spotify/callback',
       refresh: '/api/services/spotify/refresh',
-      me: '/api/services/spotify/me'
+      me: '/api/services/spotify/me',
+      playlists: '/api/services/spotify/playlists',
+      play: '/api/services/spotify/play',
+      pause: '/api/services/spotify/pause',
+      next: '/api/services/spotify/next'
     }
   })
 }

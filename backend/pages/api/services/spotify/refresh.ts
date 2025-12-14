@@ -1,11 +1,9 @@
 import type { NextApiResponse } from 'next'
-import { withAuth, type AuthenticatedRequest } from '../../../../src/middleware/auth'
 import { applyCors } from '../../../../src/middleware/cors'
 import { Logger } from '../../../../src/middleware/logger'
-import { getSpotifyTokens, isExpired, upsertSpotifyTokens } from '../../../../src/services/spotify/tokenStore'
-import { refreshAccessToken } from '../../../../src/services/spotify/oauth'
+import { getBuiltInAccessToken } from '../../../../src/services/spotify/builtInStore'
 
-export default withAuth(async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
+export default async function handler(req: any, res: NextApiResponse) {
   await applyCors(req, res)
   Logger.logRequest(req)
 
@@ -15,25 +13,12 @@ export default withAuth(async function handler(req: AuthenticatedRequest, res: N
   }
 
   try {
-    const tokens = await getSpotifyTokens(req.userId)
-    if (!tokens) {
-      Logger.logResponse(res, 404, null, 'Spotify not connected')
-      return res.status(404).json({ error: 'Spotify not connected' })
-    }
-
-    if (!isExpired(tokens.expires_at, 0)) {
-      Logger.logResponse(res, 200, { access_token: tokens.access_token, expires_at: tokens.expires_at })
-      return res.status(200).json({ access_token: tokens.access_token, expires_at: tokens.expires_at })
-    }
-
-    const refreshed = await refreshAccessToken(tokens.refresh_token)
-    const stored = await upsertSpotifyTokens(req.userId, refreshed)
-
-    Logger.logResponse(res, 200, { access_token: stored.access_token, expires_at: stored.expires_at })
-    res.status(200).json({ access_token: stored.access_token, expires_at: stored.expires_at })
+    const accessToken = await getBuiltInAccessToken()
+    Logger.logResponse(res, 200, { access_token: accessToken })
+    res.status(200).json({ access_token: accessToken })
   } catch (error) {
     Logger.logError(error, 'SPOTIFY_REFRESH_ERROR')
     Logger.logResponse(res, 500, null, 'Internal server error')
     res.status(500).json({ error: 'Internal server error' })
   }
-})
+}
