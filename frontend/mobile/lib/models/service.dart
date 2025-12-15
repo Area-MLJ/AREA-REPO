@@ -4,9 +4,11 @@ class Service {
   final String? displayName;
   final String? description;
   final String? iconUrl;
+  final String? category;
   final DateTime createdAt;
   final List<ServiceAction> actions;
   final List<ServiceReaction> reactions;
+  bool isConnected;
 
   Service({
     required this.id,
@@ -14,9 +16,11 @@ class Service {
     this.displayName,
     this.description,
     this.iconUrl,
+    this.category,
     required this.createdAt,
     this.actions = const [],
     this.reactions = const [],
+    this.isConnected = false,
   });
 
   factory Service.fromJson(Map<String, dynamic> json) {
@@ -26,6 +30,7 @@ class Service {
       displayName: json['display_name'],
       description: json['description'],
       iconUrl: json['icon_url'],
+      category: json['category'],
       createdAt: DateTime.parse(json['created_at']),
       actions: (json['service_actions'] as List<dynamic>?)
               ?.map((action) => ServiceAction.fromJson(action))
@@ -35,7 +40,42 @@ class Service {
               ?.map((reaction) => ServiceReaction.fromJson(reaction))
               .toList() ??
           [],
+      isConnected: json['isConnected'] ?? false,
     );
+  }
+
+  String getEmoji() {
+    switch (category) {
+      case 'communication':
+        return '📧';
+      case 'productivity':
+        return '🚀';
+      case 'storage':
+        return '☁️';
+      case 'social':
+        return '💬';
+      case 'time':
+        return '⏰';
+      default:
+        return '🔧';
+    }
+  }
+
+  String getCategoryLabel() {
+    switch (category) {
+      case 'communication':
+        return 'Communication';
+      case 'productivity':
+        return 'Productivité';
+      case 'storage':
+        return 'Stockage';
+      case 'social':
+        return 'Réseaux sociaux';
+      case 'time':
+        return 'Temps';
+      default:
+        return 'Autre';
+    }
   }
 }
 

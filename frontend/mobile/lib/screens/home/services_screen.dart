@@ -23,6 +23,8 @@ class _ServicesScreenState extends State<ServicesScreen> {
       appBar: AppBar(
         title: Text('Services'),
         automaticallyImplyLeading: false,
+        backgroundColor: Color(0xFF0A4A0E),
+        foregroundColor: Colors.white,
       ),
       body: Consumer<ServicesProvider>(
         builder: (context, servicesProvider, child) {
@@ -99,13 +101,31 @@ class _ServicesScreenState extends State<ServicesScreen> {
 
           return RefreshIndicator(
             onRefresh: servicesProvider.fetchServices,
-            child: ListView.builder(
+            child: SingleChildScrollView(
               padding: EdgeInsets.all(16),
-              itemCount: servicesProvider.services.length,
-              itemBuilder: (context, index) {
-                final service = servicesProvider.services[index];
-                return _buildServiceCard(service);
-              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Services',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1A1A18),
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Connectez vos services pour créer des automatisations',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF6B6962),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  ...servicesProvider.services.map((service) => _buildServiceCard(service)),
+                ],
+              ),
             ),
           );
         },
@@ -115,43 +135,23 @@ class _ServicesScreenState extends State<ServicesScreen> {
 
   Widget _buildServiceCard(Service service) {
     return Card(
-      elevation: 4,
+      elevation: 2,
       margin: EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Color(0xFFD1CFC8), width: 1),
+      ),
       child: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Color(0xFF0A4A0E).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: service.iconUrl != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            service.iconUrl!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Icon(
-                                Icons.apps,
-                                color: Colors.blue[600],
-                                size: 24,
-                              );
-                            },
-                          ),
-                        )
-                      : Icon(
-                          Icons.apps,
-                          color: Color(0xFF0A4A0E),
-                          size: 24,
-                        ),
+                Text(
+                  service.getEmoji(),
+                  style: TextStyle(fontSize: 40),
                 ),
                 SizedBox(width: 12),
                 Expanded(
@@ -163,124 +163,181 @@ class _ServicesScreenState extends State<ServicesScreen> {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.grey[800],
+                          color: Color(0xFF1A1A18),
                         ),
                       ),
-                      if (service.description != null) ...[
-                        SizedBox(height: 4),
-                        Text(
-                          service.description!,
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 14,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                      SizedBox(height: 4),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ],
+                        child: Text(
+                          service.getCategoryLabel(),
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: service.isConnected
+                        ? Colors.green[100]
+                        : Colors.grey[200],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    service.isConnected ? 'Connecté' : 'Non connecté',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: service.isConnected
+                          ? Colors.green[800]
+                          : Colors.grey[700],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (service.description != null) ...[
+              SizedBox(height: 12),
+              Text(
+                service.description!,
+                style: TextStyle(
+                  color: Color(0xFF6B6962),
+                  fontSize: 13,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+            SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'ACTIONS (${service.actions.length})',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF8B8980),
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        service.actions.isEmpty
+                            ? 'Aucune'
+                            : service.actions
+                                .take(2)
+                                .map((a) => a.displayName ?? a.name)
+                                .join(', '),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF4D4C47),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'REACTIONS (${service.reactions.length})',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF8B8980),
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        service.reactions.isEmpty
+                            ? 'Aucune'
+                            : service.reactions
+                                .take(2)
+                                .map((r) => r.displayName ?? r.name)
+                                .join(', '),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF4D4C47),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ],
                   ),
                 ),
               ],
             ),
             SizedBox(height: 16),
-            Row(
-              children: [
-                _buildFeatureChip(
-                  Icons.play_arrow,
-                  '${service.actions.length} action${service.actions.length != 1 ? 's' : ''}',
-                  Colors.blue,
-                ),
-                SizedBox(width: 8),
-                _buildFeatureChip(
-                  Icons.bolt,
-                  '${service.reactions.length} reaction${service.reactions.length != 1 ? 's' : ''}',
-                  Colors.orange,
-                ),
-              ],
-            ),
-            if (service.actions.isNotEmpty || service.reactions.isNotEmpty) ...[
-              SizedBox(height: 12),
-              ExpansionTile(
-                title: Text(
-                  'Available Features',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  _toggleConnection(service);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: service.isConnected
+                      ? Colors.white
+                      : Color(0xFF0A4A0E),
+                  foregroundColor: service.isConnected
+                      ? Color(0xFF0A4A0E)
+                      : Colors.white,
+                  side: BorderSide(
+                    color: Color(0xFF0A4A0E),
+                    width: service.isConnected ? 2 : 0,
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                children: [
-                  if (service.actions.isNotEmpty) ...[
-                    _buildFeatureSection('Actions', service.actions.map((a) => a.displayName ?? a.name).toList()),
-                  ],
-                  if (service.reactions.isNotEmpty) ...[
-                    _buildFeatureSection('Reactions', service.reactions.map((r) => r.displayName ?? r.name).toList()),
-                  ],
-                ],
+                child: Text(
+                  service.isConnected ? 'Déconnecter' : 'Connecter',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ],
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildFeatureChip(IconData icon, String label, Color color) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: color),
-          SizedBox(width: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFeatureSection(String title, List<String> features) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-              color: Colors.grey[700],
-            ),
-          ),
-          SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 4,
-            children: features.map((feature) {
-              return Chip(
-                label: Text(
-                  feature,
-                  style: TextStyle(fontSize: 12),
-                ),
-                backgroundColor: Colors.grey[100],
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              );
-            }).toList(),
-          ),
-        ],
+  void _toggleConnection(Service service) {
+    setState(() {
+      service.isConnected = !service.isConnected;
+    });
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          service.isConnected
+              ? '${service.displayName ?? service.name} connecté'
+              : '${service.displayName ?? service.name} déconnecté',
+        ),
+        backgroundColor: service.isConnected ? Colors.green : Colors.grey[700],
+        duration: Duration(seconds: 2),
       ),
     );
   }

@@ -3,12 +3,14 @@ class User {
   final String email;
   final String? displayName;
   final bool isVerified;
+  final String? createdAt;
 
   User({
     required this.id,
     required this.email,
     this.displayName,
     required this.isVerified,
+    this.createdAt,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -17,6 +19,7 @@ class User {
       email: json['email'],
       displayName: json['displayName'],
       isVerified: json['isVerified'] ?? false,
+      createdAt: json['created_at'],
     );
   }
 
@@ -26,6 +29,7 @@ class User {
       'email': email,
       'displayName': displayName,
       'isVerified': isVerified,
+      'created_at': createdAt,
     };
   }
 }

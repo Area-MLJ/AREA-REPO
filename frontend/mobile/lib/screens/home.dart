@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
-import '../auth/login_screen.dart';
-import 'areas_screen.dart';
-import 'services_screen.dart';
-import 'profile_screen.dart';
+import '../providers/auth_provider.dart';
+import 'auth/login_screen.dart';
+import 'home/areas_screen.dart';
+import 'home/services_screen.dart';
+import 'home/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

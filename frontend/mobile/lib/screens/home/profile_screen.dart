@@ -4,15 +4,16 @@ import '../../providers/auth_provider.dart';
 import '../../providers/areas_provider.dart';
 import '../../providers/services_provider.dart';
 import '../auth/login_screen.dart';
-import '../info/about_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: Text('Profil'),
         automaticallyImplyLeading: false,
+        backgroundColor: Color(0xFF0A4A0E),
+        foregroundColor: Colors.white,
       ),
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
@@ -25,66 +26,50 @@ class ProfileScreen extends StatelessWidget {
           return SingleChildScrollView(
             padding: EdgeInsets.all(16),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(
+                  'Profil',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1A1A18),
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'Gérez vos informations personnelles',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF6B6962),
+                  ),
+                ),
+                SizedBox(height: 20),
                 // Profile Header
                 Card(
                   elevation: 4,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: Padding(
-                    padding: EdgeInsets.all(24),
+                    padding: EdgeInsets.all(20),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircleAvatar(
-                          radius: 40,
-                          backgroundColor: Color(0xFF0A4A0E),
-                          child: Text(
-                            user.displayName != null && user.displayName!.isNotEmpty
-                                ? user.displayName![0].toUpperCase()
-                                : user.email[0].toUpperCase(),
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 16),
                         Text(
-                          user.displayName ?? 'User',
+                          'Informations du compte',
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors.grey[800],
+                            color: Color(0xFF1A1A18),
                           ),
                         ),
-                        SizedBox(height: 4),
-                        Text(
-                          user.email,
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 16,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              user.isVerified ? Icons.verified : Icons.warning,
-                              color: user.isVerified ? Colors.green : Colors.orange,
-                              size: 16,
-                            ),
-                            SizedBox(width: 4),
-                            Text(
-                              user.isVerified ? 'Verified' : 'Unverified',
-                              style: TextStyle(
-                                color: user.isVerified ? Colors.green : Colors.orange,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
+                        SizedBox(height: 20),
+                        _buildProfileField('Email', user.email),
+                        SizedBox(height: 16),
+                        _buildProfileField('ID Utilisateur', user.id),
+                        if (user.createdAt != null) ...[
+                          SizedBox(height: 16),
+                          _buildProfileField('Créé le', _formatDate(user.createdAt!)),
+                        ],
                       ],
                     ),
                   ),
@@ -141,88 +126,85 @@ class ProfileScreen extends StatelessWidget {
                 
                 SizedBox(height: 24),
                 
-                // Action Buttons
+                // Danger Zone
                 Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: Color(0xFFD1CFC8), width: 1),
+                  ),
                   child: Padding(
-                    padding: EdgeInsets.all(16),
+                    padding: EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Actions',
+                          'Zone de danger',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors.grey[800],
+                            color: Color(0xFF1A1A18),
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Déconnectez-vous de votre compte',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF6B6962),
                           ),
                         ),
                         SizedBox(height: 16),
-                        ListTile(
-                          leading: Icon(Icons.refresh, color: Color(0xFF0A4A0E)),
-                          title: Text('Refresh Data'),
-                          subtitle: Text('Reload areas and services'),
-                          onTap: () async {
-                            final areasProvider = Provider.of<AreasProvider>(context, listen: false);
-                            final servicesProvider = Provider.of<ServicesProvider>(context, listen: false);
-                            await Future.wait([
-                              areasProvider.fetchAreas(),
-                              servicesProvider.fetchServices(),
-                            ]);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Data refreshed')),
-                            );
-                          },
-                        ),
-                        Divider(),
-                        ListTile(
-                          leading: Icon(Icons.info, color: Color(0xFF0A4A0E)),
-                          title: Text('About'),
-                          subtitle: Text('Learn more about AREA'),
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => AboutScreen()),
-                            );
-                          },
-                        ),
-                        Divider(),
-                        ListTile(
-                          leading: Icon(Icons.logout, color: Colors.red[600]),
-                          title: Text('Logout'),
-                          subtitle: Text('Sign out of your account'),
-                          onTap: () async {
-                            final confirm = await showDialog<bool>(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text('Logout'),
-                                content: Text('Are you sure you want to logout?'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context, false),
-                                    child: Text('Cancel'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context, true),
-                                    child: Text(
-                                      'Logout',
-                                      style: TextStyle(color: Colors.red),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            onPressed: () async {
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text('Se déconnecter'),
+                                  content: Text('Êtes-vous sûr de vouloir vous déconnecter ?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context, false),
+                                      child: Text('Annuler'),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            );
-                            
-                            if (confirm == true) {
-                              await authProvider.logout();
-                              Provider.of<AreasProvider>(context, listen: false).clear();
-                              Provider.of<ServicesProvider>(context, listen: false).clear();
-                              
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(builder: (_) => LoginScreen()),
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context, true),
+                                      child: Text(
+                                        'Se déconnecter',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               );
-                            }
-                          },
+                              
+                              if (confirm == true) {
+                                await authProvider.logout();
+                                Provider.of<AreasProvider>(context, listen: false).clear();
+                                Provider.of<ServicesProvider>(context, listen: false).clear();
+                                
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(builder: (_) => LoginScreen()),
+                                );
+                              }
+                            },
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(vertical: 12),
+                              side: BorderSide(color: Color(0xFF0A4A0E)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Text(
+                              'Se déconnecter',
+                              style: TextStyle(
+                                color: Color(0xFF0A4A0E),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -234,6 +216,43 @@ class ProfileScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Widget _buildProfileField(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            color: Color(0xFF8B8980),
+          ),
+        ),
+        SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF1A1A18),
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _formatDate(String dateString) {
+    try {
+      final date = DateTime.parse(dateString);
+      final months = [
+        'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+        'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
+      ];
+      return '${date.day.toString().padLeft(2, '0')} ${months[date.month - 1]} ${date.year}';
+    } catch (e) {
+      return dateString;
+    }
   }
 
   Widget _buildStatItem(String title, String value, IconData icon, Color color) {

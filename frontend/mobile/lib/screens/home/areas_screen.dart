@@ -23,8 +23,10 @@ class _AreasScreenState extends State<AreasScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ACTION-REACTION'),
+        title: Text('Dashboard'),
         automaticallyImplyLeading: false,
+        backgroundColor: Color(0xFF0A4A0E),
+        foregroundColor: Colors.white,
       ),
       body: Consumer<AreasProvider>(
         builder: (context, areasProvider, child) {
@@ -44,7 +46,7 @@ class _AreasScreenState extends State<AreasScreen> {
                   ),
                   SizedBox(height: 16),
                   Text(
-                    'Error loading areas',
+                    'Erreur de chargement',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -67,62 +69,159 @@ class _AreasScreenState extends State<AreasScreen> {
             );
           }
 
-          if (areasProvider.areas.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.wb_auto,
-                    size: 80,
-                    color: Colors.grey[400],
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'No areas yet',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Create your first automation area',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  SizedBox(height: 24),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => CreateAreaScreen()),
-                      );
-                    },
-                    icon: Icon(Icons.add),
-                    label: Text('Create Area'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF0A4A0E),
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
-
           return RefreshIndicator(
             onRefresh: areasProvider.fetchAreas,
-            child: ListView.builder(
+            child: SingleChildScrollView(
               padding: EdgeInsets.all(16),
-              itemCount: areasProvider.areas.length,
-              itemBuilder: (context, index) {
-                final area = areasProvider.areas[index];
-                return _buildAreaCard(area);
-              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Dashboard',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1A1A18),
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Gérez vos automatisations',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFF6B6962),
+                            ),
+                          ),
+                        ],
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => CreateAreaScreen()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF0A4A0E),
+                          foregroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.add, size: 18),
+                            SizedBox(width: 4),
+                            Text('Nouvelle AREA'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildStatCard(
+                          'Total',
+                          '${areasProvider.areas.length}',
+                          Color(0xFF0A4A0E),
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: _buildStatCard(
+                          'Actives',
+                          '${areasProvider.areas.where((a) => a.enabled).length}',
+                          Color(0xFF10B981),
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: _buildStatCard(
+                          'Inactives',
+                          '${areasProvider.areas.where((a) => !a.enabled).length}',
+                          Color(0xFF8B8980),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 24),
+                  Text(
+                    'Mes AREAs',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1A1A18),
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  if (areasProvider.areas.isEmpty)
+                    Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(32),
+                        child: Column(
+                          children: [
+                            Text(
+                              '🤖',
+                              style: TextStyle(fontSize: 48),
+                            ),
+                            SizedBox(height: 12),
+                            Text(
+                              'Aucune AREA créée',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF1A1A18),
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Commencez par créer votre première automation',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF6B6962),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 20),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (_) => CreateAreaScreen()),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFF0A4A0E),
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: Text('Créer une AREA'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    ...areasProvider.areas.map((area) => _buildAreaCard(area)),
+                ],
+              ),
             ),
           );
         },
@@ -210,6 +309,40 @@ class _AreasScreenState extends State<AreasScreen> {
               style: TextStyle(
                 color: Colors.grey[500],
                 fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatCard(String label, String value, Color color) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Color(0xFFD1CFC8), width: 1),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                color: Color(0xFF6B6962),
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: color,
               ),
             ),
           ],

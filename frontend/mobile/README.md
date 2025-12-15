@@ -25,8 +25,51 @@ The app follows a clean architecture pattern with:
 
 - Flutter SDK (>=2.17.0)
 - Dart SDK (>=2.17.0)
+- Android SDK (for Android builds)
+- Xcode (for iOS builds on macOS)
 
-### Installation
+### Quick Start Scripts
+
+The project includes convenient shell scripts (located in the AREA root directory):
+
+#### Development Mode
+```bash
+# From AREA root directory
+cd /path/to/AREA
+
+# Run on default device
+./start_mobile.sh
+
+# Run on specific platform
+./start_mobile.sh web      # Run in Chrome (port 8082)
+./start_mobile.sh android  # Run on Android device/emulator
+./start_mobile.sh ios      # Run on iOS device/simulator (macOS only)
+```
+
+#### Building
+```bash
+# From AREA root directory
+cd /path/to/AREA
+
+# Build Android APK (default)
+./build_mobile.sh
+
+# Build for specific platform
+./build_mobile.sh android  # Build APK
+./build_mobile.sh web      # Build web version
+./build_mobile.sh ios      # Build iOS app (macOS only)
+```
+
+#### Testing
+```bash
+# From AREA root directory
+cd /path/to/AREA
+
+# Run tests and code quality checks
+./test_mobile.sh
+```
+
+### Manual Installation
 
 1. Navigate to the mobile directory:
    ```bash
@@ -66,9 +109,28 @@ lib/
 - `shared_preferences`: Local data persistence
 - `intl`: Date/time formatting
 
+## Available Scripts
+
+Scripts are located in the AREA root directory:
+
+- **`./start_mobile.sh [platform]`** - Start development server
+  - Runs the app in development mode with hot reload
+  - Optional platform: `web`, `android`, `ios`
+  - Web runs on port 8082
+  
+- **`./build_mobile.sh [platform]`** - Build production app
+  - Creates optimized production build
+  - Default platform: `android`
+  - Outputs APK to: `frontend/mobile/build/app/outputs/flutter-apk/app-release.apk`
+  
+- **`./test_mobile.sh`** - Run tests and checks
+  - Runs unit tests
+  - Runs analyzer for code quality
+  - Checks code formatting
+
 ## Testing
 
-Run tests:
+Run tests manually:
 ```bash
 flutter test
 ```
@@ -77,7 +139,12 @@ flutter test
 
 Build APK for Android:
 ```bash
-flutter build apk
+flutter build apk --release
+```
+
+Build for web:
+```bash
+flutter build web --release
 ```
 
 The mobile client builds to `/build/client.apk` which is served by the web client.
