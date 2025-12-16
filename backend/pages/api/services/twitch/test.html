@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <body>
+    <script>
+      ;(async () => {
+        const resp = await fetch("https://setsuko-predicrotic-unprovincially.ngrok-free.dev/api/services/twitch/subscribe", {
+          method: "POST"
+        })
+        const json = await resp.json().catch(() => null)
+        console.log('status', resp.status)
+        console.log('json', json)
+      })().catch(err => {
+        console.error(err)
+      })
+    </script>
+  </body>
+</html>

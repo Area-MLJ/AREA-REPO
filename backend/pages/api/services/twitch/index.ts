@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { applyCors } from '../../../src/middleware/cors'
+import { applyCors } from '../../../../src/middleware/cors'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await applyCors(req, res)
