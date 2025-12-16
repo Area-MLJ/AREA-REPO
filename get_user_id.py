@@ -3,35 +3,42 @@ import json
 from pathlib import Path
 import config
 
-url = "https://id.twitch.tv/oauth2/token"
+url = "https://api.twitch.tv/helix/users"
 
-payload = json.dumps({
-    "client_id": config.client_id,
-    "client_secret": config.client_secret,
-    "grant_type": "authorization_code",
-    "code": config.twitch_auth_code,
-    "redirect_uri": config.redirect_uri,
-})
 headers = {
-    "Content-Type": "application/json",
+    "Client-Id": config.client_id,
+    "Authorization": f"Bearer {config.twitch_access_token}",
 }
 
-response = requests.post(url, headers=headers, data=payload)
+response = requests.get(url, headers=headers)
 
 print("Raw response:")
 print(response.text)
 
-data = response.json()
-twitch_access_token = data.get("access_token", "")
-twitch_refresh_token = data.get("refresh_token", "")
+response.raise_for_status()
 
-# Réécrit config.py avec les champs existants + tokens Twitch
+data = response.json()
+
+user_id = None
+if isinstance(data, dict):
+    items = data.get("data", [])
+    if items:
+        user_id = items[0].get("id")
+
+if not user_id:
+    raise RuntimeError("Impossible de récupérer user_id depuis la réponse Twitch")
+
+print(f"Twitch user_id trouvé : {user_id}")
+
+# Réécrit config.py avec les champs existants + user_id
 config_path = Path(__file__).parent / "config.py"
 
 client_id = getattr(config, "client_id", "")
 client_secret = getattr(config, "client_secret", "")
 redirect_uri = getattr(config, "redirect_uri", "")
 twitch_auth_code = getattr(config, "twitch_auth_code", "")
+twitch_access_token = getattr(config, "twitch_access_token", "")
+twitch_refresh_token = getattr(config, "twitch_refresh_token", "")
 
 with config_path.open("w", encoding="utf-8") as f:
     if client_id:
@@ -46,5 +53,6 @@ with config_path.open("w", encoding="utf-8") as f:
         f.write(f"twitch_access_token = \"{twitch_access_token}\"\n")
     if twitch_refresh_token:
         f.write(f"twitch_refresh_token = \"{twitch_refresh_token}\"\n")
+    f.write(f"user_id = \"{user_id}\"\n")
 
-print("Tokens Twitch enregistrés dans config.py sous les noms 'twitch_access_token' et 'twitch_refresh_token'.")
+print("user_id enregistré dans config.py sous le nom 'user_id'.")
