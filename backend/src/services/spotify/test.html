@@ -3,10 +3,12 @@
   <body>
     <script>
       fetch("https://setsuko-predicrotic-unprovincially.ngrok-free.dev/api/services/spotify/play", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ context_uri: "spotify:playlist:7CInlohtqA29bsL5P62Eku" })
-      }).then(r => console.log("status", r.status)).catch(console.error)
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        uris: ["spotify:track:0KQ1LhU7vGiXqn7eAw1nfl"]
+      })
+    }).then(r => console.log("status", r.status)).catch(console.error)
     </script>
   </body>
 </html>
