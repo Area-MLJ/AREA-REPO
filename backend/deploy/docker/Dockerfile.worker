@@ -2,12 +2,13 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install dependencies
-COPY package.json package-lock.json* ./
-RUN npm ci --only=production
+# Install dependencies (copier depuis backend/)
+COPY backend/package.json* ./
+# Utiliser npm install si package-lock.json n'existe pas, sinon npm ci
+RUN if [ -f package-lock.json ]; then npm ci --only=production; else npm install --only=production; fi
 
-# Copy source code
-COPY . .
+# Copy source code (depuis backend/)
+COPY backend/ .
 
 # Build TypeScript (si nécessaire)
 RUN npm run build || true

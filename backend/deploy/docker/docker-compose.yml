@@ -15,8 +15,8 @@ services:
 
   api:
     build:
-      context: ../..
-      dockerfile: deploy/docker/Dockerfile.api
+      context: ../../../
+      dockerfile: backend/deploy/docker/Dockerfile.api
     ports:
       - "8080:8080"
     environment:
@@ -33,8 +33,8 @@ services:
 
   worker:
     build:
-      context: ../..
-      dockerfile: deploy/docker/Dockerfile.worker
+      context: ../../../
+      dockerfile: backend/deploy/docker/Dockerfile.worker
     environment:
       - NODE_ENV=production
       - SUPABASE_URL=${SUPABASE_URL}
@@ -47,8 +47,8 @@ services:
 
   scheduler:
     build:
-      context: ../..
-      dockerfile: deploy/docker/Dockerfile.worker
+      context: ../../../
+      dockerfile: backend/deploy/docker/Dockerfile.worker
     command: npm run scheduler
     environment:
       - NODE_ENV=production
