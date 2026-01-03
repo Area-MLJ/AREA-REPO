@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: area-worker
+  labels:
+    app: area-worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: area-worker
+  template:
+    metadata:
+      labels:
+        app: area-worker
+    spec:
+      containers:
+      - name: worker
+        image: area-worker:latest
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: SUPABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: area-secrets
+              key: supabase-url
+        - name: SUPABASE_SERVICE_ROLE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: area-secrets
+              key: supabase-service-role-key
+        - name: REDIS_URL
+          value: "redis://area-redis:6379"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+

@@ -1,61 +1,64 @@
-// Types pour les tables de la base de données
+// Types générés depuis le schéma de base de données Supabase
+// Ces types correspondent au schéma défini dans docs/shema_db.sql
+
+export type UUID = string;
 
 export interface User {
-  id: string;
+  id: UUID;
   email: string;
   password_hash: string | null;
   display_name: string | null;
   is_verified: boolean;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface UserSession {
-  id: string;
-  user_id: string;
+  id: UUID;
+  user_id: UUID;
   refresh_token: string | null;
   jwt_token: string | null;
   ip_address: string | null;
   user_agent: string | null;
-  expires_at: Date | null;
-  created_at: Date;
+  expires_at: string | null;
+  created_at: string;
 }
 
 export interface OAuthIdentity {
-  id: string;
-  user_id: string;
+  id: UUID;
+  user_id: UUID;
   provider: string;
   provider_user_id: string;
   access_token: string | null;
   refresh_token: string | null;
   scope: string | null;
-  expires_at: Date | null;
-  created_at: Date;
+  expires_at: string | null;
+  created_at: string;
 }
 
 export interface Service {
-  id: string;
+  id: UUID;
   name: string;
   display_name: string | null;
   description: string | null;
   icon_url: string | null;
-  created_at: Date;
+  created_at: string;
 }
 
 export interface ServiceAction {
-  id: string;
-  service_id: string;
+  id: UUID;
+  service_id: UUID;
   name: string;
   display_name: string | null;
   description: string | null;
   polling_supported: boolean;
   webhook_supported: boolean;
-  created_at: Date;
+  created_at: string;
 }
 
 export interface ServiceActionParam {
-  id: string;
-  service_action_id: string;
+  id: UUID;
+  service_action_id: UUID;
   name: string;
   display_name: string | null;
   data_type: string | null;
@@ -67,17 +70,17 @@ export interface ServiceActionParam {
 }
 
 export interface ServiceReaction {
-  id: string;
-  service_id: string;
+  id: UUID;
+  service_id: UUID;
   name: string;
   display_name: string | null;
   description: string | null;
-  created_at: Date;
+  created_at: string;
 }
 
 export interface ServiceReactionParam {
-  id: string;
-  service_reaction_id: string;
+  id: UUID;
+  service_reaction_id: UUID;
   name: string;
   display_name: string | null;
   data_type: string | null;
@@ -89,104 +92,104 @@ export interface ServiceReactionParam {
 }
 
 export interface UserService {
-  id: string;
-  user_id: string;
-  service_id: string;
+  id: UUID;
+  user_id: UUID;
+  service_id: UUID;
   display_name: string | null;
-  oauth_account_id: string | null;
+  oauth_account_id: UUID | null;
   access_token: string | null;
   refresh_token: string | null;
-  token_expires_at: Date | null;
-  created_at: Date;
+  token_expires_at: string | null;
+  created_at: string;
 }
 
 export interface Area {
-  id: string;
-  user_id: string;
-  name: string | null;
+  id: UUID;
+  user_id: UUID;
+  name: string;
   description: string | null;
   enabled: boolean;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface AreaAction {
-  id: string;
-  area_id: string;
-  service_action_id: string;
-  user_service_id: string;
+  id: UUID;
+  area_id: UUID;
+  service_action_id: UUID;
+  user_service_id: UUID;
   enabled: boolean;
-  last_evaluated_at: Date | null;
-  created_at: Date;
+  last_evaluated_at: string | null;
+  created_at: string;
 }
 
 export interface AreaActionParamValue {
-  id: string;
-  area_action_id: string;
-  service_action_param_id: string;
+  id: UUID;
+  area_action_id: UUID;
+  service_action_param_id: UUID;
   value_text: string | null;
   value_json: string | null;
-  created_at: Date;
+  created_at: string;
 }
 
 export interface AreaReaction {
-  id: string;
-  area_id: string;
-  service_reaction_id: string;
-  user_service_id: string;
+  id: UUID;
+  area_id: UUID;
+  service_reaction_id: UUID;
+  user_service_id: UUID;
   enabled: boolean;
   position: number;
-  created_at: Date;
+  created_at: string;
 }
 
 export interface AreaReactionParamValue {
-  id: string;
-  area_reaction_id: string;
-  service_reaction_param_id: string;
+  id: UUID;
+  area_reaction_id: UUID;
+  service_reaction_param_id: UUID;
   value_text: string | null;
   value_json: string | null;
-  created_at: Date;
+  created_at: string;
 }
 
 export interface HookJob {
-  id: string;
-  area_action_id: string;
-  type: string | null;
+  id: UUID;
+  area_action_id: UUID;
+  type: 'polling' | 'webhook';
   polling_interval_seconds: number | null;
-  last_run_at: Date | null;
+  last_run_at: string | null;
   webhook_endpoint: string | null;
-  status: string | null;
-  created_at: Date;
+  status: 'active' | 'inactive' | 'paused';
+  created_at: string;
 }
 
 export interface HookLog {
-  id: string;
-  hook_job_id: string;
+  id: UUID;
+  hook_job_id: UUID;
   event_payload: string | null;
-  detected_at: Date;
+  detected_at: string;
   processed: boolean;
-  created_at: Date;
+  created_at: string;
 }
 
 export interface ExecutionLog {
-  id: string;
-  area_id: string;
-  area_action_id: string | null;
-  area_reaction_id: string | null;
-  status: string | null;
-  started_at: Date;
-  finished_at: Date | null;
+  id: UUID;
+  area_id: UUID;
+  area_action_id: UUID | null;
+  area_reaction_id: UUID | null;
+  status: 'running' | 'success' | 'failed' | 'skipped' | 'partial_success';
+  started_at: string;
+  finished_at: string | null;
   request_payload: string | null;
   response_payload: string | null;
   error_text: string | null;
 }
 
 export interface AuditLog {
-  id: string;
-  user_id: string | null;
-  action_type: string | null;
+  id: UUID;
+  user_id: UUID | null;
+  action_type: string;
   target_resource: string | null;
   metadata: string | null;
-  created_at: Date;
+  created_at: string;
 }
 
