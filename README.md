@@ -21,7 +21,7 @@ Exemple :
   - API REST (users, auth, services, AREA, logs, webhooks).
   - Scheduler des actions en polling.
   - Webhook endpoints pour les services externes.
-  - Pousse les jobs d’exécution dans une **queue** (Redis ou équivalent).
+  - Pousse les jobs d’exécution dans une **queue** (Redis).
 - **Workers** :
   - Consomment la queue.
   - Chargent la définition d’un AREA dans la base.
@@ -35,9 +35,9 @@ Exemple :
 
 ## Tech stack cible (backend)
 
-- Langage : TypeScript (Node.js) ou Go (à adapter selon ton choix, les interfaces sont pensées pour les deux).
-- API HTTP : Express / Fastify / Gin / Echo / autre.
-- Queue : Redis + BullMQ / RSMQ / library équivalente, ou RabbitMQ.
+- Langage : TypeScript (Node.js)
+- API HTTP : Next.js
+- Queue : Redis + BullMQ
 - Auth : JWT + Supabase Auth (email/password + OAuth).
 - Déploiement : Docker + Kubernetes.
 
