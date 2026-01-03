@@ -44,11 +44,13 @@ export class ExecutionService {
     updates: {
       status?: 'running' | 'success' | 'failed' | 'skipped' | 'partial_success';
       response_payload?: string;
-      error_text?: string;
+      error_text?: string | null;
     }
   ): Promise<ExecutionLog> {
     const updateData: any = {
       ...updates,
+      // Convertir null en undefined pour Supabase
+      error_text: updates.error_text === null ? undefined : updates.error_text,
     };
 
     if (updates.status && updates.status !== 'running') {

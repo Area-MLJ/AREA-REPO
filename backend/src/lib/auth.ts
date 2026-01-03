@@ -1,8 +1,9 @@
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
+import type { StringValue } from 'ms';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
-const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '30d';
+const JWT_SECRET: string = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const JWT_EXPIRES_IN: string = process.env.JWT_EXPIRES_IN || '7d';
+const JWT_REFRESH_EXPIRES_IN: string = process.env.JWT_REFRESH_EXPIRES_IN || '30d';
 
 export interface JWTPayload {
   userId: string;
@@ -17,16 +18,24 @@ export function generateToken(payload: Omit<JWTPayload, 'type'>): {
   accessToken: string;
   refreshToken: string;
 } {
+  const accessTokenOptions: SignOptions = {
+    expiresIn: JWT_EXPIRES_IN as StringValue,
+  };
+
+  const refreshTokenOptions: SignOptions = {
+    expiresIn: JWT_REFRESH_EXPIRES_IN as StringValue,
+  };
+
   const accessToken = jwt.sign(
     { ...payload, type: 'access' },
     JWT_SECRET,
-    { expiresIn: JWT_EXPIRES_IN }
+    accessTokenOptions
   );
 
   const refreshToken = jwt.sign(
     { ...payload, type: 'refresh' },
     JWT_SECRET,
-    { expiresIn: JWT_REFRESH_EXPIRES_IN }
+    refreshTokenOptions
   );
 
   return { accessToken, refreshToken };

@@ -222,7 +222,7 @@ export async function processAreaExecution(
             .filter((r) => !r.success)
             .map((r) => r.error || 'Unknown error')
             .join('; ')
-        : null,
+        : undefined,
     });
 
     logger.info(

@@ -1,5 +1,5 @@
 import { getSupabaseClient } from './db/client';
-import { User, UserService, OAuthIdentity } from '@/types/database';
+import { User, UserService as UserServiceType, OAuthIdentity } from '@/types/database';
 import { logger } from '@/lib/logger';
 import bcrypt from 'bcrypt';
 
@@ -162,7 +162,7 @@ export class UserService {
     refresh_token?: string;
     token_expires_at?: string;
     display_name?: string;
-  }): Promise<UserService> {
+  }): Promise<UserServiceType> {
     const { data: userService, error } = await this.supabase
       .from('user_services')
       .insert({
@@ -182,13 +182,13 @@ export class UserService {
       throw new Error(`Failed to create user service: ${error.message}`);
     }
 
-    return userService as UserService;
+    return userService as UserServiceType;
   }
 
   /**
    * Récupère les user_services d'un utilisateur
    */
-  async getUserServices(user_id: string): Promise<UserService[]> {
+  async getUserServices(user_id: string): Promise<UserServiceType[]> {
     const { data, error } = await this.supabase
       .from('user_services')
       .select('*')
@@ -199,13 +199,13 @@ export class UserService {
       throw new Error(`Failed to fetch user services: ${error.message}`);
     }
 
-    return (data || []) as UserService[];
+    return (data || []) as UserServiceType[];
   }
 
   /**
    * Récupère un user_service par ID
    */
-  async getUserServiceById(id: string): Promise<UserService | null> {
+  async getUserServiceById(id: string): Promise<UserServiceType | null> {
     const { data, error } = await this.supabase
       .from('user_services')
       .select('*')
@@ -220,7 +220,7 @@ export class UserService {
       throw new Error(`Failed to fetch user service: ${error.message}`);
     }
 
-    return data as UserService;
+    return data as UserServiceType;
   }
 }
 
