@@ -45,11 +45,13 @@ show_help() {
     echo "  --logs          Afficher les logs du backend (suivi en temps réel)"
     echo "  --restart       Redémarrer le backend"
     echo "  --stop          Arrêter tous les conteneurs"
+    echo "  --dev           Démarrer en mode développement local (sans Docker)"
     echo ""
-    echo "Sans option, le script démarre le backend."
+    echo "Sans option, le script démarre le backend avec Docker Compose."
     echo ""
     echo "Exemples:"
-    echo "  $0              # Démarrer le backend"
+    echo "  $0              # Démarrer le backend avec Docker"
+    echo "  $0 --dev        # Démarrer en mode dev local"
     echo "  $0 --logs       # Voir les logs"
     echo "  $0 --restart    # Redémarrer"
     echo "  $0 --stop       # Arrêter"
@@ -60,10 +62,14 @@ show_help() {
 
 # Fonction pour afficher les logs
 show_logs() {
-    PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
-    cd "$PROJECT_ROOT/backend"
+    if [ -z "$PROJECT_ROOT" ]; then
+        export PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
+    fi
     
-    if ! docker ps --format '{{.Names}}' | grep -q "^area-backend$"; then
+    cd "$PROJECT_ROOT/backend/deploy/docker"
+    
+    # Vérifier si le service api est en cours d'exécution
+    if ! docker-compose ps api 2>/dev/null | grep -q "Up"; then
         log_warning "Le backend n'est pas en cours d'exécution"
         log_info "Démarrez-le d'abord avec: $0"
         exit 1
@@ -74,16 +80,19 @@ show_logs() {
     log_info "Appuyez sur Ctrl+C pour arrêter le suivi des logs"
     echo ""
     
-    docker-compose logs -f --tail=100 backend
+    docker-compose logs -f --tail=100 api
 }
 
 # Fonction pour redémarrer
 restart_backend() {
-    PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
-    cd "$PROJECT_ROOT/backend"
+    if [ -z "$PROJECT_ROOT" ]; then
+        export PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
+    fi
+    
+    cd "$PROJECT_ROOT/backend/deploy/docker"
     
     log_info "Redémarrage du backend..."
-    docker-compose restart backend
+    docker-compose restart api
     
     if [ $? -eq 0 ]; then
         log_success "Backend redémarré"
@@ -95,10 +104,13 @@ restart_backend() {
 
 # Fonction pour arrêter
 stop_backend() {
-    PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
-    cd "$PROJECT_ROOT/backend"
+    if [ -z "$PROJECT_ROOT" ]; then
+        export PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
+    fi
     
-    log_info "Arrêt des conteneurs..."
+    cd "$PROJECT_ROOT/backend/deploy/docker"
+    
+    log_info "Arrêt des conteneurs backend..."
     docker-compose down
     
     if [ $? -eq 0 ]; then
@@ -107,6 +119,38 @@ stop_backend() {
         log_error "Erreur lors de l'arrêt"
         exit 1
     fi
+}
+
+# Fonction pour démarrer en mode dev
+start_dev() {
+    if [ -z "$PROJECT_ROOT" ]; then
+        export PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
+    fi
+    
+    cd "$PROJECT_ROOT/backend"
+    
+    if [ ! -f .env ]; then
+        log_error "Le fichier .env n'existe pas dans backend/"
+        log_info "Veuillez créer un fichier backend/.env avec vos configurations."
+        exit 1
+    fi
+    
+    if ! command -v node &> /dev/null; then
+        log_error "Node.js n'est pas installé. Veuillez installer Node.js 20+ d'abord."
+        exit 1
+    fi
+    
+    if [ ! -d "node_modules" ]; then
+        log_info "Installation des dépendances..."
+        npm install
+    fi
+    
+    log_info "Démarrage du backend en mode développement..."
+    log_info "API sera disponible sur: http://localhost:8080"
+    log_info "Appuyez sur Ctrl+C pour arrêter"
+    echo ""
+    
+    npm run dev
 }
 
 # Vérifier les prérequis
@@ -128,10 +172,12 @@ check_prerequisites() {
 
 # Vérifier le fichier .env
 check_env_file() {
-    PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
-    cd "$PROJECT_ROOT"
+    if [ -z "$PROJECT_ROOT" ]; then
+        export PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
+    fi
     
-    if [ ! -f .env ]; then
+    # Vérifier .env à la racine (pour Docker Compose)
+    if [ ! -f "$PROJECT_ROOT/.env" ]; then
         log_error "Le fichier .env n'existe pas à la racine du projet."
         log_info "Veuillez créer un fichier .env avec vos configurations."
         exit 1
@@ -139,7 +185,7 @@ check_env_file() {
     
     log_success "Fichier .env trouvé"
     
-    if ! grep -q "SUPABASE_URL" .env || ! grep -q "SUPABASE_SERVICE_ROLE_KEY" .env; then
+    if ! grep -q "SUPABASE_URL" "$PROJECT_ROOT/.env" || ! grep -q "SUPABASE_SERVICE_ROLE_KEY" "$PROJECT_ROOT/.env"; then
         log_error "SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY doivent être définis dans .env"
         exit 1
     fi
@@ -149,24 +195,50 @@ check_env_file() {
 
 # Nettoyer les conteneurs existants
 cleanup_containers() {
+    if [ -z "$PROJECT_ROOT" ]; then
+        log_error "PROJECT_ROOT n'est pas défini"
+        exit 1
+    fi
+    
+    local DOCKER_DIR="$PROJECT_ROOT/backend/deploy/docker"
+    
+    if [ ! -d "$DOCKER_DIR" ]; then
+        log_error "Répertoire Docker introuvable: $DOCKER_DIR"
+        exit 1
+    fi
+    
+    cd "$DOCKER_DIR"
+    
     log_info "Nettoyage des conteneurs existants..."
     
-    cd backend
-    
     docker-compose down --remove-orphans 2>/dev/null || true
-    
-    if docker ps -a --format '{{.Names}}' | grep -q "^area-backend$"; then
-        log_warning "Suppression forcée du conteneur area-backend..."
-        docker rm -f area-backend 2>/dev/null || true
-    fi
     
     log_success "Nettoyage terminé"
 }
 
 # Démarrer les services
 start_services() {
-    log_info "Démarrage du backend..."
-    docker-compose up -d
+    if [ -z "$PROJECT_ROOT" ]; then
+        log_error "PROJECT_ROOT n'est pas défini"
+        exit 1
+    fi
+    
+    local DOCKER_DIR="$PROJECT_ROOT/backend/deploy/docker"
+    
+    if [ ! -d "$DOCKER_DIR" ]; then
+        log_error "Répertoire Docker introuvable: $DOCKER_DIR"
+        exit 1
+    fi
+    
+    cd "$DOCKER_DIR"
+    
+    # Copier le .env de la racine vers ce répertoire pour Docker Compose
+    if [ -f "$PROJECT_ROOT/.env" ]; then
+        cp "$PROJECT_ROOT/.env" .env
+    fi
+    
+    log_info "Démarrage du backend avec Docker Compose..."
+    docker-compose up -d api redis
     
     log_success "Backend démarré"
 }
@@ -180,11 +252,12 @@ check_backend_health() {
     attempt=0
     
     while [ $attempt -lt $max_attempts ]; do
-        if curl -s http://localhost:8080/api/about.json > /dev/null 2>&1; then
+        if curl -s http://localhost:8080/about.json > /dev/null 2>&1; then
             log_success "Backend démarré avec succès"
             echo ""
             log_info "API disponible sur: http://localhost:8080"
-            log_info "Documentation: http://localhost:8080/api/about.json"
+            log_info "Documentation: http://localhost:8080/about.json"
+            log_info "Health check: http://localhost:8080/api/health"
             log_info "Logs: $0 --logs"
             return 0
         fi
@@ -216,8 +289,12 @@ main() {
             stop_backend
             exit 0
             ;;
+        --dev)
+            start_dev
+            exit 0
+            ;;
         "")
-            # Pas d'argument, démarrer normalement
+            # Pas d'argument, démarrer normalement avec Docker
             ;;
         *)
             log_error "Option inconnue: $1"
@@ -227,21 +304,19 @@ main() {
             ;;
     esac
     
-    # Démarrer le backend (comportement par défaut)
+    # Démarrer le backend avec Docker (comportement par défaut)
     echo "==================================================================="
     echo "  AREA Backend - Script de démarrage"
     echo "==================================================================="
     echo ""
     
+    # Définir PROJECT_ROOT une seule fois au début
+    export PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
+    
     check_prerequisites
     check_env_file
     
-    if ! grep -q "SUPABASE_URL" .env || ! grep -q "SUPABASE_SERVICE_ROLE_KEY" .env; then
-        log_error "SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY doivent être définis dans .env"
-        exit 1
-    fi
-    
-    log_info "Démarrage du backend avec Supabase..."
+    log_info "Démarrage du backend avec Docker Compose..."
     cleanup_containers
     start_services
     
