@@ -16,8 +16,20 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copier tout le contenu de backend
 COPY backend/ .
 
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+# Variables d'environnement pour le build (peuvent être vides mais doivent être définies)
+ENV SUPABASE_URL=""
+ENV SUPABASE_SERVICE_ROLE_KEY=""
+ENV SUPABASE_ANON_KEY=""
+ENV REDIS_URL=""
+ENV JWT_SECRET=""
 
+# Créer le dossier logs avant le build pour éviter les problèmes
+RUN mkdir -p logs
+
+# Build Next.js (peut prendre plusieurs minutes)
+# Utiliser --no-lint pour accélérer le build si nécessaire
 RUN npm run build
 
 # Production image, copy all the files and run next
