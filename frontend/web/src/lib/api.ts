@@ -3,7 +3,7 @@
  * Handles all HTTP requests to the backend API
  */
 
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -19,7 +19,7 @@ interface LoginRequest {
 interface RegisterRequest {
   email: string;
   password: string;
-  displayName?: string;
+  display_name?: string;
 }
 
 interface AuthResponse {
@@ -30,6 +30,17 @@ interface AuthResponse {
     isVerified: boolean;
   };
   token: string;
+}
+
+// Backend response format
+interface BackendAuthResponse {
+  user: {
+    id: string;
+    email: string;
+    display_name: string | null;
+  };
+  access_token: string;
+  refresh_token: string;
 }
 
 interface Service {
@@ -50,10 +61,114 @@ interface Area {
 
 class ApiClient {
   private getAuthHeaders(): HeadersInit {
-    const token = localStorage.getItem('area_token');
+    const token = localStorage.getItem('area_access_token');
     return {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {})
+    };
+  }
+
+  private async requestWithRetry<T>(
+    endpoint: string,
+    options: RequestInit = {},
+    maxRetries = 3,
+    retryDelay = 1000
+  ): Promise<ApiResponse<T>> {
+    let lastError: Error | null = null;
+    
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+          ...options,
+          headers: {
+            ...this.getAuthHeaders(),
+            ...options.headers
+          }
+        });
+
+        // Handle non-JSON responses
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          if (!response.ok) {
+            // Ne pas retry pour les erreurs 4xx
+            if (response.status >= 400 && response.status < 500) {
+              return {
+                success: false,
+                error: `HTTP Error: ${response.status} ${response.statusText}`
+              };
+            }
+            // Retry pour les erreurs 5xx
+            if (response.status >= 500 && attempt < maxRetries) {
+              lastError = new Error(`HTTP ${response.status}`);
+              await new Promise(resolve => setTimeout(resolve, retryDelay * Math.pow(2, attempt)));
+              continue;
+            }
+            return {
+              success: false,
+              error: `HTTP Error: ${response.status} ${response.statusText}`
+            };
+          }
+          return {
+            success: true,
+            data: undefined as T
+          };
+        }
+
+        const data = await response.json();
+
+        // Si succès, retourner immédiatement
+        if (response.ok) {
+          return {
+            success: true,
+            data: data as T
+          };
+        }
+
+        // Si erreur 401/403, ne pas retry
+        if (response.status === 401 || response.status === 403) {
+          return {
+            success: false,
+            error: data.error || `HTTP Error: ${response.status}`
+          };
+        }
+
+        // Si erreur 5xx ou timeout, retry
+        if (response.status >= 500 || response.status === 0) {
+          lastError = new Error(`HTTP ${response.status}`);
+          if (attempt < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, retryDelay * Math.pow(2, attempt)));
+            continue;
+          }
+        }
+
+        // Autres erreurs, ne pas retry
+        return {
+          success: false,
+          error: data.error || `HTTP Error: ${response.status}`
+        };
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error('Network error');
+        
+        // Retry seulement pour les erreurs réseau
+        if (attempt < maxRetries && (error instanceof TypeError || error instanceof DOMException)) {
+          await new Promise(resolve => setTimeout(resolve, retryDelay * Math.pow(2, attempt)));
+          continue;
+        }
+        
+        // Dernière tentative ou erreur non-réseau
+        if (attempt === maxRetries) {
+          console.error('API Request failed after retries:', lastError);
+          return {
+            success: false,
+            error: lastError.message
+          };
+        }
+      }
+    }
+
+    return {
+      success: false,
+      error: lastError?.message || 'Request failed after retries'
     };
   }
 
@@ -61,67 +176,81 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
-    try {
-      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-        ...options,
-        headers: {
-          ...this.getAuthHeaders(),
-          ...options.headers
-        }
-      });
-
-      const data: ApiResponse<T> = await response.json();
-
-      if (!data.success) {
-        return {
-          success: false,
-          error: data.error || `HTTP Error: ${response.status}`
-        };
-      }
-
-      return {
-        success: true,
-        data: data.data
-      };
-    } catch (error) {
-      console.error('API Request failed:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Network error'
-      };
-    }
+    return this.requestWithRetry<T>(endpoint, options);
   }
 
   async login(credentials: LoginRequest): Promise<ApiResponse<AuthResponse>> {
-    const response = await this.request<AuthResponse>('/auth/login', {
+    const response = await this.request<BackendAuthResponse>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(credentials)
     });
 
     if (response.success && response.data) {
-      localStorage.setItem('area_token', response.data.token);
-      localStorage.setItem('area_user', JSON.stringify(response.data.user));
+      // Map backend response to frontend format
+      const mappedResponse: AuthResponse = {
+        user: {
+          id: response.data.user.id,
+          email: response.data.user.email,
+          displayName: response.data.user.display_name || '',
+          isVerified: false // Backend doesn't return this yet
+        },
+        token: response.data.access_token
+      };
+
+      localStorage.setItem('area_access_token', response.data.access_token);
+      localStorage.setItem('area_refresh_token', response.data.refresh_token);
+      localStorage.setItem('area_user', JSON.stringify(mappedResponse.user));
+
+      return {
+        success: true,
+        data: mappedResponse
+      };
     }
 
-    return response;
+    return response as ApiResponse<AuthResponse>;
   }
 
   async register(userData: RegisterRequest): Promise<ApiResponse<AuthResponse>> {
-    const response = await this.request<AuthResponse>('/auth/register', {
+    // Map displayName to display_name for backend
+    const backendData = {
+      email: userData.email,
+      password: userData.password,
+      display_name: userData.display_name
+    };
+
+    const response = await this.request<BackendAuthResponse>('/auth/register', {
       method: 'POST',
-      body: JSON.stringify(userData)
+      body: JSON.stringify(backendData)
     });
 
     if (response.success && response.data) {
-      localStorage.setItem('area_token', response.data.token);
-      localStorage.setItem('area_user', JSON.stringify(response.data.user));
+      // Map backend response to frontend format
+      const mappedResponse: AuthResponse = {
+        user: {
+          id: response.data.user.id,
+          email: response.data.user.email,
+          displayName: response.data.user.display_name || '',
+          isVerified: false
+        },
+        token: response.data.access_token
+      };
+
+      localStorage.setItem('area_access_token', response.data.access_token);
+      localStorage.setItem('area_refresh_token', response.data.refresh_token);
+      localStorage.setItem('area_user', JSON.stringify(mappedResponse.user));
+
+      return {
+        success: true,
+        data: mappedResponse
+      };
     }
 
-    return response;
+    return response as ApiResponse<AuthResponse>;
   }
 
   async logout(): Promise<void> {
-    localStorage.removeItem('area_token');
+    localStorage.removeItem('area_access_token');
+    localStorage.removeItem('area_refresh_token');
     localStorage.removeItem('area_user');
   }
 
@@ -130,35 +259,61 @@ class ApiClient {
   }
 
   async getUserServices(): Promise<ApiResponse<Service[]>> {
-    return this.request<Service[]>('/users/services');
+    return this.request<Service[]>('/me/services');
   }
 
   async getAreas(): Promise<ApiResponse<Area[]>> {
-    return this.request<Area[]>('/areas');
+    return this.request<Area[]>('/me/areas');
   }
 
   async createArea(area: Partial<Area>): Promise<ApiResponse<Area>> {
-    return this.request<Area>('/areas', {
+    return this.request<Area>('/me/areas', {
       method: 'POST',
       body: JSON.stringify(area)
     });
   }
 
   async updateArea(id: string, area: Partial<Area>): Promise<ApiResponse<Area>> {
-    return this.request<Area>(`/areas/${id}`, {
+    return this.request<Area>(`/me/areas/${id}`, {
       method: 'PUT',
       body: JSON.stringify(area)
     });
   }
 
   async deleteArea(id: string): Promise<ApiResponse<void>> {
-    return this.request<void>(`/areas/${id}`, {
+    return this.request<void>(`/me/areas/${id}`, {
       method: 'DELETE'
     });
   }
 
   async getServerInfo(): Promise<ApiResponse<any>> {
-    return this.request<any>('/about.json');
+    // /about.json is a public endpoint, not under /api
+    const baseUrl = API_BASE_URL.replace('/api', '');
+    try {
+      const response = await fetch(`${baseUrl}/about.json`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        return {
+          success: false,
+          error: `HTTP Error: ${response.status}`
+        };
+      }
+
+      const data = await response.json();
+      return {
+        success: true,
+        data
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Network error'
+      };
+    }
   }
 
   getStoredUser() {
@@ -176,7 +331,7 @@ class ApiClient {
   }
 
   getStoredToken() {
-    return localStorage.getItem('area_token');
+    return localStorage.getItem('area_access_token');
   }
 
   isAuthenticated(): boolean {

@@ -43,7 +43,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('Error loading stored user:', error);
       localStorage.removeItem('area_user');
-      localStorage.removeItem('area_token');
+      localStorage.removeItem('area_access_token');
+      localStorage.removeItem('area_refresh_token');
     }
   }, []);
 
@@ -75,7 +76,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = async (email: string, password: string, displayName?: string) => {
     setIsLoading(true);
     try {
-      const response = await apiClient.register({ email, password, displayName });
+      // Map displayName to display_name for backend
+      const response = await apiClient.register({ 
+        email, 
+        password, 
+        display_name: displayName 
+      });
       
       if (response.success && response.data) {
         setUser(response.data.user);
@@ -157,7 +163,7 @@ export const useServices = () => {
 
 // Hook for areas
 export const useAreas = () => {
-  const [areas, setAreas] = useState([]);
+  const [areas, setAreas] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -166,7 +172,17 @@ export const useAreas = () => {
       try {
         const response = await apiClient.getAreas();
         if (response.success && response.data) {
-          setAreas(response.data);
+          // Map backend format to frontend format
+          const mappedAreas = response.data.map((area: any) => ({
+            ...area,
+            isActive: area.enabled,
+            createdAt: area.created_at || area.createdAt,
+            // Add placeholder fields if needed
+            actionService: area.area_actions?.[0]?.service_actions?.service?.display_name || 'N/A',
+            reactionService: area.area_reactions?.[0]?.service_reactions?.service?.display_name || 'N/A',
+            lastTriggered: null // Backend doesn't return this yet
+          }));
+          setAreas(mappedAreas);
         } else {
           setError(response.error || 'Failed to fetch areas');
         }

@@ -15,7 +15,8 @@ class User {
     return User(
       id: json['id'],
       email: json['email'],
-      displayName: json['displayName'],
+      // Backend returns display_name, map to displayName
+      displayName: json['display_name'] ?? json['displayName'],
       isVerified: json['isVerified'] ?? false,
     );
   }
