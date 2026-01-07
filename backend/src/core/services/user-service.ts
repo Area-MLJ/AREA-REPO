@@ -1,10 +1,17 @@
 import { getSupabaseClient } from './db/client';
 import { User, UserService as UserServiceType, OAuthIdentity } from '@/types/database';
 import { logger } from '@/lib/logger';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export class UserService {
-  private supabase = getSupabaseClient();
+  private _supabase: ReturnType<typeof getSupabaseClient> | null = null;
+  
+  private get supabase() {
+    if (!this._supabase) {
+      this._supabase = getSupabaseClient();
+    }
+    return this._supabase;
+  }
 
   /**
    * Crée un nouvel utilisateur
@@ -14,7 +21,8 @@ export class UserService {
     password: string;
     display_name?: string;
   }): Promise<User> {
-    const passwordHash = await bcrypt.hash(data.password, 10);
+    // bcryptjs est synchrone, mais c'est acceptable ici car l'insert DB domine le temps total
+    const passwordHash = bcrypt.hashSync(data.password, 10);
 
     const { data: user, error } = await this.supabase
       .from('users')
@@ -84,7 +92,7 @@ export class UserService {
     if (!user.password_hash) {
       return false;
     }
-    return await bcrypt.compare(password, user.password_hash);
+    return bcrypt.compareSync(password, user.password_hash);
   }
 
   /**

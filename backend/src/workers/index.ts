@@ -2,7 +2,8 @@
 import 'dotenv/config';
 
 import { Worker } from 'bullmq';
-import { redisConnection, QUEUE_NAMES } from '@/lib/queue';
+import Redis from 'ioredis';
+import { QUEUE_NAMES } from '@/lib/queue';
 import { processAreaExecution } from '@/core/engine/executor';
 import { AreaExecutionJobData } from '@/core/queue/jobs';
 import { logger } from '@/lib/logger';
@@ -12,6 +13,26 @@ import { initializeRegistry } from '@/core/nodes/registry-init';
 initializeRegistry();
 
 logger.info('Starting AREA worker...');
+
+// Créer une nouvelle connexion Redis pour le worker
+// BullMQ peut avoir des problèmes avec une connexion partagée
+const redisUrl = process.env.REDIS_URL || 'redis://redis:6379';
+const workerRedisConnection = new Redis(redisUrl, {
+  maxRetriesPerRequest: null,
+  enableReadyCheck: false,
+  retryStrategy: (times: number) => {
+    const delay = Math.min(times * 50, 2000);
+    return delay;
+  },
+});
+
+workerRedisConnection.on('error', (err: Error) => {
+  logger.error('Worker Redis connection error:', err);
+});
+
+workerRedisConnection.on('connect', () => {
+  logger.info('Worker Redis connected');
+});
 
 const worker = new Worker<AreaExecutionJobData>(
   QUEUE_NAMES.AREA_EXECUTION,
@@ -29,7 +50,7 @@ const worker = new Worker<AreaExecutionJobData>(
     }
   },
   {
-    connection: redisConnection,
+    connection: workerRedisConnection,
     concurrency: 5, // Traiter jusqu'à 5 jobs en parallèle
     removeOnComplete: {
       age: 24 * 3600, // Garder les jobs complétés pendant 24h

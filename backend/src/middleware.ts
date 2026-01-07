@@ -1,17 +1,18 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { verifyToken, extractTokenFromHeader } from './lib/auth';
+import { verifyTokenEdge, extractTokenFromHeader } from './lib/auth-edge';
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Routes publiques qui ne nécessitent pas d'authentification
-  const publicRoutes = [
-    '/api/auth/login',
-    '/api/auth/register',
-    '/api/auth/refresh',
-    '/api/webhooks',
-  ];
+      const publicRoutes = [
+        '/api/auth/login',
+        '/api/auth/register',
+        '/api/auth/refresh',
+        '/api/webhooks',
+        '/api/health',
+      ];
 
   // /about.json est toujours public
   if (pathname === '/about.json') {
@@ -38,7 +39,7 @@ export async function middleware(request: NextRequest) {
     }
 
     try {
-      const payload = verifyToken(token);
+      const payload = await verifyTokenEdge(token);
       
       // Vérifier que c'est un access token
       if (payload.type !== 'access') {

@@ -98,21 +98,50 @@ L'API expose les endpoints suivants :
 
 Voir `docs/API_SPEC.md` pour la documentation complète.
 
-## Docker
+## Docker et Gestion Modulaire
 
-### Build et démarrage avec Docker Compose
+### Gestion avec les scripts modulaires (Recommandé)
+
+Le backend peut être géré de manière indépendante avec les scripts modulaires :
 
 ```bash
 # À la racine du projet
-docker-compose up --build
+# Démarrer le backend
+./scripts/manage-backend.sh start
+
+# Redémarrer uniquement l'API (sans interruption)
+./scripts/manage-backend.sh restart-api
+
+# Vérifier la santé
+./scripts/manage-backend.sh health
+
+# Voir les logs
+./scripts/manage-backend.sh logs api
 ```
+
+Voir [docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md) pour plus de détails.
 
 ### Services Docker
 
-- `server` : API Next.js (port 8080)
-- `client_web` : Frontend web (port 8081)
-- `client_mobile` : Build mobile
+Le backend est composé de :
+- `api` : API Next.js (port 8080)
+- `worker` : Worker consommant la queue
+- `scheduler` : Scheduler de polling
 - `redis` : Redis pour la queue
+
+### Health Check
+
+Le backend expose un endpoint `/api/health` qui vérifie :
+- **Database (Supabase)** : Connexion et requête de test
+- **Redis** : Ping Redis
+
+```bash
+# Vérifier la santé
+curl http://localhost:8080/api/health
+
+# Ou via script
+./scripts/manage-backend.sh health
+```
 
 ## Développement
 
@@ -135,7 +164,19 @@ npm test
 
 ### Variables d'environnement
 
-Assurez-vous de configurer toutes les variables d'environnement en production.
+Assurez-vous de configurer toutes les variables d'environnement en production dans le fichier `.env` à la racine du projet.
+
+### Rolling Restart
+
+Le backend supporte le redémarrage sans interruption :
+
+```bash
+# Redémarrer uniquement l'API (sans interruption)
+./scripts/manage-backend.sh restart-api
+
+# Redémarrer tous les services (rolling)
+./scripts/manage-backend.sh restart
+```
 
 ### Scaling
 
@@ -143,7 +184,17 @@ Assurez-vous de configurer toutes les variables d'environnement en production.
 - Les workers peuvent être multipliés pour augmenter le throughput
 - Le scheduler doit tourner en instance unique (ou utiliser un lock distribué)
 
+### Mise à jour
+
+```bash
+# Mettre à jour le backend
+./scripts/manage-backend.sh update
+```
+
 ## Support
 
-Voir la documentation dans `docs/` pour plus de détails.
+- [Guide de déploiement](../docs/DEPLOYMENT.md) - Instructions détaillées pour le déploiement modulaire
+- [Architecture](../docs/ARCHITECTURE.md) - Vue d'ensemble de l'architecture
+- [API Spec](docs/API_SPEC.md) - Spécification complète de l'API
+- [How to Contribute](docs/HOWTOCONTRIBUTE.md) - Guide pour ajouter de nouveaux services
 

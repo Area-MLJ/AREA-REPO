@@ -3,7 +3,14 @@ import { HookJob, HookLog } from '@/types/database';
 import { logger } from '@/lib/logger';
 
 export class HookService {
-  private supabase = getSupabaseClient();
+  private _supabase: ReturnType<typeof getSupabaseClient> | null = null;
+  
+  private get supabase() {
+    if (!this._supabase) {
+      this._supabase = getSupabaseClient();
+    }
+    return this._supabase;
+  }
 
   /**
    * Crée un hook_job

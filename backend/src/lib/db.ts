@@ -1,18 +1,20 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { logger } from './logger';
 
-if (!process.env.SUPABASE_URL) {
-  throw new Error('Missing SUPABASE_URL environment variable');
-}
-
-if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-  throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY environment variable');
-}
-
 // Singleton Supabase client
 let supabaseClient: SupabaseClient | null = null;
 
 export function getSupabaseClient(): SupabaseClient {
+  // Vérifier les variables d'environnement seulement au runtime (lazy)
+  // Pas au build time pour permettre le build Next.js sans ces variables
+  if (!process.env.SUPABASE_URL) {
+    throw new Error('Missing SUPABASE_URL environment variable');
+  }
+
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY environment variable');
+  }
+
   if (!supabaseClient) {
     supabaseClient = createClient(
       process.env.SUPABASE_URL!,
