@@ -35,14 +35,16 @@ logger.info('Starting AREA worker...');
 // Créer une nouvelle connexion Redis pour le worker
 // BullMQ peut avoir des problèmes avec une connexion partagée
 const redisUrl = process.env.REDIS_URL || 'redis://redis:6379';
-const workerRedisConnection = new Redis(redisUrl, {
+const workerRedisOptions = {
   maxRetriesPerRequest: null,
   enableReadyCheck: false,
   retryStrategy: (times: number) => {
     const delay = Math.min(times * 50, 2000);
     return delay;
   },
-});
+};
+
+const workerRedisConnection = new Redis(redisUrl, workerRedisOptions);
 
 workerRedisConnection.on('error', (err: Error) => {
   logger.error('Worker Redis connection error:', err);
@@ -68,7 +70,10 @@ const worker = new Worker<AreaExecutionJobData>(
     }
   },
   {
-    connection: workerRedisConnection,
+    connection: {
+      ...workerRedisOptions,
+      url: redisUrl,
+    } as any,
     concurrency: 5, // Traiter jusqu'à 5 jobs en parallèle
     removeOnComplete: {
       age: 24 * 3600, // Garder les jobs complétés pendant 24h

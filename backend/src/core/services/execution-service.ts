@@ -123,5 +123,6 @@ export class ExecutionService {
   }
 }
 
-export default new ExecutionService();
+const executionService = new ExecutionService();
+export default executionService;
 

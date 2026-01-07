@@ -469,5 +469,6 @@ export class AreaService {
   }
 }
 
-export default new AreaService();
+const areaService = new AreaService();
+export default areaService;
 

@@ -200,5 +200,6 @@ export class HookService {
   }
 }
 
-export default new HookService();
+const hookService = new HookService();
+export default hookService;
 

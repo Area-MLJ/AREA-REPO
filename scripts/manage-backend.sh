@@ -20,7 +20,7 @@ log_warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
 
 # Wrapper pour utiliser docker compose v2 si disponible, sinon docker-compose (v1)
 run_compose() {
-  if command -v docker compose >/dev/null 2>&1; then
+  if docker compose version >/dev/null 2>&1; then
     docker compose -f "$COMPOSE_FILE" "$@"
   else
     # Fallback v1 (peut avoir des bugs sur logs/events)

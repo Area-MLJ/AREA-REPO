@@ -12,19 +12,23 @@ let _redisConnection: Redis | null = null;
 let _areaExecutionQueue: Queue | null = null;
 let _areaExecutionQueueEvents: QueueEvents | null = null;
 
+function getRedisConnectionOptions() {
+  const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+  return {
+    maxRetriesPerRequest: null,
+    enableReadyCheck: false,
+    retryStrategy: (times: number) => {
+      const delay = Math.min(times * 50, 2000);
+      return delay;
+    },
+  };
+}
+
 function getRedisConnection(): Redis {
   if (!_redisConnection) {
     // Créer la connexion seulement au runtime, pas au build time
     const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-    _redisConnection = new Redis(redisUrl, {
-      maxRetriesPerRequest: null,
-      enableReadyCheck: false,
-      lazyConnect: false, // Se connecter immédiatement pour le worker
-      retryStrategy: (times) => {
-        const delay = Math.min(times * 50, 2000);
-        return delay;
-      },
-    });
+    _redisConnection = new Redis(redisUrl, getRedisConnectionOptions());
 
     _redisConnection.on('error', (err) => {
       logger.error('Redis connection error:', err);
@@ -39,8 +43,12 @@ function getRedisConnection(): Redis {
 
 function getAreaExecutionQueue(): Queue {
   if (!_areaExecutionQueue) {
+    const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
     _areaExecutionQueue = new Queue(QUEUE_NAMES.AREA_EXECUTION, {
-      connection: getRedisConnection(),
+      connection: {
+        ...getRedisConnectionOptions(),
+        url: redisUrl,
+      } as any,
       defaultJobOptions: {
         attempts: 3,
         backoff: {
@@ -62,8 +70,12 @@ function getAreaExecutionQueue(): Queue {
 
 function getAreaExecutionQueueEvents(): QueueEvents {
   if (!_areaExecutionQueueEvents) {
+    const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
     _areaExecutionQueueEvents = new QueueEvents(QUEUE_NAMES.AREA_EXECUTION, {
-      connection: getRedisConnection(),
+      connection: {
+        ...getRedisConnectionOptions(),
+        url: redisUrl,
+      } as any,
     });
 
     _areaExecutionQueueEvents.on('completed', ({ jobId }) => {
