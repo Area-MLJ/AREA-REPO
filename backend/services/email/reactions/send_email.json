@@ -1,0 +1,29 @@
+{
+  "name": "send_email",
+  "display_name": "Envoyer un email",
+  "description": "Envoie un email à une adresse spécifiée",
+  "params": [
+    {
+      "name": "to",
+      "display_name": "Destinataire",
+      "description": "Adresse email du destinataire",
+      "type": "text",
+      "required": true
+    },
+    {
+      "name": "subject",
+      "display_name": "Sujet",
+      "description": "Sujet de l'email",
+      "type": "text",
+      "required": true
+    },
+    {
+      "name": "body",
+      "display_name": "Corps du message",
+      "description": "Corps de l'email",
+      "type": "text",
+      "required": true
+    }
+  ]
+}
+

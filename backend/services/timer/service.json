@@ -1,0 +1,9 @@
+{
+  "name": "timer",
+  "display_name": "Timer",
+  "description": "Service de timer pour déclencher des actions à des dates/heures spécifiques",
+  "icon_url": "https://cdn-icons-png.flaticon.com/512/2927/2927347.png",
+  "built_in": true,
+  "oauth_required": false
+}
+

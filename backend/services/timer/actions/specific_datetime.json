@@ -1,0 +1,24 @@
+{
+  "name": "specific_datetime",
+  "display_name": "Date/Heure spécifique",
+  "description": "Déclenché à une date et/ou heure spécifique",
+  "polling_supported": true,
+  "webhook_supported": false,
+  "params": [
+    {
+      "name": "date",
+      "display_name": "Date (DD/MM)",
+      "description": "Date au format DD/MM (ex: 25/12 pour Noël). Optionnel si time est fourni.",
+      "type": "text",
+      "required": false
+    },
+    {
+      "name": "time",
+      "display_name": "Heure (HH:MM)",
+      "description": "Heure au format HH:MM (ex: 14:30). Optionnel si date est fourni.",
+      "type": "text",
+      "required": false
+    }
+  ]
+}
+
