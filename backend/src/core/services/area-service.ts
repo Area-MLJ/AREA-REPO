@@ -52,12 +52,43 @@ export class AreaService {
   }
 
   /**
-   * Récupère les AREA d'un utilisateur
+   * Récupère les AREA d'un utilisateur avec leurs détails (actions, réactions)
    */
-  async getAreasByUserId(user_id: string): Promise<Area[]> {
+  async getAreasByUserId(user_id: string): Promise<any[]> {
     const { data, error } = await this.supabase
       .from('areas')
-      .select('*')
+      .select(`
+        *,
+        area_actions (
+          id,
+          enabled,
+          service_actions (
+            id,
+            name,
+            display_name,
+            services (
+              id,
+              name,
+              display_name
+            )
+          )
+        ),
+        area_reactions (
+          id,
+          enabled,
+          position,
+          service_reactions (
+            id,
+            name,
+            display_name,
+            services (
+              id,
+              name,
+              display_name
+            )
+          )
+        )
+      `)
       .eq('user_id', user_id)
       .order('created_at', { ascending: false });
 
@@ -66,7 +97,12 @@ export class AreaService {
       throw new Error(`Failed to fetch areas: ${error.message}`);
     }
 
-    return (data || []) as Area[];
+    // Enrichir les données avec un flag is_builtin
+    const builtinAreaNames = ['News to Email']; // Liste des noms d'AREA built-in
+    return (data || []).map((area: any) => ({
+      ...area,
+      is_builtin: builtinAreaNames.includes(area.name),
+    }));
   }
 
   /**

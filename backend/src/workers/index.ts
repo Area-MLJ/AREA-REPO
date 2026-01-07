@@ -8,6 +8,24 @@ import { processAreaExecution } from '@/core/engine/executor';
 import { AreaExecutionJobData } from '@/core/queue/jobs';
 import { logger } from '@/lib/logger';
 import { initializeRegistry } from '@/core/nodes/registry-init';
+import { syncServices, watchServices, startPeriodicSync } from '@/core/services/service-loader';
+
+// Synchroniser les services depuis les fichiers JSON
+syncServices()
+  .then(() => {
+    logger.info('Services synchronized from JSON files');
+    
+    // Activer le watch mode en développement
+    if (process.env.NODE_ENV !== 'production') {
+      watchServices();
+    } else {
+      // En production, synchronisation périodique
+      startPeriodicSync(10); // Toutes les 10 minutes
+    }
+  })
+  .catch((error) => {
+    logger.error('Failed to sync services:', error);
+  });
 
 // Initialiser le registry des modules
 initializeRegistry();
@@ -77,12 +95,16 @@ worker.on('error', (err) => {
 // Gestion propre de l'arrêt
 process.on('SIGTERM', async () => {
   logger.info('SIGTERM received, closing worker...');
+  const { stopWatching } = await import('@/core/services/service-loader');
+  stopWatching();
   await worker.close();
   process.exit(0);
 });
 
 process.on('SIGINT', async () => {
   logger.info('SIGINT received, closing worker...');
+  const { stopWatching } = await import('@/core/services/service-loader');
+  stopWatching();
   await worker.close();
   process.exit(0);
 });

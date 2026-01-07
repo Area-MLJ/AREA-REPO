@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import userService from '@/core/services/user-service';
 import { generateToken } from '@/lib/auth';
+import { createBuiltinAreasForUser } from '@/core/services/builtin-area-service';
+import { logger } from '@/lib/logger';
 import { z } from 'zod';
 
 const registerSchema = z.object({
@@ -29,6 +31,15 @@ export async function POST(request: NextRequest) {
       password: validatedData.password,
       display_name: validatedData.display_name,
     });
+
+    // Créer automatiquement les AREA built-in pour le nouvel utilisateur
+    try {
+      await createBuiltinAreasForUser(user.id);
+      logger.info(`Builtin areas created for new user ${user.id}`);
+    } catch (error: any) {
+      // Logger l'erreur mais ne pas faire échouer l'inscription
+      logger.error(`Failed to create builtin areas for user ${user.id}:`, error);
+    }
 
     // Générer les tokens
     const { accessToken, refreshToken } = generateToken({

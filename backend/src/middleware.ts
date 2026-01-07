@@ -14,6 +14,11 @@ export async function middleware(request: NextRequest) {
         '/api/health',
       ];
 
+      // Routes admin (nécessitent authentification mais pas de vérification admin pour l'instant)
+      const adminRoutes = [
+        '/api/admin/sync-services',
+      ];
+
   // /about.json est toujours public
   if (pathname === '/about.json') {
     return NextResponse.next();

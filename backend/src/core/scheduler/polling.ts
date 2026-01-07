@@ -11,6 +11,24 @@ import userService from '../services/user-service';
 import httpClient from '@/lib/http-client';
 import { initializeRegistry } from '../nodes/registry-init';
 import { NodeContext } from '../engine/node-context';
+import { syncServices, watchServices, startPeriodicSync } from '../services/service-loader';
+
+// Synchroniser les services depuis les fichiers JSON
+syncServices()
+  .then(() => {
+    logger.info('Services synchronized from JSON files');
+    
+    // Activer le watch mode en développement
+    if (process.env.NODE_ENV !== 'production') {
+      watchServices();
+    } else {
+      // En production, synchronisation périodique
+      startPeriodicSync(10); // Toutes les 10 minutes
+    }
+  })
+  .catch((error) => {
+    logger.error('Failed to sync services:', error);
+  });
 
 // Initialiser le registry
 initializeRegistry();
@@ -157,13 +175,17 @@ if (require.main === module) {
 }
 
 // Gestion propre de l'arrêt
-process.on('SIGTERM', () => {
+process.on('SIGTERM', async () => {
   logger.info('SIGTERM received, stopping polling scheduler...');
+  const { stopWatching } = await import('../services/service-loader');
+  stopWatching();
   process.exit(0);
 });
 
-process.on('SIGINT', () => {
+process.on('SIGINT', async () => {
   logger.info('SIGINT received, stopping polling scheduler...');
+  const { stopWatching } = await import('../services/service-loader');
+  stopWatching();
   process.exit(0);
 });
 
