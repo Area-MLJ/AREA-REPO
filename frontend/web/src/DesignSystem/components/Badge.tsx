@@ -6,7 +6,7 @@
 import { ReactNode } from 'react';
 
 interface BadgeProps {
-  variant?: 'success' | 'warning' | 'error' | 'neutral' | 'primary';
+  variant?: 'success' | 'warning' | 'error' | 'neutral' | 'primary' | 'info';
   size?: 'sm' | 'md';
   children: ReactNode;
 }
@@ -20,6 +20,7 @@ export function Badge({ variant = 'neutral', size = 'md', children }: BadgeProps
     error: 'bg-[#EF4444]/10 text-[#DC2626]',
     neutral: 'bg-[#E8E6E1] text-[#4D4C47]',
     primary: 'bg-[#0a4a0e]/10 text-[#0a4a0e]',
+    info: 'bg-[#3B82F6]/10 text-[#2563EB]',
   };
 
   const sizeStyles = {

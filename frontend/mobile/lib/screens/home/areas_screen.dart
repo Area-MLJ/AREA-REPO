@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../providers/areas_provider.dart';
 import '../../models/area.dart';
+import '../../services/api_service.dart';
 import 'create_area_screen.dart';
 
 class AreasScreen extends StatefulWidget {
@@ -161,6 +162,24 @@ class _AreasScreenState extends State<AreasScreen> {
                     ),
                   ),
                 ),
+                if (area.isBuiltin) ...[
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[100],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'Built-in',
+                      style: TextStyle(
+                        color: Colors.blue[800],
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                ],
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
@@ -205,12 +224,54 @@ class _AreasScreenState extends State<AreasScreen> {
               ],
             ),
             SizedBox(height: 12),
-            Text(
-              'Created ${DateFormat.yMMMd().format(area.createdAt)}',
-              style: TextStyle(
-                color: Colors.grey[500],
-                fontSize: 12,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Created ${DateFormat.yMMMd().format(area.createdAt)}',
+                  style: TextStyle(
+                    color: Colors.grey[500],
+                    fontSize: 12,
+                  ),
+                ),
+                Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        try {
+                          await ApiService.updateArea(area.id, enabled: !area.enabled);
+                          Provider.of<AreasProvider>(context, listen: false).fetchAreas();
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Error: ${e.toString()}')),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: area.enabled ? Colors.red[50] : Colors.green[50],
+                        foregroundColor: area.enabled ? Colors.red[800] : Colors.green[800],
+                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        minimumSize: Size(0, 32),
+                      ),
+                      child: Text(area.enabled ? 'Disable' : 'Enable', style: TextStyle(fontSize: 12)),
+                    ),
+                    SizedBox(width: 8),
+                    OutlinedButton(
+                      onPressed: () {
+                        // TODO: Navigate to area configuration screen
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Configuration screen coming soon')),
+                        );
+                      },
+                      style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        minimumSize: Size(0, 32),
+                      ),
+                      child: Text('Configure', style: TextStyle(fontSize: 12)),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),

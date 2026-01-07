@@ -6,6 +6,7 @@ class Area {
   final String? name;
   final String? description;
   final bool enabled;
+  final bool isBuiltin;
   final DateTime createdAt;
   final DateTime updatedAt;
   final List<AreaAction> actions;
@@ -17,6 +18,7 @@ class Area {
     this.name,
     this.description,
     required this.enabled,
+    this.isBuiltin = false,
     required this.createdAt,
     required this.updatedAt,
     this.actions = const [],
@@ -30,8 +32,9 @@ class Area {
       name: json['name'],
       description: json['description'],
       enabled: json['enabled'] ?? false,
+      isBuiltin: json['is_builtin'] ?? false,
       createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      updatedAt: DateTime.parse(json['updated_at'] ?? json['created_at']),
       actions: (json['area_actions'] as List<dynamic>?)
               ?.map((action) => AreaAction.fromJson(action))
               .toList() ??

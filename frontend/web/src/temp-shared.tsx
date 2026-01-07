@@ -176,10 +176,15 @@ export const useAreas = () => {
           const mappedAreas = response.data.map((area: any) => ({
             ...area,
             isActive: area.enabled,
+            isBuiltin: area.is_builtin || false,
             createdAt: area.created_at || area.createdAt,
-            // Add placeholder fields if needed
-            actionService: area.area_actions?.[0]?.service_actions?.service?.display_name || 'N/A',
-            reactionService: area.area_reactions?.[0]?.service_reactions?.service?.display_name || 'N/A',
+            // Extract service names from nested structure
+            actionService: area.area_actions?.[0]?.service_actions?.services?.display_name || 
+                          area.area_actions?.[0]?.service_actions?.service?.display_name || 
+                          'N/A',
+            reactionService: area.area_reactions?.[0]?.service_reactions?.services?.display_name || 
+                            area.area_reactions?.[0]?.service_reactions?.service?.display_name || 
+                            'N/A',
             lastTriggered: null // Backend doesn't return this yet
           }));
           setAreas(mappedAreas);

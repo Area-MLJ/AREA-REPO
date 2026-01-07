@@ -10,6 +10,9 @@ RUN if [ -f package-lock.json ]; then npm ci --only=production; else npm install
 # Copy source code (depuis backend/)
 COPY backend/ .
 
+# S'assurer que le dossier services est copié (nécessaire pour le service-loader)
+RUN mkdir -p services || true
+
 # Build TypeScript (si nécessaire)
 RUN npm run build || true
 

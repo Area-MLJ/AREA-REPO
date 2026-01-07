@@ -7,6 +7,7 @@ import { useAreas, useAuth } from '../../temp-shared';
 import { Card } from '../../DesignSystem/components/Card';
 import { Button } from '../../DesignSystem/components/Button';
 import { Badge } from '../../DesignSystem/components/Badge';
+import { apiClient } from '../../lib/api';
 
 export default function DashboardPage() {
   const { areas, loading, error } = useAreas();
@@ -77,6 +78,11 @@ export default function DashboardPage() {
                       <h3 className="text-base md:text-lg font-semibold text-[#1A1A18]">
                         {area.name}
                       </h3>
+                      {area.isBuiltin && (
+                        <Badge variant="info" size="sm">
+                          Built-in
+                        </Badge>
+                      )}
                       <Badge variant={area.isActive ? 'success' : 'neutral'} size="sm">
                         {area.isActive ? 'Active' : 'Inactive'}
                       </Badge>
@@ -94,14 +100,41 @@ export default function DashboardPage() {
                       </span>
                     </div>
                   </div>
-                  <div className="text-left sm:text-right text-xs md:text-sm text-[#8B8980]">
-                    <div className="hidden sm:block">Créée le {formatDate(area.createdAt)}</div>
-                    <div className="sm:hidden">{formatDate(area.createdAt)}</div>
-                    {area.lastTriggered && (
-                      <div className="mt-1 hidden sm:block">
-                        Dernière : {formatDate(area.lastTriggered)}
-                      </div>
-                    )}
+                  <div className="flex flex-col items-end gap-2">
+                    <div className="text-left sm:text-right text-xs md:text-sm text-[#8B8980]">
+                      <div className="hidden sm:block">Créée le {formatDate(area.createdAt)}</div>
+                      <div className="sm:hidden">{formatDate(area.createdAt)}</div>
+                      {area.lastTriggered && (
+                        <div className="mt-1 hidden sm:block">
+                          Dernière : {formatDate(area.lastTriggered)}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        variant={area.isActive ? "outlined" : "primary"}
+                        onClick={async () => {
+                          try {
+                            const response = await apiClient.updateArea(area.id, { enabled: !area.isActive });
+                            if (response.success) {
+                              window.location.reload();
+                            }
+                          } catch (error) {
+                            console.error('Error updating area:', error);
+                          }
+                        }}
+                      >
+                        {area.isActive ? 'Désactiver' : 'Activer'}
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outlined"
+                        onClick={() => window.location.href = `/area/${area.id}`}
+                      >
+                        Configurer
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </Card>

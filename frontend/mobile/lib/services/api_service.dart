@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -95,7 +96,7 @@ class ApiService {
   // Auth endpoints
   static Future<Map<String, dynamic>> login(String email, String password) async {
     final response = await _requestWithRetry(
-      () => http.post(
+      () async => http.post(
         Uri.parse('$baseUrl/auth/login'),
         headers: await getHeaders(includeAuth: false),
         body: json.encode({
@@ -128,7 +129,7 @@ class ApiService {
     String? displayName,
   }) async {
     final response = await _requestWithRetry(
-      () => http.post(
+      () async => http.post(
         Uri.parse('$baseUrl/auth/register'),
         headers: await getHeaders(includeAuth: false),
         body: json.encode({
@@ -163,7 +164,7 @@ class ApiService {
   // Areas endpoints
   static Future<List<Area>> getAreas() async {
     final response = await _requestWithRetry(
-      () => http.get(
+      () async => http.get(
         Uri.parse('$baseUrl/me/areas'),
         headers: await getHeaders(),
       ),
@@ -181,7 +182,7 @@ class ApiService {
 
   static Future<Area> createArea(String name, {String? description, bool enabled = true}) async {
     final response = await _requestWithRetry(
-      () => http.post(
+      () async => http.post(
         Uri.parse('$baseUrl/me/areas'),
         headers: await getHeaders(),
         body: json.encode({
@@ -202,10 +203,32 @@ class ApiService {
     }
   }
 
+  static Future<Area> updateArea(String id, {String? name, String? description, bool? enabled}) async {
+    final response = await _requestWithRetry(
+      () async => http.put(
+        Uri.parse('$baseUrl/me/areas/$id'),
+        headers: await getHeaders(),
+        body: json.encode({
+          if (name != null) 'name': name,
+          if (description != null) 'description': description,
+          if (enabled != null) 'enabled': enabled,
+        }),
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      return Area.fromJson(data);
+    } else {
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      throw Exception(data['error'] ?? 'Failed to update area');
+    }
+  }
+
   // Services endpoints
   static Future<List<Service>> getServices() async {
     final response = await _requestWithRetry(
-      () => http.get(
+      () async => http.get(
         Uri.parse('$baseUrl/services'),
         headers: await getHeaders(),
       ),

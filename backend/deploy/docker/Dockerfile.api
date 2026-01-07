@@ -13,8 +13,10 @@ RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-# Copier tout le contenu de backend
+# Copier tout le contenu de backend (inclut services/)
 COPY backend/ .
+# S'assurer que le dossier services existe
+RUN mkdir -p services || true
 
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
@@ -45,6 +47,8 @@ RUN adduser --system --uid 1001 nextjs
 # Copy necessary files
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Copier le dossier services (nécessaire pour le service-loader et builtin-areas)
+COPY --from=builder --chown=nextjs:nodejs /app/services ./services
 # Créer le dossier public (optionnel pour Next.js)
 RUN mkdir -p public
 # Créer le dossier logs avec les bonnes permissions pour Winston
