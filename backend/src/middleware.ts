@@ -2,8 +2,36 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifyTokenEdge, extractTokenFromHeader } from './lib/auth-edge';
 
+function getCorsHeaders(request: NextRequest): Record<string, string> {
+  const origin = request.headers.get('origin');
+  const headers: Record<string, string> = {
+    'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
+    'Access-Control-Allow-Headers':
+      'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization',
+    Vary: 'Origin',
+  };
+
+  if (origin) {
+    headers['Access-Control-Allow-Origin'] = origin;
+    headers['Access-Control-Allow-Credentials'] = 'true';
+  }
+
+  return headers;
+}
+
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
+  // Global CORS handling for API routes
+  if (pathname.startsWith('/api/')) {
+    // Preflight request
+    if (request.method === 'OPTIONS') {
+      return new NextResponse(null, {
+        status: 200,
+        headers: getCorsHeaders(request),
+      });
+    }
+  }
 
   // Routes publiques qui ne nécessitent pas d'authentification
       const publicRoutes = [
@@ -28,7 +56,13 @@ export async function middleware(request: NextRequest) {
   const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route));
 
   if (isPublicRoute) {
-    return NextResponse.next();
+    const response = NextResponse.next();
+    if (pathname.startsWith('/api/')) {
+      for (const [key, value] of Object.entries(getCorsHeaders(request))) {
+        response.headers.set(key, value);
+      }
+    }
+    return response;
   }
 
   // Routes API nécessitent une authentification
@@ -39,7 +73,7 @@ export async function middleware(request: NextRequest) {
     if (!token) {
       return NextResponse.json(
         { error: 'Unauthorized: Missing token' },
-        { status: 401 }
+        { status: 401, headers: getCorsHeaders(request) }
       );
     }
 
@@ -50,7 +84,7 @@ export async function middleware(request: NextRequest) {
       if (payload.type !== 'access') {
         return NextResponse.json(
           { error: 'Unauthorized: Invalid token type' },
-          { status: 401 }
+          { status: 401, headers: getCorsHeaders(request) }
         );
       }
 
@@ -59,15 +93,19 @@ export async function middleware(request: NextRequest) {
       requestHeaders.set('x-user-id', payload.userId);
       requestHeaders.set('x-user-email', payload.email);
 
-      return NextResponse.next({
+      const response = NextResponse.next({
         request: {
           headers: requestHeaders,
         },
       });
+      for (const [key, value] of Object.entries(getCorsHeaders(request))) {
+        response.headers.set(key, value);
+      }
+      return response;
     } catch (error: any) {
       return NextResponse.json(
         { error: 'Unauthorized: Invalid token' },
-        { status: 401 }
+        { status: 401, headers: getCorsHeaders(request) }
       );
     }
   }
