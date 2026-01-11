@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+<<<<<<< HEAD
   reactStrictMode: true,
   output: 'standalone', // Pour Docker
   // API routes configuration
@@ -18,3 +19,16 @@ const nextConfig = {
 
 module.exports = nextConfig;
 
+=======
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: '/api/:path*',
+      },
+    ]
+  },
+}
+
+module.exports = nextConfig
+>>>>>>> 22-services-api-ready---spotfy

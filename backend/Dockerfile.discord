@@ -1,0 +1,26 @@
+# Discord Bot Dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apk add --no-cache python3 make g++
+
+# Copy package files
+COPY package*.json ./
+RUN npm ci --only=production
+
+# Copy Discord bot specific files
+COPY src/services/discord/ ./src/services/discord/
+COPY src/lib/ ./src/lib/
+COPY src/types/ ./src/types/
+
+# Copy bot entry point
+COPY scripts/start-discord-bot.js ./
+
+# Health check for bot
+HEALTHCHECK --interval=60s --timeout=5s --start-period=15s --retries=3 \
+  CMD node -e "console.log('Discord bot health check')" || exit 1
+
+# Start Discord bot
+CMD ["node", "start-discord-bot.js"]

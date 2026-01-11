@@ -130,5 +130,13 @@ desktop.ini
 .vercel
 .netlify
 
+<<<<<<< HEAD
 .windsurf/
 	__pycache__/
+=======
+# Windsurf
+.windsurf
+
+# Python
+__pycache__
+>>>>>>> 22-services-api-ready---spotfy
