@@ -1,9 +1,0 @@
-{
-  "name": "discord",
-  "display_name": "Discord",
-  "description": "Service Discord pour envoyer des messages et recevoir des notifications",
-  "icon_url": "https://cdn-icons-png.flaticon.com/512/5968/5968756.png",
-  "built_in": false,
-  "oauth_required": true
-}
-

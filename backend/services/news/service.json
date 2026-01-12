@@ -1,9 +1,0 @@
-{
-  "name": "news",
-  "display_name": "News",
-  "description": "Service pour récupérer des articles de news via EventRegistry API",
-  "icon_url": "https://cdn-icons-png.flaticon.com/512/2965/2965879.png",
-  "built_in": true,
-  "oauth_required": false
-}
-

@@ -1,9 +1,0 @@
-{
-  "name": "mail",
-  "display_name": "Mail",
-  "description": "Service pour envoyer des emails via Resend API",
-  "icon_url": "https://cdn-icons-png.flaticon.com/512/732/732200.png",
-  "built_in": true,
-  "oauth_required": false
-}
-
