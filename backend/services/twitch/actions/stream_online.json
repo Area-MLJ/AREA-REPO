@@ -1,0 +1,16 @@
+{
+  "name": "stream_online",
+  "display_name": "Stream en live",
+  "description": "Déclenché quand un streamer est en live (polling)",
+  "polling_supported": true,
+  "webhook_supported": false,
+  "params": [
+    {
+      "name": "user_login",
+      "display_name": "Login Twitch",
+      "description": "Login Twitch du streamer (ex: gotaga)",
+      "type": "text",
+      "required": true
+    }
+  ]
+}

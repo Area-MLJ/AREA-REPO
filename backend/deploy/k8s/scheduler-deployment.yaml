@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: area-worker
+  name: area-scheduler
   labels:
-    app: area-worker
+    app: area-scheduler
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: area-worker
+      app: area-scheduler
   template:
     metadata:
       labels:
-        app: area-worker
+        app: area-scheduler
     spec:
       containers:
-      - name: worker
-        image: area-worker:latest
+      - name: scheduler
+        image: area-scheduler:latest
         env:
         - name: NODE_ENV
           value: "production"
@@ -32,6 +32,16 @@ spec:
               key: supabase-service-role-key
         - name: REDIS_URL
           value: "redis://area-redis:6379"
+        - name: TWITCH_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: area-secrets
+              key: twitch-client-id
+        - name: TWITCH_APP_ACCESS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: area-secrets
+              key: twitch-app-access-token
         - name: SPOTIFY_ACCESS_TOKEN
           valueFrom:
             secretKeyRef:
@@ -44,4 +54,3 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
-

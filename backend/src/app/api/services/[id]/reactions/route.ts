@@ -9,7 +9,7 @@ export async function GET(
     const supabase = getSupabaseClient();
     const { data: reactions, error } = await supabase
       .from('service_reactions')
-      .select('*')
+      .select('*, service_reaction_params(*)')
       .eq('service_id', params.id)
       .order('name', { ascending: true });
 
