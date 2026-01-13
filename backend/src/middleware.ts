@@ -38,6 +38,7 @@ export async function middleware(request: NextRequest) {
         '/api/auth/login',
         '/api/auth/register',
         '/api/auth/refresh',
+        '/api/oauth/spotify/callback',
         '/api/webhooks',
         '/api/health',
       ];

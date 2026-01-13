@@ -51,6 +51,18 @@ interface Service {
   iconUrl: string;
 }
 
+interface UserService {
+  id: string;
+  user_id: string;
+  service_id: string;
+  display_name: string | null;
+  oauth_account_id: string | null;
+  access_token: string | null;
+  refresh_token: string | null;
+  token_expires_at: string | null;
+  created_at: string;
+}
+
 interface Area {
   id: string;
   name: string;
@@ -258,8 +270,14 @@ class ApiClient {
     return this.request<Service[]>('/services');
   }
 
-  async getUserServices(): Promise<ApiResponse<Service[]>> {
-    return this.request<Service[]>('/me/services');
+  async getUserServices(): Promise<ApiResponse<UserService[]>> {
+    return this.request<UserService[]>('/me/services');
+  }
+
+  async spotifyAuthorize(): Promise<ApiResponse<{ url: string }>> {
+    return this.request<{ url: string }>('/oauth/spotify/authorize', {
+      method: 'POST',
+    });
   }
 
   async getAreas(): Promise<ApiResponse<Area[]>> {
@@ -340,4 +358,4 @@ class ApiClient {
 }
 
 export const apiClient = new ApiClient();
-export type { ApiResponse, AuthResponse, Service, Area, LoginRequest, RegisterRequest };
+export type { ApiResponse, AuthResponse, Service, UserService, Area, LoginRequest, RegisterRequest };

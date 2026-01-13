@@ -193,6 +193,77 @@ export class UserService {
     return userService as UserServiceType;
   }
 
+  async upsertUserServiceByUserAndService(data: {
+    user_id: string;
+    service_id: string;
+    oauth_account_id?: string;
+    access_token?: string;
+    refresh_token?: string;
+    token_expires_at?: string;
+    display_name?: string;
+  }): Promise<UserServiceType> {
+    const { data: existing, error: findError } = await this.supabase
+      .from('user_services')
+      .select('*')
+      .eq('user_id', data.user_id)
+      .eq('service_id', data.service_id)
+      .single();
+
+    if (findError && findError.code !== 'PGRST116') {
+      logger.error('Error fetching user service for upsert:', findError);
+      throw new Error(`Failed to fetch user service: ${findError.message}`);
+    }
+
+    if (!existing) {
+      return this.createUserService(data);
+    }
+
+    const { data: updated, error } = await this.supabase
+      .from('user_services')
+      .update({
+        oauth_account_id: data.oauth_account_id || existing.oauth_account_id,
+        access_token: data.access_token ?? existing.access_token,
+        refresh_token: data.refresh_token ?? existing.refresh_token,
+        token_expires_at: data.token_expires_at ?? existing.token_expires_at,
+        display_name: data.display_name ?? existing.display_name,
+      })
+      .eq('id', existing.id)
+      .select()
+      .single();
+
+    if (error) {
+      logger.error('Error updating user service:', error);
+      throw new Error(`Failed to update user service: ${error.message}`);
+    }
+
+    return updated as UserServiceType;
+  }
+
+  async updateUserServiceTokens(data: {
+    user_service_id: string;
+    access_token?: string;
+    refresh_token?: string;
+    token_expires_at?: string;
+  }): Promise<UserServiceType> {
+    const { data: updated, error } = await this.supabase
+      .from('user_services')
+      .update({
+        access_token: data.access_token ?? null,
+        refresh_token: data.refresh_token ?? null,
+        token_expires_at: data.token_expires_at ?? null,
+      })
+      .eq('id', data.user_service_id)
+      .select()
+      .single();
+
+    if (error) {
+      logger.error('Error updating user service tokens:', error);
+      throw new Error(`Failed to update user service tokens: ${error.message}`);
+    }
+
+    return updated as UserServiceType;
+  }
+
   /**
    * Récupère les user_services d'un utilisateur
    */

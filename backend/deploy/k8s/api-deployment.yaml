@@ -39,6 +39,26 @@ spec:
             secretKeyRef:
               name: area-secrets
               key: jwt-secret
+        - name: SPOTIFY_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: area-secrets
+              key: spotify-client-id
+        - name: SPOTIFY_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: area-secrets
+              key: spotify-client-secret
+        - name: SPOTIFY_REDIRECT_URI
+          valueFrom:
+            secretKeyRef:
+              name: area-secrets
+              key: spotify-redirect-uri
+        - name: SPOTIFY_OAUTH_SUCCESS_REDIRECT
+          valueFrom:
+            secretKeyRef:
+              name: area-secrets
+              key: spotify-oauth-success-redirect
         resources:
           requests:
             memory: "256Mi"
