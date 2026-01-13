@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import areaService from '@/core/services/area-service';
+import hookService from '@/core/services/hook-service';
+import { getSupabaseClient } from '@/core/services/db/client';
 import { z } from 'zod';
 
 const createAreaActionSchema = z.object({
@@ -39,6 +41,20 @@ export async function POST(
     const body = await request.json();
     const validatedData = createAreaActionSchema.parse(body);
 
+    const supabase = getSupabaseClient();
+    const { data: serviceAction, error: serviceActionError } = await supabase
+      .from('service_actions')
+      .select('id, polling_supported, webhook_supported')
+      .eq('id', validatedData.service_action_id)
+      .single();
+
+    if (serviceActionError || !serviceAction) {
+      return NextResponse.json(
+        { error: 'Service action not found' },
+        { status: 400 }
+      );
+    }
+
     // Créer l'area_action
     const areaAction = await areaService.createAreaAction({
       area_id: params.id,
@@ -46,6 +62,15 @@ export async function POST(
       user_service_id: validatedData.user_service_id,
       enabled: validatedData.enabled,
     });
+
+    if (serviceAction.polling_supported) {
+      await hookService.createHookJob({
+        area_action_id: areaAction.id,
+        type: 'polling',
+        polling_interval_seconds: 60,
+        status: areaAction.enabled ? 'active' : 'paused',
+      });
+    }
 
     // Définir les paramètres si fournis
     if (validatedData.param_values && validatedData.param_values.length > 0) {

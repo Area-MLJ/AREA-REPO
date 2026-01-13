@@ -1,6 +1,6 @@
 // Auth context with real backend integration
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { apiClient } from './lib/api';
+import { apiClient, type Service } from './lib/api';
 
 interface User {
   id: string;
@@ -135,7 +135,7 @@ export { apiClient } from './lib/api';
 
 // Hooks for data fetching (using already imported useState/useEffect)
 export const useServices = () => {
-  const [services, setServices] = useState([]);
+  const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -219,12 +219,12 @@ export const MOCK_SERVICES = [
     category: 'communication',
     isConnected: false,
     actions: [
-      { id: '1', name: 'Nouveau email reçu' },
-      { id: '2', name: 'Email avec pièce jointe' }
+      { id: '1', name: 'Nouveau email reçu', description: 'Déclenche quand un nouvel email est reçu' },
+      { id: '2', name: 'Email avec pièce jointe', description: 'Déclenche quand un email avec pièce jointe est reçu' }
     ],
     reactions: [
-      { id: '1', name: 'Envoyer un email' },
-      { id: '2', name: 'Transférer un email' }
+      { id: '1', name: 'Envoyer un email', description: 'Envoie un email à un destinataire' },
+      { id: '2', name: 'Transférer un email', description: 'Transfère un email à un autre destinataire' }
     ]
   },
   {
@@ -236,13 +236,13 @@ export const MOCK_SERVICES = [
     category: 'productivity',
     isConnected: true,
     actions: [
-      { id: '3', name: 'Push sur repository' },
-      { id: '4', name: 'Nouvelle issue créée' },
-      { id: '5', name: 'Pull request mergée' }
+      { id: '3', name: 'Push sur repository', description: 'Déclenche lors d\'un push sur un repository' },
+      { id: '4', name: 'Nouvelle issue créée', description: 'Déclenche lorsqu\'une issue est créée' },
+      { id: '5', name: 'Pull request mergée', description: 'Déclenche lorsqu\'une pull request est mergée' }
     ],
     reactions: [
-      { id: '3', name: 'Créer une issue' },
-      { id: '4', name: 'Commenter une PR' }
+      { id: '3', name: 'Créer une issue', description: 'Crée une issue sur un repository' },
+      { id: '4', name: 'Commenter une PR', description: 'Ajoute un commentaire à une pull request' }
     ]
   },
   {
@@ -254,12 +254,12 @@ export const MOCK_SERVICES = [
     category: 'social',
     isConnected: false,
     actions: [
-      { id: '6', name: 'Message reçu' },
-      { id: '7', name: 'Utilisateur rejoint un serveur' }
+      { id: '6', name: 'Message reçu', description: 'Déclenche lorsqu\'un message est reçu' },
+      { id: '7', name: 'Utilisateur rejoint un serveur', description: 'Déclenche lorsqu\'un utilisateur rejoint un serveur' }
     ],
     reactions: [
-      { id: '5', name: 'Envoyer un message' },
-      { id: '6', name: 'Créer un channel' }
+      { id: '5', name: 'Envoyer un message', description: 'Envoie un message dans un channel' },
+      { id: '6', name: 'Créer un channel', description: 'Crée un nouveau channel' }
     ]
   },
   {
@@ -271,13 +271,49 @@ export const MOCK_SERVICES = [
     category: 'storage',
     isConnected: false,
     actions: [
-      { id: '8', name: 'Fichier ajouté' },
-      { id: '9', name: 'Fichier modifié' }
+      { id: '8', name: 'Fichier ajouté', description: 'Déclenche lorsqu\'un fichier est ajouté' },
+      { id: '9', name: 'Fichier modifié', description: 'Déclenche lorsqu\'un fichier est modifié' }
     ],
     reactions: [
-      { id: '7', name: 'Créer un fichier' },
-      { id: '8', name: 'Partager un fichier' }
+      { id: '7', name: 'Créer un fichier', description: 'Crée un nouveau fichier' },
+      { id: '8', name: 'Partager un fichier', description: 'Partage un fichier avec un utilisateur' }
     ]
+  }
+  ,
+  {
+    id: '5',
+    name: 'Twitch',
+    displayName: 'Twitch',
+    description: 'Détecte quand un streamer passe en live',
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/5968/5968819.png',
+    category: 'social',
+    isConnected: true,
+    actions: [
+      {
+        id: 'twitch_stream_online',
+        name: 'Stream en live',
+        description: 'Déclenche quand le streamer (user_login) passe en live',
+      },
+    ],
+    reactions: [],
+  }
+  ,
+  {
+    id: '6',
+    name: 'Spotify',
+    displayName: 'Spotify',
+    description: 'Lance un morceau sur Spotify',
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/2111/2111624.png',
+    category: 'social',
+    isConnected: true,
+    actions: [],
+    reactions: [
+      {
+        id: 'spotify_play_track',
+        name: 'Lancer un morceau',
+        description: 'Lance un morceau Spotify via son URL',
+      },
+    ],
   }
 ];
 

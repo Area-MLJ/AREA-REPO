@@ -8,11 +8,13 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 8081,
-    host: true
+    host: true,
+    allowedHosts: ['app.jodicenter.com']
   },
   preview: {
     port: 8081,
-    host: true
+    host: true,
+    allowedHosts: ['app.jodicenter.com']
   },
   resolve: {
     alias: {

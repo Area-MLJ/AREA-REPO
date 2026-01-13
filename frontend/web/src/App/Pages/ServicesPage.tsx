@@ -72,6 +72,10 @@ export default function ServicesPage() {
     time: 'Temps',
   };
 
+  const getCategoryLabel = (category: string) => {
+    return categoryLabels[category as keyof typeof categoryLabels] || category;
+  };
+
   return (
     <div className="space-y-4 md:space-y-6">
       <div>
@@ -108,22 +112,46 @@ export default function ServicesPage() {
         </div>
       </Card>
 
+      <Card variant="outlined" padding="sm" className="md:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div className="text-base md:text-lg font-semibold text-[#1A1A18]">Twitch</div>
+            <div className="text-xs md:text-sm text-[#6B6962]">
+              Aucune connexion requise
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Badge variant="success" size="sm">
+              Disponible
+            </Badge>
+            <Button variant="outline" size="sm" disabled>
+              Connecté
+            </Button>
+          </div>
+        </div>
+      </Card>
+
       <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((service) => (
           <Card key={service.id} variant="outlined" padding="sm" className="md:p-6 hover:shadow-md transition-shadow">
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-3 md:mb-4">
               <div className="flex items-center gap-3">
-                <div className="text-3xl md:text-4xl">{service.icon}</div>
+                <img
+                  src={service.iconUrl}
+                  alt={service.displayName}
+                  className="h-8 w-8 md:h-10 md:w-10"
+                />
                 <div>
                   <h3 className="text-base md:text-lg font-semibold text-[#1A1A18]">
                     {service.name}
                   </h3>
                   <Badge size="sm" variant="neutral">
-                    {categoryLabels[service.category]}
+                    {getCategoryLabel(service.category)}
                   </Badge>
                 </div>
               </div>
-              <Badge variant={service.isConnected ? 'success' : 'neutral'} size="sm" className="self-start">
+              <Badge variant={service.isConnected ? 'success' : 'neutral'} size="sm">
                 {service.isConnected ? 'Connecté' : 'Non connecté'}
               </Badge>
             </div>

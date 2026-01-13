@@ -3,12 +3,13 @@
  * Page de création d'AREA avec workflow visuel responsive
  */
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { MOCK_SERVICES } from '../../temp-shared';
 import { Card } from '../../DesignSystem/components/Card';
 import { Button } from '../../DesignSystem/components/Button';
 import { Input } from '../../DesignSystem/components/Input';
 import { Badge } from '../../DesignSystem/components/Badge';
+import { apiClient, Service, UserService } from '../../lib/api';
 
 export default function AreaCreatorPage() {
   const [step, setStep] = useState<'info' | 'action' | 'reaction' | 'review'>('info');
@@ -16,16 +17,169 @@ export default function AreaCreatorPage() {
   const [description, setDescription] = useState('');
   const [selectedActionService, setSelectedActionService] = useState('');
   const [selectedAction, setSelectedAction] = useState('');
+  const [twitchUserLogin, setTwitchUserLogin] = useState('');
   const [selectedReactionService, setSelectedReactionService] = useState('');
   const [selectedReaction, setSelectedReaction] = useState('');
+  const [spotifyTrackUrl, setSpotifyTrackUrl] = useState('');
+  const [spotifyDeviceId, setSpotifyDeviceId] = useState('');
+  const [backendServices, setBackendServices] = useState<Service[]>([]);
+  const [backendUserServices, setBackendUserServices] = useState<UserService[]>([]);
+  const [creating, setCreating] = useState(false);
 
   const connectedServices = MOCK_SERVICES.filter(s => s.isConnected);
   const actionServices = connectedServices.filter(s => s.actions.length > 0);
   const reactionServices = connectedServices.filter(s => s.reactions.length > 0);
 
-  const handleCreate = () => {
-    alert('AREA créée avec succès !');
-    window.location.href = '/dashboard';
+  useEffect(() => {
+    const load = async () => {
+      const [servicesRes, userServicesRes] = await Promise.all([
+        apiClient.getServices(),
+        apiClient.getUserServices(),
+      ]);
+      if (servicesRes.success && servicesRes.data) {
+        setBackendServices(servicesRes.data);
+      }
+      if (userServicesRes.success && userServicesRes.data) {
+        setBackendUserServices(userServicesRes.data);
+      }
+    };
+    load();
+  }, []);
+
+  const twitchServiceId = useMemo(() => {
+    return backendServices.find((s) => s.name === 'twitch')?.id;
+  }, [backendServices]);
+
+  const spotifyServiceId = useMemo(() => {
+    return backendServices.find((s) => s.name === 'spotify')?.id;
+  }, [backendServices]);
+
+  const getOrCreateUserService = async (serviceId: string, displayName: string) => {
+    const existing = backendUserServices.find((us) => us.service_id === serviceId);
+    if (existing) {
+      return existing;
+    }
+
+    const created = await apiClient.createUserService({
+      service_id: serviceId,
+      display_name: displayName,
+    });
+    if (!created.success || !created.data) {
+      throw new Error(created.error || 'Failed to create user service');
+    }
+    setBackendUserServices((prev) => [...prev, created.data!]);
+    return created.data;
+  };
+
+  const handleCreate = async () => {
+    if (selectedAction === 'twitch_stream_online' && selectedReaction === 'spotify_play_track') {
+      if (!twitchServiceId) {
+        alert('Service Twitch introuvable côté backend');
+        return;
+      }
+      if (!spotifyServiceId) {
+        alert('Service Spotify introuvable côté backend');
+        return;
+      }
+      if (!spotifyTrackUrl.trim()) {
+        alert('URL du morceau Spotify requise');
+        return;
+      }
+
+      setCreating(true);
+      try {
+        const areaRes = await apiClient.createArea({ name, description, enabled: true });
+        if (!areaRes.success || !areaRes.data?.id) {
+          throw new Error(areaRes.error || 'Failed to create area');
+        }
+
+        const twitchUserService = await getOrCreateUserService(twitchServiceId, 'Twitch');
+        const spotifyUserService = backendUserServices.find((us) => us.service_id === spotifyServiceId);
+        if (!spotifyUserService) {
+          throw new Error('Spotify non connecté: connecte Spotify dans /services avant de créer cette AREA');
+        }
+
+        const [twitchActionsRes, spotifyReactionsRes] = await Promise.all([
+          apiClient.getServiceActions(twitchServiceId),
+          apiClient.getServiceReactions(spotifyServiceId),
+        ]);
+
+        if (!twitchActionsRes.success || !twitchActionsRes.data) {
+          throw new Error(twitchActionsRes.error || 'Failed to load Twitch actions');
+        }
+        if (!spotifyReactionsRes.success || !spotifyReactionsRes.data) {
+          throw new Error(spotifyReactionsRes.error || 'Failed to load Spotify reactions');
+        }
+
+        const twitchAction = twitchActionsRes.data.find((a) => a.name === 'stream_online');
+        if (!twitchAction) {
+          throw new Error('Action Twitch stream_online introuvable');
+        }
+        const twitchUserLoginParamId = twitchAction.service_action_params?.find((p) => p.name === 'user_login')?.id;
+        if (!twitchUserLoginParamId) {
+          throw new Error('Paramètre Twitch user_login introuvable');
+        }
+
+        const spotifyReaction = spotifyReactionsRes.data.find((r) => r.name === 'play_track');
+        if (!spotifyReaction) {
+          throw new Error('Réaction Spotify play_track introuvable');
+        }
+        const spotifyTrackUrlParamId = spotifyReaction.service_reaction_params?.find((p) => p.name === 'track_url')?.id;
+        const spotifyDeviceIdParamId = spotifyReaction.service_reaction_params?.find((p) => p.name === 'device_id')?.id;
+        if (!spotifyTrackUrlParamId) {
+          throw new Error('Paramètre Spotify track_url introuvable');
+        }
+
+        const actionRes = await apiClient.createAreaAction(areaRes.data.id, {
+          service_action_id: twitchAction.id,
+          user_service_id: twitchUserService.id,
+          enabled: true,
+          param_values: [
+            {
+              service_action_param_id: twitchUserLoginParamId,
+              value_text: twitchUserLogin.trim(),
+            },
+          ],
+        });
+        if (!actionRes.success) {
+          throw new Error(actionRes.error || 'Failed to create area action');
+        }
+
+        const reactionParamValues: Array<{ service_reaction_param_id: string; value_text?: string }> = [
+          {
+            service_reaction_param_id: spotifyTrackUrlParamId,
+            value_text: spotifyTrackUrl.trim(),
+          },
+        ];
+        if (spotifyDeviceIdParamId && spotifyDeviceId.trim()) {
+          reactionParamValues.push({
+            service_reaction_param_id: spotifyDeviceIdParamId,
+            value_text: spotifyDeviceId.trim(),
+          });
+        }
+
+        const reactionRes = await apiClient.createAreaReaction(areaRes.data.id, {
+          service_reaction_id: spotifyReaction.id,
+          user_service_id: spotifyUserService.id,
+          enabled: true,
+          position: 0,
+          param_values: reactionParamValues,
+        });
+        if (!reactionRes.success) {
+          throw new Error(reactionRes.error || 'Failed to create area reaction');
+        }
+
+        alert('AREA créée avec succès !');
+        window.location.href = '/dashboard';
+      } catch (e: any) {
+        alert(e?.message || 'Erreur lors de la création');
+      } finally {
+        setCreating(false);
+      }
+      return;
+    }
+
+    alert('Création backend non implémentée pour cette combinaison (pour l\'instant).');
   };
 
   const canProceed = () => {
@@ -33,9 +187,21 @@ export default function AreaCreatorPage() {
       case 'info':
         return name.trim() !== '' && description.trim() !== '';
       case 'action':
-        return selectedActionService !== '' && selectedAction !== '';
+        if (selectedActionService === '' || selectedAction === '') {
+          return false;
+        }
+        if (selectedAction === 'twitch_stream_online') {
+          return twitchUserLogin.trim() !== '';
+        }
+        return true;
       case 'reaction':
-        return selectedReactionService !== '' && selectedReaction !== '';
+        if (selectedReactionService === '' || selectedReaction === '') {
+          return false;
+        }
+        if (selectedReaction === 'spotify_play_track') {
+          return spotifyTrackUrl.trim() !== '';
+        }
+        return true;
       case 'review':
         return true;
       default:
@@ -113,6 +279,7 @@ export default function AreaCreatorPage() {
                     onClick={() => {
                       setSelectedActionService(service.id);
                       setSelectedAction('');
+                      setTwitchUserLogin('');
                     }}
                     className={`p-3 md:p-4 rounded-lg border-2 transition-colors text-left ${
                       selectedActionService === service.id
@@ -120,7 +287,11 @@ export default function AreaCreatorPage() {
                         : 'border-[#D1CFC8] hover:border-[#B3B1A8]'
                     }`}
                   >
-                    <div className="text-2xl md:text-3xl mb-2">{service.icon}</div>
+                    <img
+                      src={service.iconUrl}
+                      alt={service.displayName}
+                      className="h-8 w-8 md:h-10 md:w-10 mb-2"
+                    />
                     <div className="text-sm md:text-base font-medium text-[#1A1A18]">{service.name}</div>
                     <div className="text-xs md:text-sm text-[#6B6962]">
                       {service.actions.length} action(s)
@@ -156,6 +327,17 @@ export default function AreaCreatorPage() {
                         </button>
                       ))}
                   </div>
+
+                  {selectedAction === 'twitch_stream_online' && (
+                    <div className="mt-4">
+                      <Input
+                        label="Pseudo Twitch (user_login)"
+                        placeholder="Ex: gotaga"
+                        value={twitchUserLogin}
+                        onChange={(e) => setTwitchUserLogin(e.target.value)}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -190,6 +372,8 @@ export default function AreaCreatorPage() {
                     onClick={() => {
                       setSelectedReactionService(service.id);
                       setSelectedReaction('');
+                      setSpotifyTrackUrl('');
+                      setSpotifyDeviceId('');
                     }}
                     className={`p-3 md:p-4 rounded-lg border-2 transition-colors text-left ${
                       selectedReactionService === service.id
@@ -197,7 +381,11 @@ export default function AreaCreatorPage() {
                         : 'border-[#D1CFC8] hover:border-[#B3B1A8]'
                     }`}
                   >
-                    <div className="text-2xl md:text-3xl mb-2">{service.icon}</div>
+                    <img
+                      src={service.iconUrl}
+                      alt={service.displayName}
+                      className="h-8 w-8 md:h-10 md:w-10 mb-2"
+                    />
                     <div className="text-sm md:text-base font-medium text-[#1A1A18]">{service.name}</div>
                     <div className="text-xs md:text-sm text-[#6B6962]">
                       {service.reactions.length} réaction(s)
@@ -233,6 +421,23 @@ export default function AreaCreatorPage() {
                         </button>
                       ))}
                   </div>
+
+                  {selectedReaction === 'spotify_play_track' && (
+                    <div className="mt-4 space-y-4">
+                      <Input
+                        label="URL du morceau Spotify (track_url)"
+                        placeholder="https://open.spotify.com/track/... ou spotify:track:..."
+                        value={spotifyTrackUrl}
+                        onChange={(e) => setSpotifyTrackUrl(e.target.value)}
+                      />
+                      <Input
+                        label="Device ID (optionnel)"
+                        placeholder="Ex: 123abc..."
+                        value={spotifyDeviceId}
+                        onChange={(e) => setSpotifyDeviceId(e.target.value)}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -264,6 +469,11 @@ export default function AreaCreatorPage() {
                   {MOCK_SERVICES.find(s => s.id === selectedActionService)
                     ?.actions.find(a => a.id === selectedAction)?.name}
                 </div>
+                {selectedAction === 'twitch_stream_online' && (
+                  <div className="text-xs md:text-sm text-[#6B6962] mt-1">
+                    Streamer : {twitchUserLogin}
+                  </div>
+                )}
               </div>
               <div className="text-xl md:text-2xl text-[#0a4a0e] rotate-90 sm:rotate-0">→</div>
               <div className="flex-1 text-center w-full">
@@ -275,6 +485,11 @@ export default function AreaCreatorPage() {
                   {MOCK_SERVICES.find(s => s.id === selectedReactionService)
                     ?.reactions.find(r => r.id === selectedReaction)?.name}
                 </div>
+                {selectedReaction === 'spotify_play_track' && (
+                  <div className="text-xs md:text-sm text-[#6B6962] mt-1">
+                    Morceau : {spotifyTrackUrl}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -309,7 +524,7 @@ export default function AreaCreatorPage() {
               setStep(steps[currentIdx + 1]);
             }
           }}
-          disabled={!canProceed()}
+          disabled={!canProceed() || creating}
         >
           {step === 'review' ? 'Créer l\'AREA' : 'Suivant'}
         </Button>

@@ -51,6 +51,44 @@ interface Service {
   iconUrl: string;
 }
 
+interface ServiceActionParam {
+  id: string;
+  name: string;
+  display_name: string | null;
+  description: string | null;
+  type: string | null;
+  required: boolean | null;
+}
+
+interface ServiceAction {
+  id: string;
+  service_id: string;
+  name: string;
+  display_name: string | null;
+  description: string | null;
+  polling_supported?: boolean | null;
+  webhook_supported?: boolean | null;
+  service_action_params?: ServiceActionParam[];
+}
+
+interface ServiceReactionParam {
+  id: string;
+  name: string;
+  display_name: string | null;
+  description: string | null;
+  type: string | null;
+  required: boolean | null;
+}
+
+interface ServiceReaction {
+  id: string;
+  service_id: string;
+  name: string;
+  display_name: string | null;
+  description: string | null;
+  service_reaction_params?: ServiceReactionParam[];
+}
+
 interface UserService {
   id: string;
   user_id: string;
@@ -69,6 +107,38 @@ interface Area {
   description: string;
   enabled: boolean;
   createdAt: string;
+}
+
+interface CreateUserServiceRequest {
+  service_id: string;
+  oauth_account_id?: string | null;
+  access_token?: string | null;
+  refresh_token?: string | null;
+  token_expires_at?: string | null;
+  display_name?: string | null;
+}
+
+interface CreateAreaActionRequest {
+  service_action_id: string;
+  user_service_id: string;
+  enabled?: boolean;
+  param_values?: Array<{
+    service_action_param_id: string;
+    value_text?: string;
+    value_json?: string;
+  }>;
+}
+
+interface CreateAreaReactionRequest {
+  service_reaction_id: string;
+  user_service_id: string;
+  position?: number;
+  enabled?: boolean;
+  param_values?: Array<{
+    service_reaction_param_id: string;
+    value_text?: string;
+    value_json?: string;
+  }>;
 }
 
 class ApiClient {
@@ -219,7 +289,10 @@ class ApiClient {
       };
     }
 
-    return response as ApiResponse<AuthResponse>;
+    return {
+      success: false,
+      error: response.error || 'Login failed',
+    };
   }
 
   async register(userData: RegisterRequest): Promise<ApiResponse<AuthResponse>> {
@@ -257,7 +330,10 @@ class ApiClient {
       };
     }
 
-    return response as ApiResponse<AuthResponse>;
+    return {
+      success: false,
+      error: response.error || 'Registration failed',
+    };
   }
 
   async logout(): Promise<void> {
@@ -270,8 +346,23 @@ class ApiClient {
     return this.request<Service[]>('/services');
   }
 
+  async getServiceActions(serviceId: string): Promise<ApiResponse<ServiceAction[]>> {
+    return this.request<ServiceAction[]>(`/services/${serviceId}/actions`);
+  }
+
+  async getServiceReactions(serviceId: string): Promise<ApiResponse<ServiceReaction[]>> {
+    return this.request<ServiceReaction[]>(`/services/${serviceId}/reactions`);
+  }
+
   async getUserServices(): Promise<ApiResponse<UserService[]>> {
     return this.request<UserService[]>('/me/services');
+  }
+
+  async createUserService(payload: CreateUserServiceRequest): Promise<ApiResponse<UserService>> {
+    return this.request<UserService>('/me/services', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
   }
 
   async spotifyAuthorize(): Promise<ApiResponse<{ url: string }>> {
@@ -288,6 +379,20 @@ class ApiClient {
     return this.request<Area>('/me/areas', {
       method: 'POST',
       body: JSON.stringify(area)
+    });
+  }
+
+  async createAreaAction(areaId: string, payload: CreateAreaActionRequest): Promise<ApiResponse<any>> {
+    return this.request<any>(`/me/areas/${areaId}/actions`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async createAreaReaction(areaId: string, payload: CreateAreaReactionRequest): Promise<ApiResponse<any>> {
+    return this.request<any>(`/me/areas/${areaId}/reactions`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
     });
   }
 
@@ -358,4 +463,14 @@ class ApiClient {
 }
 
 export const apiClient = new ApiClient();
-export type { ApiResponse, AuthResponse, Service, UserService, Area, LoginRequest, RegisterRequest };
+export type {
+  ApiResponse,
+  AuthResponse,
+  Service,
+  ServiceAction,
+  ServiceReaction,
+  UserService,
+  Area,
+  LoginRequest,
+  RegisterRequest,
+};

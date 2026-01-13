@@ -18,10 +18,13 @@ log_warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
 
 # Wrapper docker compose v2 / docker-compose v1
 run_compose() {
-  if command -v docker compose >/dev/null 2>&1; then
+  if docker compose version >/dev/null 2>&1; then
     docker compose -f "$COMPOSE_FILE" "$@"
-  else
+  elif command -v docker-compose >/dev/null 2>&1; then
     docker-compose -f "$COMPOSE_FILE" "$@"
+  else
+    log_error "Ni 'docker compose' (plugin v2) ni 'docker-compose' (v1) n'est disponible sur ce serveur."
+    exit 1
   fi
 }
 
