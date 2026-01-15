@@ -55,7 +55,9 @@ export function AppLayout({ children }: AppLayoutProps) {
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-[#4D4C47] hover:bg-[#E8E6E1]"
+              className="md:hidden p-2 rounded-lg text-[#4D4C47] hover:bg-[#E8E6E1] focus:outline-none focus:ring-2 focus:ring-[#0a4a0e] focus:ring-offset-2"
+              aria-label={mobileMenuOpen ? t('common.close') : t('common.menu') || 'Menu'}
+              aria-expanded={mobileMenuOpen}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileMenuOpen ? (
@@ -68,12 +70,13 @@ export function AppLayout({ children }: AppLayoutProps) {
 
             <div className="hidden md:flex items-center gap-3">
               <LanguageSwitcher />
-              <div className="text-sm text-[#6B6962] max-w-[200px] truncate">
+              <div className="text-sm text-[#4D4C47] max-w-[200px] truncate">
                 {user?.email}
               </div>
               <button
                 onClick={logout}
-                className="text-sm px-3 py-1 text-[#6B6962] hover:text-[#0a4a0e] hover:bg-[#E8E6E1] rounded-lg transition-colors"
+                className="text-sm px-3 py-1 text-[#4D4C47] hover:text-[#0a4a0e] hover:bg-[#E8E6E1] rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#0a4a0e] focus:ring-offset-2"
+                aria-label={t('profile.dangerZone.signOut')}
               >
                 {t('profile.dangerZone.signOut')}
               </button>
@@ -100,7 +103,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 </Link>
               ))}
               <div className="pt-3 border-t border-[#D1CFC8] mt-3">
-                <div className="px-4 py-2 text-sm text-[#6B6962] truncate">
+                <div className="px-4 py-2 text-sm text-[#4D4C47] truncate">
                   {user?.email}
                 </div>
               </div>
@@ -122,7 +125,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
                 currentPath === item.path
                   ? 'text-[#0a4a0e] bg-[#e6f2e7]'
-                  : 'text-[#6B6962]'
+                  : 'text-[#4D4C47]'
               }`}
             >
               <span className="text-xl mb-0.5">{item.icon}</span>

@@ -28,7 +28,7 @@ export default function DashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl md:text-3xl font-semibold text-[#1A1A18]">{t('dashboard.title')}</h1>
-          <p className="text-sm md:text-base text-[#6B6962] mt-1">{t('dashboard.subtitle')}</p>
+          <p className="text-sm md:text-base text-[#4D4C47] mt-1">{t('dashboard.subtitle')}</p>
         </div>
         <Button onClick={() => window.location.href = '/area/create'} size="md" className="w-full sm:w-auto">
           + {t('dashboard.createArea')}
@@ -37,17 +37,17 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-3 gap-2 sm:gap-4">
         <Card variant="outlined" padding="sm" className="md:p-6">
-          <div className="text-[#6B6962] text-xs sm:text-sm mb-1">{t('dashboard.total')}</div>
+          <div className="text-[#4D4C47] text-xs sm:text-sm mb-1">{t('dashboard.total')}</div>
           <div className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#0a4a0e]">{areas.length}</div>
         </Card>
         <Card variant="outlined" padding="sm" className="md:p-6">
-          <div className="text-[#6B6962] text-xs sm:text-sm mb-1">{t('dashboard.active')}</div>
+          <div className="text-[#4D4C47] text-xs sm:text-sm mb-1">{t('dashboard.active')}</div>
           <div className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#10B981]">
             {areas.filter(a => a.isActive).length}
           </div>
         </Card>
         <Card variant="outlined" padding="sm" className="md:p-6">
-          <div className="text-[#6B6962] text-xs sm:text-sm mb-1">{t('dashboard.inactive')}</div>
+          <div className="text-[#4D4C47] text-xs sm:text-sm mb-1">{t('dashboard.inactive')}</div>
           <div className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#8B8980]">
             {areas.filter(a => !a.isActive).length}
           </div>
@@ -63,7 +63,7 @@ export default function DashboardPage() {
             <h3 className="text-lg md:text-xl font-semibold text-[#1A1A18] mb-2">
               {t('dashboard.noAreas.title')}
             </h3>
-            <p className="text-sm md:text-base text-[#6B6962] mb-4 md:mb-6 px-4">
+            <p className="text-sm md:text-base text-[#4D4C47] mb-4 md:mb-6 px-4">
               {t('dashboard.noAreas.description')}
             </p>
             <Button onClick={() => window.location.href = '/area/create'} className="w-full max-w-xs mx-auto">
@@ -89,7 +89,7 @@ export default function DashboardPage() {
                         {area.isActive ? t('dashboard.active') : t('dashboard.inactive')}
                       </Badge>
                     </div>
-                    <p className="text-[#6B6962] text-xs md:text-sm mb-3">
+                    <p className="text-[#4D4C47] text-xs md:text-sm mb-3">
                       {area.description}
                     </p>
                     <div className="flex items-center gap-2 text-xs md:text-sm">

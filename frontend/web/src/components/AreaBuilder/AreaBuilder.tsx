@@ -51,6 +51,7 @@ export function AreaBuilder({
     onConnect,
     addNode,
     updateNodeConfig,
+    deleteNode,
     validateWorkflow,
     setSelectedNode,
   } = useAreaBuilder();
@@ -72,6 +73,11 @@ export function AreaBuilder({
     }));
   }, []);
 
+  // Handler pour la suppression de nœuds
+  const handleDeleteNode = useCallback((nodeId: string) => {
+    deleteNode(nodeId);
+  }, [deleteNode]);
+
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
@@ -90,8 +96,8 @@ export function AreaBuilder({
       y: event.clientY - reactFlowBounds.top - 50,
     };
 
-    addNode(data.type, data.service, data.action, data.reaction, position);
-  }, [addNode]);
+    addNode(data.type, data.service, data.action, data.reaction, position, handleDeleteNode);
+  }, [addNode, handleDeleteNode]);
 
   // Obtenir ou créer un userService
   const getUserServiceId = useCallback(async (serviceId: string): Promise<string | undefined> => {
@@ -108,7 +114,7 @@ export function AreaBuilder({
 
       const result = await apiClient.createUserService({
         service_id: serviceId,
-        display_name: service.display_name,
+        display_name: (service as any).displayName || (service as any).display_name || service.name,
       });
 
       if (result.success && result.data) {
@@ -177,11 +183,13 @@ export function AreaBuilder({
           nodeTypes={nodeTypes}
           fitView
           className="bg-[#FAF9F7]"
+          deleteKeyCode="Delete"
+          multiSelectionKeyCode="Shift"
         >
           <Background />
           <Controls />
           <MiniMap 
-            nodeColor={(node) => {
+            nodeColor={(node: any) => {
               if (node.data?.type === 'action') return '#0a4a0e';
               if (node.data?.type === 'reaction') return '#2563EB';
               return '#E8E6E1';
@@ -192,14 +200,14 @@ export function AreaBuilder({
               {name}
             </div>
             {description && (
-              <div className="text-xs text-[#6B6962]">
+              <div className="text-xs text-[#4D4C47]">
                 {description}
               </div>
             )}
           </Panel>
           <Panel position="top-right" className="flex gap-2">
             <Button
-              variant="outlined"
+              variant="outline"
               size="sm"
               onClick={onCancel}
             >

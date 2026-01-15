@@ -27,7 +27,8 @@
     "connected": "Connecté",
     "notConnected": "Non connecté",
     "available": "Disponible",
-    "required": "Requis"
+    "required": "Requis",
+    "menu": "Menu"
   },
   "auth": {
     "login": {
@@ -170,7 +171,8 @@
       "reaction": "Réaction",
       "configured": "Configuré",
       "toConfigure": "À configurer",
-      "service": "Service"
+      "service": "Service",
+      "deleteNode": "Supprimer le nœud"
     },
     "create": "Créer l'AREA",
     "cancel": "Annuler",

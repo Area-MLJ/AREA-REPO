@@ -48,7 +48,7 @@ export default function LoginPage() {
           <h1 className="text-4xl font-semibold text-[#0a4a0e] mb-2">
             {t('auth.login.title')}
           </h1>
-          <p className="text-[#6B6962]">{t('auth.login.subtitle')}</p>
+          <p className="text-[#4D4C47]">{t('auth.login.subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -88,7 +88,7 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-[#6B6962]">
+          <p className="text-sm text-[#4D4C47]">
             {t('auth.login.noAccount')}{' '}
             <a href="/signup" className="text-[#0a4a0e] font-medium hover:underline">
               {t('auth.login.createAccount')}

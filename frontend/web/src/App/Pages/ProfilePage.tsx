@@ -21,7 +21,7 @@ export default function ProfilePage() {
     <div className="max-w-2xl mx-auto space-y-4 md:space-y-6">
       <div>
         <h1 className="text-2xl md:text-3xl font-semibold text-[#1A1A18]">{t('profile.title')}</h1>
-        <p className="text-sm md:text-base text-[#6B6962] mt-1">{t('profile.subtitle')}</p>
+        <p className="text-sm md:text-base text-[#4D4C47] mt-1">{t('profile.subtitle')}</p>
       </div>
 
       <Card variant="elevated" padding="md" className="md:p-8">
@@ -37,7 +37,7 @@ export default function ProfilePage() {
 
           <div>
             <div className="text-xs md:text-sm text-[#8B8980] mb-1">{t('profile.accountInfo.userId')}</div>
-            <div className="font-mono text-xs md:text-sm text-[#6B6962] break-all">{user?.id}</div>
+            <div className="font-mono text-xs md:text-sm text-[#4D4C47] break-all">{user?.id}</div>
           </div>
 
           <div>
@@ -57,7 +57,7 @@ export default function ProfilePage() {
         <h2 className="text-lg md:text-xl font-semibold text-[#1A1A18] mb-3 md:mb-4">
           {t('profile.dangerZone.title')}
         </h2>
-        <p className="text-sm md:text-base text-[#6B6962] mb-4">
+        <p className="text-sm md:text-base text-[#4D4C47] mb-4">
           {t('profile.dangerZone.description')}
         </p>
         <Button variant="outline" onClick={handleSignOut} className="w-full sm:w-auto">

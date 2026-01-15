@@ -25,6 +25,8 @@ export interface WorkflowNodeData {
   action?: ServiceAction;
   reaction?: ServiceReaction;
   isConfigured: boolean;
+  onDelete?: (id: string) => void;
+  onConfigChange?: (config: NodeConfig) => void;
 }
 
 /**

@@ -4,9 +4,16 @@ import { WorkflowNodeData } from '../types';
 import { Card } from '../../../DesignSystem/components/Card';
 import { Badge } from '../../../DesignSystem/components/Badge';
 
-export function ActionNode({ data, selected }: NodeProps<WorkflowNodeData>) {
+export function ActionNode({ data, selected, id }: NodeProps<WorkflowNodeData>) {
   const { t } = useTranslation();
-  const { config, isConfigured, action, service } = data;
+  const { config, isConfigured, action, service, onDelete } = data;
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onDelete && id) {
+      onDelete(id);
+    }
+  };
 
   return (
     <div className={`action-node ${selected ? 'selected' : ''} ${isConfigured ? 'configured' : 'not-configured'}`}>
@@ -18,18 +25,37 @@ export function ActionNode({ data, selected }: NodeProps<WorkflowNodeData>) {
           backgroundColor: selected ? '#f0f9f4' : 'white'
         }}
       >
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-start gap-2 mb-2">
           {service?.iconUrl && (
-            <img src={service.iconUrl} alt={service.name} className="w-6 h-6 rounded" />
+            <img 
+              src={service.iconUrl} 
+              alt={service.name || ''} 
+              className="w-6 h-6 rounded" 
+              loading="lazy"
+              width={24}
+              height={24}
+            />
           )}
-          <div className="flex-1">
-            <div className="font-semibold text-sm text-[#1A1A18]">
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold text-sm text-[#1A1A18] truncate">
               {action?.display_name || config?.actionName || t('builder.nodes.action')}
             </div>
-            <div className="text-xs text-[#6B6962]">
+            <div className="text-xs text-[#4D4C47] truncate">
               {service?.displayName || service?.display_name || config?.serviceName || t('builder.nodes.service')}
             </div>
           </div>
+          {onDelete && (
+            <button
+              onClick={handleDelete}
+              className="ml-2 p-1 rounded hover:bg-red-100 text-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
+              aria-label={t('builder.nodes.deleteNode') || 'Supprimer le nœud'}
+              title={t('builder.nodes.deleteNode') || 'Supprimer le nœud'}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
         </div>
         
         <div className="flex items-center justify-between">

@@ -118,7 +118,7 @@ export function ConfigPanel({
           {t('builder.config.title')}
         </h3>
         <Button 
-          variant="outlined" 
+          variant="outline" 
           size="sm"
           onClick={onClose}
         >
@@ -131,8 +131,8 @@ export function ConfigPanel({
           <div className="text-sm font-medium text-[#1A1A18] mb-1">
             {t('builder.config.service')}
           </div>
-          <div className="text-sm text-[#6B6962]">
-            {service.displayName || service.display_name}
+          <div className="text-sm text-[#4D4C47]">
+            {(service as any)?.displayName || (service as any)?.display_name || service?.name || 'Service'}
           </div>
         </div>
 
@@ -140,7 +140,7 @@ export function ConfigPanel({
           <div className="text-sm font-medium text-[#1A1A18] mb-1">
             {nodeData?.type === 'action' ? t('builder.config.action') : t('builder.config.reaction')}
           </div>
-          <div className="text-sm text-[#6B6962]">
+          <div className="text-sm text-[#4D4C47]">
             {action?.display_name || reaction?.display_name}
           </div>
         </div>
@@ -158,7 +158,7 @@ export function ConfigPanel({
                     {param.required && <span className="text-red-500 ml-1">*</span>}
                   </label>
                   {param.description && (
-                    <p className="text-xs text-[#6B6962] mb-1">{param.description}</p>
+                    <p className="text-xs text-[#4D4C47] mb-1">{param.description}</p>
                   )}
                   {param.type === 'textarea' ? (
                     <textarea
@@ -185,7 +185,7 @@ export function ConfigPanel({
 
       <div className="flex gap-2 pt-4 border-t border-[#E8E6E1]">
         <Button
-          variant="outlined"
+          variant="outline"
           onClick={onClose}
           className="flex-1"
         >

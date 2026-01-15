@@ -287,7 +287,7 @@ export default function AreaCreatorPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-semibold text-[#1A1A18]">{t('areas.create.title')}</h1>
-              <p className="text-sm text-[#6B6962] mt-1">
+              <p className="text-sm text-[#4D4C47] mt-1">
                 {t('areas.create.builderMode')} - {t('builder.palette.title')}
               </p>
             </div>
@@ -312,7 +312,7 @@ export default function AreaCreatorPage() {
         {servicesWithDetails.length === 0 && backendServices.length > 0 ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <p className="text-[#6B6962] mb-4">{t('common.loading')}</p>
+              <p className="text-[#4D4C47] mb-4">{t('common.loading')}</p>
             </div>
           </div>
         ) : (
@@ -337,7 +337,7 @@ export default function AreaCreatorPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl md:text-3xl font-semibold text-[#1A1A18]">{t('areas.create.title')}</h1>
-            <p className="text-sm md:text-base text-[#6B6962] mt-1">
+            <p className="text-sm md:text-base text-[#4D4C47] mt-1">
               {t('areas.create.subtitle')}
             </p>
           </div>
@@ -398,13 +398,13 @@ export default function AreaCreatorPage() {
           <h2 className="text-lg md:text-xl font-semibold text-[#1A1A18] mb-2">
             {t('areas.create.step.action')}
           </h2>
-          <p className="text-sm md:text-base text-[#6B6962] mb-4 md:mb-6">
+          <p className="text-sm md:text-base text-[#4D4C47] mb-4 md:mb-6">
             {t('areas.create.selectActionService')}
           </p>
 
           {actionServices.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-sm md:text-base text-[#6B6962]">
+              <p className="text-sm md:text-base text-[#4D4C47]">
                 {t('services.none')} {t('services.actions')} {t('common.connected')}.{' '}
                 <a href="/services" className="text-[#0a4a0e] hover:underline">
                   {t('common.connect')} {t('services.title')}
@@ -434,7 +434,7 @@ export default function AreaCreatorPage() {
                       className="h-8 w-8 md:h-10 md:w-10 mb-2"
                     />
                     <div className="text-sm md:text-base font-medium text-[#1A1A18]">{service.name}</div>
-                    <div className="text-xs md:text-sm text-[#6B6962]">
+                    <div className="text-xs md:text-sm text-[#4D4C47]">
                       {service.actions.length} {t('builder.palette.actions')}
                     </div>
                   </button>
@@ -462,7 +462,7 @@ export default function AreaCreatorPage() {
                           <div className="text-sm md:text-base font-medium text-[#1A1A18] mb-1">
                             {action.name}
                           </div>
-                          <div className="text-xs md:text-sm text-[#6B6962]">
+                          <div className="text-xs md:text-sm text-[#4D4C47]">
                             {action.description}
                           </div>
                         </button>
@@ -491,13 +491,13 @@ export default function AreaCreatorPage() {
           <h2 className="text-lg md:text-xl font-semibold text-[#1A1A18] mb-2">
             {t('areas.create.step.reaction')}
           </h2>
-          <p className="text-sm md:text-base text-[#6B6962] mb-4 md:mb-6">
+          <p className="text-sm md:text-base text-[#4D4C47] mb-4 md:mb-6">
             {t('areas.create.selectReactionService')}
           </p>
 
           {reactionServices.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-sm md:text-base text-[#6B6962]">
+              <p className="text-sm md:text-base text-[#4D4C47]">
                 {t('services.none')} {t('services.reactions')} {t('common.connected')}.{' '}
                 <a href="/services" className="text-[#0a4a0e] hover:underline">
                   {t('common.connect')} {t('services.title')}
@@ -528,7 +528,7 @@ export default function AreaCreatorPage() {
                       className="h-8 w-8 md:h-10 md:w-10 mb-2"
                     />
                     <div className="text-sm md:text-base font-medium text-[#1A1A18]">{service.name}</div>
-                    <div className="text-xs md:text-sm text-[#6B6962]">
+                    <div className="text-xs md:text-sm text-[#4D4C47]">
                       {service.reactions.length} {t('builder.palette.reactions')}
                     </div>
                   </button>
@@ -556,7 +556,7 @@ export default function AreaCreatorPage() {
                           <div className="text-sm md:text-base font-medium text-[#1A1A18] mb-1">
                             {reaction.name}
                           </div>
-                          <div className="text-xs md:text-sm text-[#6B6962]">
+                          <div className="text-xs md:text-sm text-[#4D4C47]">
                             {reaction.description}
                           </div>
                         </button>
@@ -606,12 +606,12 @@ export default function AreaCreatorPage() {
                 <div className="mt-2 text-sm md:text-base font-medium text-[#1A1A18]">
                   {MOCK_SERVICES.find(s => s.id === selectedActionService)?.name}
                 </div>
-                <div className="text-xs md:text-sm text-[#6B6962] mt-1">
+                <div className="text-xs md:text-sm text-[#4D4C47] mt-1">
                   {MOCK_SERVICES.find(s => s.id === selectedActionService)
                     ?.actions.find(a => a.id === selectedAction)?.name}
                 </div>
                 {selectedAction === 'twitch_stream_online' && (
-                  <div className="text-xs md:text-sm text-[#6B6962] mt-1">
+                  <div className="text-xs md:text-sm text-[#4D4C47] mt-1">
                     Streamer : {twitchUserLogin}
                   </div>
                 )}
@@ -622,12 +622,12 @@ export default function AreaCreatorPage() {
                 <div className="mt-2 text-sm md:text-base font-medium text-[#1A1A18]">
                   {MOCK_SERVICES.find(s => s.id === selectedReactionService)?.name}
                 </div>
-                <div className="text-xs md:text-sm text-[#6B6962] mt-1">
+                <div className="text-xs md:text-sm text-[#4D4C47] mt-1">
                   {MOCK_SERVICES.find(s => s.id === selectedReactionService)
                     ?.reactions.find(r => r.id === selectedReaction)?.name}
                 </div>
                 {selectedReaction === 'spotify_play_track' && (
-                  <div className="text-xs md:text-sm text-[#6B6962] mt-1">
+                  <div className="text-xs md:text-sm text-[#4D4C47] mt-1">
                     Morceau : {spotifyTrackUrl}
                   </div>
                 )}

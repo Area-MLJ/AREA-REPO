@@ -64,7 +64,8 @@ export function useAreaBuilder({ initialNodes = [], initialEdges = [] }: UseArea
     service: Service,
     action?: any,
     reaction?: any,
-    position: { x: number; y: number } = { x: 250, y: 250 }
+    position: { x: number; y: number } = { x: 250, y: 250 },
+    onDelete?: (id: string) => void
   ) => {
     const newNode: WorkflowNode = {
       id: `${type}-${Date.now()}`,
@@ -77,6 +78,8 @@ export function useAreaBuilder({ initialNodes = [], initialEdges = [] }: UseArea
         action,
         reaction,
         isConfigured: false,
+        onDelete,
+        onConfigChange: () => {},
       },
     };
 
@@ -93,9 +96,9 @@ export function useAreaBuilder({ initialNodes = [], initialEdges = [] }: UseArea
           const params = node.data.action?.service_action_params || node.data.reaction?.service_reaction_params || [];
           const allRequiredFilled = params.every(param => {
             if (!param.required) return true;
-            return config.paramValues[param.name] !== undefined && 
+            return config.paramValues && config.paramValues[param.name] !== undefined && 
                    config.paramValues[param.name] !== null && 
-                   config.paramValues[param.name].trim() !== '';
+                   String(config.paramValues[param.name]).trim() !== '';
           });
 
           return {

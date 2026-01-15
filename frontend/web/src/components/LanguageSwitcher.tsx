@@ -49,7 +49,7 @@ export function LanguageSwitcher() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-1.5 text-sm text-[#6B6962] hover:text-[#0a4a0e] hover:bg-[#E8E6E1] rounded-lg transition-colors"
+        className="flex items-center gap-2 px-3 py-1.5 text-sm text-[#4D4C47] hover:text-[#0a4a0e] hover:bg-[#E8E6E1] rounded-lg transition-colors"
         aria-label="Change language"
       >
         <span className="text-lg">🌐</span>
@@ -83,7 +83,7 @@ export function LanguageSwitcher() {
                   <span className="text-[#0a4a0e]">✓</span>
                 )}
               </div>
-              <div className="text-xs text-[#6B6962] mt-0.5">{lang.name}</div>
+              <div className="text-xs text-[#4D4C47] mt-0.5">{lang.name}</div>
             </button>
           ))}
         </div>

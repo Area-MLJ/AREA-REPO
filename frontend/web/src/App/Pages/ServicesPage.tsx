@@ -75,7 +75,7 @@ export default function ServicesPage() {
     <div className="space-y-4 md:space-y-6">
       <div>
         <h1 className="text-2xl md:text-3xl font-semibold text-[#1A1A18]">{t('services.title')}</h1>
-        <p className="text-sm md:text-base text-[#6B6962] mt-1">
+        <p className="text-sm md:text-base text-[#4D4C47] mt-1">
           {t('services.subtitle')}
         </p>
       </div>
@@ -84,7 +84,7 @@ export default function ServicesPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="text-base md:text-lg font-semibold text-[#1A1A18]">{t('services.spotify.name')}</div>
-            <div className="text-xs md:text-sm text-[#6B6962]">
+            <div className="text-xs md:text-sm text-[#4D4C47]">
               {spotifyUserService
                 ? t('services.spotify.connectedAs', { name: spotifyUserService.display_name || t('services.spotify.name') })
                 : t('services.spotify.notConnected')}
@@ -111,7 +111,7 @@ export default function ServicesPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="text-base md:text-lg font-semibold text-[#1A1A18]">{t('services.twitch.name')}</div>
-            <div className="text-xs md:text-sm text-[#6B6962]">
+            <div className="text-xs md:text-sm text-[#4D4C47]">
               {t('services.twitch.noConnectionRequired')}
             </div>
           </div>
@@ -151,7 +151,7 @@ export default function ServicesPage() {
               </Badge>
             </div>
 
-            <p className="text-[#6B6962] text-xs md:text-sm mb-3 md:mb-4">
+            <p className="text-[#4D4C47] text-xs md:text-sm mb-3 md:mb-4">
               {service.description}
             </p>
 

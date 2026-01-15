@@ -104,7 +104,7 @@ export function NodePalette({ services, onDragStart, onDragEnd }: NodePalettePro
 
       <div className="space-y-4">
         {filteredServices.length === 0 ? (
-          <div className="text-sm text-[#6B6962] text-center py-4">
+          <div className="text-sm text-[#4D4C47] text-center py-4">
             {t('builder.palette.noServices')}
           </div>
         ) : (
@@ -115,7 +115,7 @@ export function NodePalette({ services, onDragStart, onDragEnd }: NodePalettePro
                   <img src={service.iconUrl} alt={service.name} className="w-5 h-5 rounded" />
                 )}
                 <div className="font-medium text-sm text-[#1A1A18]">
-                  {service.displayName || service.display_name}
+                  {(service as any).displayName || (service as any).display_name || service.name}
                 </div>
               </div>
 
