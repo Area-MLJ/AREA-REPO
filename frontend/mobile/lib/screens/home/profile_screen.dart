@@ -3,15 +3,19 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/areas_provider.dart';
 import '../../providers/services_provider.dart';
+import '../../l10n/app_localizations.dart';
+import '../../widgets/language_switcher.dart';
 import '../auth/login_screen.dart';
 import '../info/about_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profil'),
+        title: Text(localizations?.translate('profile_title') ?? 'Profil'),
         automaticallyImplyLeading: false,
       ),
       body: Consumer<AuthProvider>(
@@ -19,7 +23,7 @@ class ProfileScreen extends StatelessWidget {
           final user = authProvider.user;
           
           if (user == null) {
-            return Center(child: Text('Non connecté'));
+            return Center(child: Text(localizations?.translate('not_connected') ?? 'Non connecté'));
           }
 
           return SingleChildScrollView(
@@ -57,7 +61,7 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          'Gérez vos informations personnelles',
+                          localizations?.translate('manage_info') ?? 'Gérez vos informations personnelles',
                           style: TextStyle(
                             color: Colors.grey[600],
                             fontSize: 14,
@@ -74,7 +78,8 @@ class ProfileScreen extends StatelessWidget {
                             ),
                             SizedBox(width: 4),
                             Text(
-                              user.isVerified ? 'Verified' : 'Unverified',
+                              localizations?.translate(user.isVerified ? 'verified' : 'unverified') ?? 
+                                  (user.isVerified ? 'Verified' : 'Unverified'),
                               style: TextStyle(
                                 color: user.isVerified ? Colors.green : Colors.orange,
                                 fontSize: 14,
@@ -102,7 +107,7 @@ class ProfileScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Statistics',
+                              localizations?.translate('statistics') ?? 'Statistics',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -114,7 +119,8 @@ class ProfileScreen extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: _buildStatItem(
-                                    'Total AREAs',
+                                    context,
+                                    localizations?.translate('total_areas') ?? 'Total AREAs',
                                     '${areasProvider.areas.length}',
                                     Icons.wb_auto,
                                     Color(0xff0a4a0e),
@@ -122,7 +128,8 @@ class ProfileScreen extends StatelessWidget {
                                 ),
                                 Expanded(
                                   child: _buildStatItem(
-                                    'AREAs actives',
+                                    context,
+                                    localizations?.translate('active_areas') ?? 'AREAs actives',
                                     '${areasProvider.areas.where((area) => area.enabled).length}',
                                     Icons.play_circle,
                                     Colors.green,
@@ -149,7 +156,7 @@ class ProfileScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Actions',
+                          localizations?.translate('actions') ?? 'Actions',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -157,10 +164,12 @@ class ProfileScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 16),
+                        LanguageSwitcher(),
+                        Divider(),
                         ListTile(
                           leading: Icon(Icons.refresh, color: Color(0xff0a4a0e)),
-                          title: Text('Actualiser les données'),
-                          subtitle: Text('Recharger les AREAs et les services'),
+                          title: Text(localizations?.translate('refresh_data') ?? 'Actualiser les données'),
+                          subtitle: Text(localizations?.translate('refresh_subtitle') ?? 'Recharger les AREAs et les services'),
                           onTap: () async {
                             final areasProvider = Provider.of<AreasProvider>(context, listen: false);
                             final servicesProvider = Provider.of<ServicesProvider>(context, listen: false);
@@ -169,15 +178,15 @@ class ProfileScreen extends StatelessWidget {
                               servicesProvider.fetchServices(),
                             ]);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Données actualisées')),
+                              SnackBar(content: Text(localizations?.translate('data_refreshed') ?? 'Données actualisées')),
                             );
                           },
                         ),
                         Divider(),
                         ListTile(
                           leading: Icon(Icons.info, color: Color(0xff0a4a0e)),
-                          title: Text('À propos'),
-                          subtitle: Text('En savoir plus sur AREA'),
+                          title: Text(localizations?.translate('about') ?? 'À propos'),
+                          subtitle: Text(localizations?.translate('about_subtitle') ?? 'En savoir plus sur AREA'),
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(builder: (_) => AboutScreen()),
@@ -187,23 +196,23 @@ class ProfileScreen extends StatelessWidget {
                         Divider(),
                         ListTile(
                           leading: Icon(Icons.logout, color: Colors.red[600]),
-                          title: Text('Déconnexion'),
-                          subtitle: Text('Se déconnecter de votre compte'),
+                          title: Text(localizations?.translate('logout') ?? 'Déconnexion'),
+                          subtitle: Text(localizations?.translate('logout_subtitle') ?? 'Se déconnecter de votre compte'),
                           onTap: () async {
                             final confirm = await showDialog<bool>(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: Text('Déconnexion'),
-                                content: Text('Êtes-vous sûr de vouloir vous déconnecter ?'),
+                                title: Text(localizations?.translate('logout') ?? 'Déconnexion'),
+                                content: Text(localizations?.translate('logout_confirm') ?? 'Êtes-vous sûr de vouloir vous déconnecter ?'),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context, false),
-                                    child: Text('Annuler'),
+                                    child: Text(localizations?.translate('cancel') ?? 'Annuler'),
                                   ),
                                   TextButton(
                                     onPressed: () => Navigator.pop(context, true),
                                     child: Text(
-                                      'Déconnexion',
+                                      localizations?.translate('logout') ?? 'Déconnexion',
                                       style: TextStyle(color: Colors.red),
                                     ),
                                   ),
@@ -234,7 +243,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatItem(String title, String value, IconData icon, Color color) {
+  Widget _buildStatItem(BuildContext context, String title, String value, IconData icon, Color color) {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
