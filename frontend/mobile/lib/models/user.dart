@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 class User {
   final String id;
   final String email;
@@ -21,8 +22,8 @@ class User {
         isVerified: json['isVerified'] as bool? ?? json['is_verified'] as bool? ?? false,
       );
     } catch (e) {
-      print('❌ Error parsing User from JSON: $e');
-      print('📦 JSON data: $json');
+      debugPrint('❌ Error parsing User from JSON: $e');
+      debugPrint('📦 JSON data: $json');
       rethrow;
     }
   }

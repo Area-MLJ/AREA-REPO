@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 class Service {
   final String id;
   final String name;
@@ -40,8 +41,8 @@ class Service {
             [],
       );
     } catch (e) {
-      print('❌ Error parsing Service from JSON: $e');
-      print('📦 JSON data: $json');
+      debugPrint('❌ Error parsing Service from JSON: $e');
+      debugPrint('📦 JSON data: $json');
       rethrow;
     }
   }
@@ -88,8 +89,8 @@ class ServiceAction {
             : null,
       );
     } catch (e) {
-      print('❌ Error parsing ServiceAction from JSON: $e');
-      print('📦 JSON data: $json');
+      debugPrint('❌ Error parsing ServiceAction from JSON: $e');
+      debugPrint('📦 JSON data: $json');
       rethrow;
     }
   }
@@ -130,8 +131,8 @@ class ServiceReaction {
             : null,
       );
     } catch (e) {
-      print('❌ Error parsing ServiceReaction from JSON: $e');
-      print('📦 JSON data: $json');
+      debugPrint('❌ Error parsing ServiceReaction from JSON: $e');
+      debugPrint('📦 JSON data: $json');
       rethrow;
     }
   }
@@ -167,8 +168,8 @@ class UserService {
             : DateTime.now(),
       );
     } catch (e) {
-      print('❌ Error parsing UserService from JSON: $e');
-      print('📦 JSON data: $json');
+      debugPrint('❌ Error parsing UserService from JSON: $e');
+      debugPrint('📦 JSON data: $json');
       rethrow;
     }
   }

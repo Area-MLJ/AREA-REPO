@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
@@ -20,10 +21,12 @@ class AuthProvider with ChangeNotifier {
 
     try {
       final token = await ApiService.getToken();
-      print('🔐 checkAuthStatus - Token exists: ${token != null}');
+      if (kDebugMode) {
+        print('🔐 checkAuthStatus - Token exists: ${token != null}');
+      }
       
       if (token != null) {
-        print('✅ Token found, loading user from storage');
+        if (kDebugMode) print('✅ Token found, loading user from storage');
         // Load user from SharedPreferences
         final prefs = await SharedPreferences.getInstance();
         final userJson = prefs.getString('area_user');
@@ -31,19 +34,19 @@ class AuthProvider with ChangeNotifier {
         if (userJson != null) {
           final userData = json.decode(userJson);
           _user = User.fromJson(userData);
-          print('✅ User loaded: ${_user?.email}');
+          if (kDebugMode) print('✅ User loaded: ${_user?.email}');
         } else {
-          print('⚠️  Token exists but no user data found');
+          if (kDebugMode) print('⚠️  Token exists but no user data found');
           // Token exists but no user - might be invalid, remove it
           await ApiService.removeToken();
           _user = null;
         }
       } else {
-        print('❌ No token found');
+        if (kDebugMode) print('❌ No token found');
         _user = null;
       }
     } catch (e) {
-      print('❌ Auth check error: $e');
+      if (kDebugMode) print('❌ Auth check error: $e');
       _error = e.toString();
       await ApiService.removeToken();
       _user = null;
@@ -59,18 +62,18 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      print('🔐 Logging in: $email');
+      if (kDebugMode) print('🔐 Logging in: $email');
       final response = await ApiService.login(email, password);
       _user = User.fromJson(response['user']);
       
       // Save user to SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('area_user', json.encode(response['user']));
-      print('✅ Login successful, user saved: ${_user?.email}');
+      if (kDebugMode) print('✅ Login successful, user saved: ${_user?.email}');
       
       _error = null;
     } catch (e) {
-      print('❌ Login error: $e');
+      if (kDebugMode) print('❌ Login error: $e');
       _error = e.toString();
       _user = null;
     }
@@ -85,18 +88,18 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      print('📝 Registering: $email');
+      if (kDebugMode) print('📝 Registering: $email');
       final response = await ApiService.register(email, password, displayName: displayName);
       _user = User.fromJson(response['user']);
       
       // Save user to SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('area_user', json.encode(response['user']));
-      print('✅ Registration successful, user saved: ${_user?.email}');
+      if (kDebugMode) print('✅ Registration successful, user saved: ${_user?.email}');
       
       _error = null;
     } catch (e) {
-      print('❌ Registration error: $e');
+      if (kDebugMode) print('❌ Registration error: $e');
       _error = e.toString();
       _user = null;
     }
@@ -106,7 +109,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> logout() async {
-    print('🚪 Logging out');
+    if (kDebugMode) print('🚪 Logging out');
     await ApiService.logout();
     
     // Remove user from SharedPreferences

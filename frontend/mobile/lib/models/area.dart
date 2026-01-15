@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'service.dart';
 
 class Area {
@@ -52,8 +53,8 @@ class Area {
             [],
       );
     } catch (e) {
-      print('❌ Error parsing Area from JSON: $e');
-      print('📦 JSON data: $json');
+      debugPrint('❌ Error parsing Area from JSON: $e');
+      debugPrint('📦 JSON data: $json');
       rethrow;
     }
   }
@@ -94,8 +95,8 @@ class AreaAction {
             : null,
       );
     } catch (e) {
-      print('❌ Error parsing AreaAction from JSON: $e');
-      print('📦 JSON data: $json');
+      debugPrint('❌ Error parsing AreaAction from JSON: $e');
+      debugPrint('📦 JSON data: $json');
       rethrow;
     }
   }
@@ -136,8 +137,8 @@ class AreaReaction {
             : null,
       );
     } catch (e) {
-      print('❌ Error parsing AreaReaction from JSON: $e');
-      print('📦 JSON data: $json');
+      debugPrint('❌ Error parsing AreaReaction from JSON: $e');
+      debugPrint('📦 JSON data: $json');
       rethrow;
     }
   }

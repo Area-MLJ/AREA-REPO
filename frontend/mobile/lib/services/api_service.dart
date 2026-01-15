@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/user.dart';
 import '../models/area.dart';
 import '../models/service.dart';
 import '../config/api_config.dart';
@@ -162,11 +162,10 @@ class ApiService {
 
   // Areas endpoints
   static Future<List<Area>> getAreas() async {
-    print('📡 API: GET /me/areas');
-    final token = await getToken();
-    print('🔑 Token exists: ${token != null}');
-    if (token != null) {
-      print('🔑 Token (first 20): ${token.substring(0, token.length > 20 ? 20 : token.length)}...');
+    if (kDebugMode) {
+      print('📡 API: GET /me/areas');
+      final token = await getToken();
+      print('🔑 Token exists: ${token != null}');
     }
     
     final response = await _requestWithRetry(
@@ -176,13 +175,17 @@ class ApiService {
       ),
     );
 
-    print('📥 Response status: ${response.statusCode}');
-    print('📥 Response body: ${response.body.substring(0, response.body.length > 200 ? 200 : response.body.length)}...');
+    if (kDebugMode) {
+      print('📥 Response status: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final count = (json.decode(response.body) as List).length;
+        print('✅ Parsed $count areas from JSON');
+      }
+    }
 
     if (response.statusCode == 200) {
       // Backend returns array directly, not wrapped
       final List<dynamic> areasJson = json.decode(response.body) as List<dynamic>;
-      print('✅ Parsed ${areasJson.length} areas from JSON');
       return areasJson.map((json) => Area.fromJson(json as Map<String, dynamic>)).toList();
     } else {
       final data = json.decode(response.body) as Map<String, dynamic>;

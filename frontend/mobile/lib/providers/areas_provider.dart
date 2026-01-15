@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../models/area.dart';
 import '../services/api_service.dart';
@@ -17,12 +18,12 @@ class AreasProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      print('🔄 Fetching areas...');
+      if (kDebugMode) print('🔄 Fetching areas...');
       _areas = await ApiService.getAreas();
-      print('✅ Fetched ${_areas.length} areas');
+      if (kDebugMode) print('✅ Fetched ${_areas.length} areas');
       _error = null;
     } catch (e) {
-      print('❌ Error fetching areas: $e');
+      if (kDebugMode) print('❌ Error fetching areas: $e');
       _error = e.toString();
     }
 
