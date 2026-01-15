@@ -1,4 +1,5 @@
 import { useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import ReactFlow, {
   Background,
   Controls,
@@ -125,18 +126,20 @@ export function AreaBuilder({
     updateNodeConfig(nodeId, config);
   }, [updateNodeConfig]);
 
+  const { t } = useTranslation();
+
   // Validation et création
   const handleCreate = useCallback(async () => {
     const validation = validateWorkflow();
     
     if (!validation.isValid) {
-      alert(`Erreurs:\n${validation.errors.join('\n')}`);
+      alert(`${t('builder.errors')}:\n${validation.errors.join('\n')}`);
       return;
     }
 
     if (validation.warnings.length > 0) {
       const proceed = confirm(
-        `Avertissements:\n${validation.warnings.join('\n')}\n\nContinuer quand même ?`
+        `${t('builder.warnings')}:\n${validation.warnings.join('\n')}\n\n${t('builder.continueAnyway')}`
       );
       if (!proceed) return;
     }
@@ -146,9 +149,9 @@ export function AreaBuilder({
       const areaId = await convertWorkflowToArea(nodes, edges, name, description);
       onSave(areaId);
     } catch (error) {
-      alert(`Erreur lors de la création: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
+      alert(`${t('builder.createError')}: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
     }
-  }, [validateWorkflow, nodes, edges, name, description, onSave]);
+  }, [validateWorkflow, nodes, edges, name, description, onSave, t]);
 
   return (
     <div className="area-builder-container h-full flex">
@@ -200,14 +203,14 @@ export function AreaBuilder({
               size="sm"
               onClick={onCancel}
             >
-              Annuler
+              {t('builder.cancel')}
             </Button>
             <Button
               variant="primary"
               size="sm"
               onClick={handleCreate}
             >
-              Créer l'AREA
+              {t('builder.create')}
             </Button>
           </Panel>
         </ReactFlow>

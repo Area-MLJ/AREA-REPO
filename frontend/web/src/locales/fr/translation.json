@@ -1,0 +1,230 @@
+{
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "confirm": "Confirmer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "all": "Tous",
+    "none": "Aucun",
+    "create": "Créer",
+    "update": "Mettre à jour",
+    "activate": "Activer",
+    "deactivate": "Désactiver",
+    "configure": "Configurer",
+    "connect": "Connecter",
+    "disconnect": "Déconnecter",
+    "reconnect": "Reconnecter",
+    "connected": "Connecté",
+    "notConnected": "Non connecté",
+    "available": "Disponible",
+    "required": "Requis"
+  },
+  "auth": {
+    "login": {
+      "title": "ACTION-REACTION",
+      "subtitle": "Connectez-vous à votre compte",
+      "email": "Email",
+      "password": "Mot de passe",
+      "emailPlaceholder": "vous@exemple.com",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Se connecter",
+      "submitting": "Connexion...",
+      "noAccount": "Pas encore de compte ?",
+      "createAccount": "Créer un compte",
+      "error": "Erreur de connexion",
+      "fillFields": "Veuillez remplir tous les champs",
+      "success": "Connexion réussie !"
+    },
+    "signup": {
+      "title": "ACTION-REACTION",
+      "subtitle": "Créez votre compte",
+      "displayName": "Nom d'affichage",
+      "displayNamePlaceholder": "Votre nom",
+      "email": "Email",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "passwordPlaceholder": "••••••••",
+      "emailPlaceholder": "vous@exemple.com",
+      "submit": "Créer le compte",
+      "submitting": "Création...",
+      "hasAccount": "Déjà un compte ?",
+      "login": "Se connecter",
+      "error": "Erreur lors de la création du compte",
+      "fillFields": "Veuillez remplir tous les champs",
+      "passwordMismatch": "Les mots de passe ne correspondent pas",
+      "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères",
+      "success": "Compte créé avec succès !"
+    }
+  },
+  "home": {
+    "title": "ACTION-REACTION",
+    "subtitle": "Automatisez vos tâches en connectant vos services préférés",
+    "description": "Créez des automatisations intelligentes : quand une action se produit, déclenchez une réaction",
+    "createAccount": "Créer un compte",
+    "login": "Se connecter",
+    "connect": {
+      "title": "Connectez",
+      "description": "Gmail, GitHub, Discord et plus encore"
+    },
+    "automate": {
+      "title": "Automatisez",
+      "description": "Créez des workflows intelligents"
+    },
+    "optimize": {
+      "title": "Optimisez",
+      "description": "Gagnez du temps sur vos tâches"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Gérez vos automatisations",
+    "createArea": "Nouvelle AREA",
+    "total": "Total",
+    "active": "Actives",
+    "inactive": "Inactives",
+    "myAreas": "Mes AREAs",
+    "noAreas": {
+      "title": "Aucune AREA créée",
+      "description": "Commencez par créer votre première automation",
+      "button": "Créer une AREA"
+    },
+    "createdOn": "Créée le",
+    "lastTriggered": "Dernière :",
+    "builtin": "Built-in",
+    "activate": "Activer",
+    "deactivate": "Désactiver",
+    "configure": "Configurer"
+  },
+  "areas": {
+    "create": {
+      "title": "Créer une AREA",
+      "subtitle": "Connectez une Action à une REAction",
+      "formMode": "Formulaire",
+      "builderMode": "Builder visuel",
+      "step": {
+        "info": "Informations",
+        "action": "Action",
+        "reaction": "Réaction",
+        "review": "Aperçu"
+      },
+      "name": "Nom de l'AREA",
+      "namePlaceholder": "Ex: Notification Discord quand nouveau commit GitHub",
+      "description": "Description",
+      "descriptionPlaceholder": "Décrivez ce que fait cette AREA",
+      "selectActionService": "Sélectionner un service d'action",
+      "selectAction": "Sélectionner une action",
+      "selectReactionService": "Sélectionner un service de réaction",
+      "selectReaction": "Sélectionner une réaction",
+      "twitchUserLogin": "Nom d'utilisateur Twitch",
+      "twitchUserLoginPlaceholder": "ex: ninja",
+      "spotifyTrackUrl": "URL du morceau Spotify",
+      "spotifyTrackUrlPlaceholder": "https://open.spotify.com/track/...",
+      "spotifyDeviceId": "ID de l'appareil Spotify (optionnel)",
+      "spotifyDeviceIdPlaceholder": "Laissez vide pour utiliser l'appareil par défaut",
+      "review": "Aperçu",
+      "creating": "Création en cours...",
+      "create": "Créer l'AREA",
+      "success": "AREA créée avec succès !",
+      "error": "Erreur lors de la création",
+      "notImplemented": "Création backend non implémentée pour cette combinaison (pour l'instant).",
+      "twitchNotFound": "Service Twitch introuvable côté backend",
+      "spotifyNotFound": "Service Spotify introuvable côté backend",
+      "spotifyUrlRequired": "URL du morceau Spotify requise",
+      "spotifyNotConnected": "Spotify non connecté: connecte Spotify dans /services avant de créer cette AREA"
+    }
+  },
+  "builder": {
+    "title": "Créer une AREA",
+    "palette": {
+      "title": "Palette de nœuds",
+      "searchPlaceholder": "Rechercher un service...",
+      "all": "Tous",
+      "actions": "Actions",
+      "reactions": "Réactions",
+      "noServices": "Aucun service trouvé",
+      "action": "Action",
+      "reaction": "Réaction"
+    },
+    "config": {
+      "title": "Configuration",
+      "service": "Service",
+      "action": "Action",
+      "reaction": "Réaction",
+      "parameters": "Paramètres",
+      "saving": "Enregistrement...",
+      "save": "Enregistrer",
+      "cancel": "Annuler"
+    },
+    "nodes": {
+      "action": "Action",
+      "reaction": "Réaction",
+      "configured": "Configuré",
+      "toConfigure": "À configurer",
+      "service": "Service"
+    },
+    "create": "Créer l'AREA",
+    "cancel": "Annuler",
+    "errors": "Erreurs",
+    "warnings": "Avertissements",
+    "continueAnyway": "Continuer quand même ?",
+    "createError": "Erreur lors de la création"
+  },
+  "services": {
+    "title": "Services",
+    "subtitle": "Connectez vos services pour créer des automatisations",
+    "spotify": {
+      "name": "Spotify",
+      "connected": "Connecté",
+      "notConnected": "Non connecté",
+      "connectedAs": "Connecté : {{name}}"
+    },
+    "twitch": {
+      "name": "Twitch",
+      "available": "Disponible",
+      "noConnectionRequired": "Aucune connexion requise"
+    },
+    "actions": "ACTIONS",
+    "reactions": "REACTIONS",
+    "none": "Aucune",
+    "category": {
+      "social": "Réseaux sociaux",
+      "productivity": "Productivité",
+      "storage": "Stockage",
+      "communication": "Communication",
+      "time": "Temps"
+    }
+  },
+  "profile": {
+    "title": "Profil",
+    "subtitle": "Gérez vos informations personnelles",
+    "accountInfo": {
+      "title": "Informations du compte",
+      "email": "Email",
+      "userId": "ID Utilisateur",
+      "createdAt": "Créé le"
+    },
+    "dangerZone": {
+      "title": "Zone de danger",
+      "description": "Déconnectez-vous de votre compte",
+      "signOut": "Se déconnecter"
+    }
+  },
+  "errors": {
+    "generic": "Une erreur est survenue",
+    "network": "Erreur réseau",
+    "unauthorized": "Non autorisé",
+    "notFound": "Ressource introuvable",
+    "serverError": "Erreur serveur"
+  }
+}
+

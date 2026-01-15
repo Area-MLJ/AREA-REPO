@@ -4,6 +4,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MOCK_SERVICES } from '../../temp-shared';
 import { Card } from '../../DesignSystem/components/Card';
 import { Button } from '../../DesignSystem/components/Button';
@@ -13,6 +14,7 @@ import { apiClient, Service, UserService } from '../../lib/api';
 import { AreaBuilder } from '../../components/AreaBuilder/AreaBuilder';
 
 export default function AreaCreatorPage() {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<'form' | 'builder'>('form');
   const [step, setStep] = useState<'info' | 'action' | 'reaction' | 'review'>('info');
   const [name, setName] = useState('');
@@ -171,17 +173,30 @@ export default function AreaCreatorPage() {
           throw new Error(reactionRes.error || 'Failed to create area reaction');
         }
 
-        alert('AREA créée avec succès !');
+        alert(t('areas.create.success'));
         window.location.href = '/dashboard';
       } catch (e: any) {
-        alert(e?.message || 'Erreur lors de la création');
+        const errorMsg = e?.message || t('areas.create.error');
+        if (errorMsg.includes('Twitch')) {
+          alert(t('areas.create.twitchNotFound'));
+        } else if (errorMsg.includes('Spotify')) {
+          if (errorMsg.includes('connecté')) {
+            alert(t('areas.create.spotifyNotConnected'));
+          } else if (errorMsg.includes('URL')) {
+            alert(t('areas.create.spotifyUrlRequired'));
+          } else {
+            alert(t('areas.create.spotifyNotFound'));
+          }
+        } else {
+          alert(errorMsg);
+        }
       } finally {
         setCreating(false);
       }
       return;
     }
 
-    alert('Création backend non implémentée pour cette combinaison (pour l\'instant).');
+    alert(t('areas.create.notImplemented'));
   };
 
   const canProceed = () => {
@@ -212,7 +227,7 @@ export default function AreaCreatorPage() {
   };
 
   const handleBuilderSave = (areaId: string) => {
-    alert('AREA créée avec succès !');
+    alert(t('areas.create.success'));
     window.location.href = '/dashboard';
   };
 
@@ -271,9 +286,9 @@ export default function AreaCreatorPage() {
         <div className="p-4 border-b border-[#E8E6E1] bg-white">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-semibold text-[#1A1A18]">Créer une AREA</h1>
+              <h1 className="text-2xl font-semibold text-[#1A1A18]">{t('areas.create.title')}</h1>
               <p className="text-sm text-[#6B6962] mt-1">
-                Builder visuel - Glissez et déposez les nœuds pour créer votre workflow
+                {t('areas.create.builderMode')} - {t('builder.palette.title')}
               </p>
             </div>
             <div className="flex gap-2">
@@ -282,14 +297,14 @@ export default function AreaCreatorPage() {
                 size="sm"
                 onClick={() => setMode('form')}
               >
-                Formulaire
+                {t('areas.create.formMode')}
               </Button>
               <Button
                 variant={mode === 'builder' ? 'primary' : 'outlined'}
                 size="sm"
                 onClick={() => setMode('builder')}
               >
-                Builder visuel
+                {t('areas.create.builderMode')}
               </Button>
             </div>
           </div>
@@ -297,7 +312,7 @@ export default function AreaCreatorPage() {
         {servicesWithDetails.length === 0 && backendServices.length > 0 ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <p className="text-[#6B6962] mb-4">Chargement des services...</p>
+              <p className="text-[#6B6962] mb-4">{t('common.loading')}</p>
             </div>
           </div>
         ) : (
@@ -305,7 +320,7 @@ export default function AreaCreatorPage() {
             <AreaBuilder
               services={servicesWithDetails}
               userServices={backendUserServices}
-              name={name || 'Nouvelle AREA'}
+              name={name || t('areas.create.title')}
               description={description}
               onSave={handleBuilderSave}
               onCancel={handleBuilderCancel}
@@ -321,9 +336,9 @@ export default function AreaCreatorPage() {
       <div className="max-w-4xl mx-auto space-y-4 md:space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl md:text-3xl font-semibold text-[#1A1A18]">Créer une AREA</h1>
+            <h1 className="text-2xl md:text-3xl font-semibold text-[#1A1A18]">{t('areas.create.title')}</h1>
             <p className="text-sm md:text-base text-[#6B6962] mt-1">
-              Connectez une Action à une REAction
+              {t('areas.create.subtitle')}
             </p>
           </div>
           <div className="flex gap-2">
@@ -332,14 +347,14 @@ export default function AreaCreatorPage() {
               size="sm"
               onClick={() => setMode('form')}
             >
-              Formulaire
+              {t('areas.create.formMode')}
             </Button>
             <Button
               variant={mode === 'builder' ? 'primary' : 'outlined'}
               size="sm"
               onClick={() => setMode('builder')}
             >
-              Builder visuel
+              {t('areas.create.builderMode')}
             </Button>
           </div>
         </div>
@@ -359,18 +374,18 @@ export default function AreaCreatorPage() {
       {step === 'info' && (
         <Card variant="elevated" padding="md" className="md:p-8">
           <h2 className="text-lg md:text-xl font-semibold text-[#1A1A18] mb-4 md:mb-6">
-            Informations générales
+            {t('areas.create.step.info')}
           </h2>
           <div className="space-y-4">
             <Input
-              label="Nom de l'AREA"
-              placeholder="Ex: Backup Gmail vers OneDrive"
+              label={t('areas.create.name')}
+              placeholder={t('areas.create.namePlaceholder')}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
             <Input
-              label="Description"
-              placeholder="Ex: Sauvegarde automatique des pièces jointes"
+              label={t('areas.create.description')}
+              placeholder={t('areas.create.descriptionPlaceholder')}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
@@ -381,18 +396,18 @@ export default function AreaCreatorPage() {
       {step === 'action' && (
         <Card variant="elevated" padding="md" className="md:p-8">
           <h2 className="text-lg md:text-xl font-semibold text-[#1A1A18] mb-2">
-            Choisir une Action
+            {t('areas.create.step.action')}
           </h2>
           <p className="text-sm md:text-base text-[#6B6962] mb-4 md:mb-6">
-            Sélectionnez le déclencheur de votre automation
+            {t('areas.create.selectActionService')}
           </p>
 
           {actionServices.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-sm md:text-base text-[#6B6962]">
-                Aucun service avec Actions connecté.{' '}
+                {t('services.none')} {t('services.actions')} {t('common.connected')}.{' '}
                 <a href="/services" className="text-[#0a4a0e] hover:underline">
-                  Connecter des services
+                  {t('common.connect')} {t('services.title')}
                 </a>
               </p>
             </div>
@@ -420,7 +435,7 @@ export default function AreaCreatorPage() {
                     />
                     <div className="text-sm md:text-base font-medium text-[#1A1A18]">{service.name}</div>
                     <div className="text-xs md:text-sm text-[#6B6962]">
-                      {service.actions.length} action(s)
+                      {service.actions.length} {t('builder.palette.actions')}
                     </div>
                   </button>
                 ))}
@@ -429,7 +444,7 @@ export default function AreaCreatorPage() {
               {selectedActionService && (
                 <div className="mt-4 md:mt-6">
                   <h3 className="text-sm md:text-base font-medium text-[#1A1A18] mb-3">
-                    Sélectionnez une action
+                    {t('areas.create.selectAction')}
                   </h3>
                   <div className="space-y-2">
                     {actionServices
@@ -457,8 +472,8 @@ export default function AreaCreatorPage() {
                   {selectedAction === 'twitch_stream_online' && (
                     <div className="mt-4">
                       <Input
-                        label="Pseudo Twitch (user_login)"
-                        placeholder="Ex: gotaga"
+                        label={t('areas.create.twitchUserLogin')}
+                        placeholder={t('areas.create.twitchUserLoginPlaceholder')}
                         value={twitchUserLogin}
                         onChange={(e) => setTwitchUserLogin(e.target.value)}
                       />
@@ -474,18 +489,18 @@ export default function AreaCreatorPage() {
       {step === 'reaction' && (
         <Card variant="elevated" padding="md" className="md:p-8">
           <h2 className="text-lg md:text-xl font-semibold text-[#1A1A18] mb-2">
-            Choisir une REAction
+            {t('areas.create.step.reaction')}
           </h2>
           <p className="text-sm md:text-base text-[#6B6962] mb-4 md:mb-6">
-            Sélectionnez l'action à exécuter
+            {t('areas.create.selectReactionService')}
           </p>
 
           {reactionServices.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-sm md:text-base text-[#6B6962]">
-                Aucun service avec REActions connecté.{' '}
+                {t('services.none')} {t('services.reactions')} {t('common.connected')}.{' '}
                 <a href="/services" className="text-[#0a4a0e] hover:underline">
-                  Connecter des services
+                  {t('common.connect')} {t('services.title')}
                 </a>
               </p>
             </div>
@@ -514,7 +529,7 @@ export default function AreaCreatorPage() {
                     />
                     <div className="text-sm md:text-base font-medium text-[#1A1A18]">{service.name}</div>
                     <div className="text-xs md:text-sm text-[#6B6962]">
-                      {service.reactions.length} réaction(s)
+                      {service.reactions.length} {t('builder.palette.reactions')}
                     </div>
                   </button>
                 ))}
@@ -523,7 +538,7 @@ export default function AreaCreatorPage() {
               {selectedReactionService && (
                 <div className="mt-4 md:mt-6">
                   <h3 className="text-sm md:text-base font-medium text-[#1A1A18] mb-3">
-                    Sélectionnez une réaction
+                    {t('areas.create.selectReaction')}
                   </h3>
                   <div className="space-y-2">
                     {reactionServices
@@ -551,14 +566,14 @@ export default function AreaCreatorPage() {
                   {selectedReaction === 'spotify_play_track' && (
                     <div className="mt-4 space-y-4">
                       <Input
-                        label="URL du morceau Spotify (track_url)"
-                        placeholder="https://open.spotify.com/track/... ou spotify:track:..."
+                        label={t('areas.create.spotifyTrackUrl')}
+                        placeholder={t('areas.create.spotifyTrackUrlPlaceholder')}
                         value={spotifyTrackUrl}
                         onChange={(e) => setSpotifyTrackUrl(e.target.value)}
                       />
                       <Input
-                        label="Device ID (optionnel)"
-                        placeholder="Ex: 123abc..."
+                        label={t('areas.create.spotifyDeviceId')}
+                        placeholder={t('areas.create.spotifyDeviceIdPlaceholder')}
                         value={spotifyDeviceId}
                         onChange={(e) => setSpotifyDeviceId(e.target.value)}
                       />
@@ -574,20 +589,20 @@ export default function AreaCreatorPage() {
       {step === 'review' && (
         <Card variant="elevated" padding="md" className="md:p-8">
           <h2 className="text-lg md:text-xl font-semibold text-[#1A1A18] mb-4 md:mb-6">
-            Récapitulatif
+            {t('areas.create.step.review')}
           </h2>
           <div className="space-y-4 md:space-y-6">
             <div>
-              <div className="text-xs md:text-sm text-[#8B8980] mb-1">Nom</div>
+              <div className="text-xs md:text-sm text-[#8B8980] mb-1">{t('areas.create.name')}</div>
               <div className="text-sm md:text-base font-medium text-[#1A1A18]">{name}</div>
             </div>
             <div>
-              <div className="text-xs md:text-sm text-[#8B8980] mb-1">Description</div>
+              <div className="text-xs md:text-sm text-[#8B8980] mb-1">{t('areas.create.description')}</div>
               <div className="text-sm md:text-base text-[#4D4C47]">{description}</div>
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-4 p-3 md:p-4 bg-[#E8E6E1] rounded-lg">
               <div className="flex-1 text-center w-full">
-                <Badge variant="primary" size="sm">ACTION</Badge>
+                <Badge variant="primary" size="sm">{t('builder.nodes.action')}</Badge>
                 <div className="mt-2 text-sm md:text-base font-medium text-[#1A1A18]">
                   {MOCK_SERVICES.find(s => s.id === selectedActionService)?.name}
                 </div>
@@ -603,7 +618,7 @@ export default function AreaCreatorPage() {
               </div>
               <div className="text-xl md:text-2xl text-[#0a4a0e] rotate-90 sm:rotate-0">→</div>
               <div className="flex-1 text-center w-full">
-                <Badge variant="success" size="sm">REACTION</Badge>
+                <Badge variant="success" size="sm">{t('builder.nodes.reaction')}</Badge>
                 <div className="mt-2 text-sm md:text-base font-medium text-[#1A1A18]">
                   {MOCK_SERVICES.find(s => s.id === selectedReactionService)?.name}
                 </div>
@@ -636,7 +651,7 @@ export default function AreaCreatorPage() {
             }
           }}
         >
-          {step === 'info' ? 'Annuler' : 'Précédent'}
+          {step === 'info' ? t('common.cancel') : t('common.previous')}
         </Button>
 
         <Button
@@ -652,7 +667,7 @@ export default function AreaCreatorPage() {
           }}
           disabled={!canProceed() || creating}
         >
-          {step === 'review' ? 'Créer l\'AREA' : 'Suivant'}
+          {step === 'review' ? t('areas.create.create') : t('common.next')}
         </Button>
       </div>
       </div>

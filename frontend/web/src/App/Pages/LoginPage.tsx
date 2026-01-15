@@ -4,6 +4,7 @@
  */
 
 import { useState, FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../temp-shared';
 import { Button } from '../../DesignSystem/components/Button';
 import { Input } from '../../DesignSystem/components/Input';
@@ -12,6 +13,7 @@ import { useToast } from '../../components/Toast';
 import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   const { login, isLoading } = useAuth();
   const { showToast, ToastContainer } = useToast();
   const navigate = useNavigate();
@@ -24,18 +26,18 @@ export default function LoginPage() {
     setError('');
 
     if (!email || !password) {
-      setError('Veuillez remplir tous les champs');
+      setError(t('auth.login.fillFields'));
       return;
     }
 
     const result = await login(email, password);
 
     if (result.success) {
-      showToast('Connexion réussie !', 'success');
+      showToast(t('auth.login.success'), 'success');
       navigate('/dashboard');
     } else {
-      setError(result.error || 'Erreur de connexion');
-      showToast(result.error || 'Erreur de connexion', 'error');
+      setError(result.error || t('auth.login.error'));
+      showToast(result.error || t('auth.login.error'), 'error');
     }
   };
 
@@ -44,16 +46,16 @@ export default function LoginPage() {
       <Card variant="elevated" className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-semibold text-[#0a4a0e] mb-2">
-            ACTION-REACTION
+            {t('auth.login.title')}
           </h1>
-          <p className="text-[#6B6962]">Connectez-vous à votre compte</p>
+          <p className="text-[#6B6962]">{t('auth.login.subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             type="email"
-            label="Email"
-            placeholder="vous@exemple.com"
+            label={t('auth.login.email')}
+            placeholder={t('auth.login.emailPlaceholder')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -62,8 +64,8 @@ export default function LoginPage() {
 
           <Input
             type="password"
-            label="Mot de passe"
-            placeholder="••••••••"
+            label={t('auth.login.password')}
+            placeholder={t('auth.login.passwordPlaceholder')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -81,15 +83,15 @@ export default function LoginPage() {
             fullWidth
             disabled={isLoading}
           >
-            {isLoading ? 'Connexion...' : 'Se connecter'}
+            {isLoading ? t('auth.login.submitting') : t('auth.login.submit')}
           </Button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-[#6B6962]">
-            Pas encore de compte ?{' '}
+            {t('auth.login.noAccount')}{' '}
             <a href="/signup" className="text-[#0a4a0e] font-medium hover:underline">
-              Créer un compte
+              {t('auth.login.createAccount')}
             </a>
           </p>
         </div>

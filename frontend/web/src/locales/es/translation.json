@@ -1,0 +1,229 @@
+{
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "confirm": "Confirmar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "all": "Todos",
+    "none": "Ninguno",
+    "create": "Crear",
+    "update": "Actualizar",
+    "activate": "Activar",
+    "deactivate": "Desactivar",
+    "configure": "Configurar",
+    "connect": "Conectar",
+    "disconnect": "Desconectar",
+    "reconnect": "Reconectar",
+    "connected": "Conectado",
+    "notConnected": "No conectado",
+    "available": "Disponible",
+    "required": "Requerido"
+  },
+  "auth": {
+    "login": {
+      "title": "ACTION-REACTION",
+      "subtitle": "Inicia sesión en tu cuenta",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "emailPlaceholder": "tu@ejemplo.com",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Iniciar sesión",
+      "submitting": "Iniciando sesión...",
+      "noAccount": "¿No tienes una cuenta?",
+      "createAccount": "Crear una cuenta",
+      "error": "Error al iniciar sesión",
+      "fillFields": "Por favor completa todos los campos",
+      "success": "¡Inicio de sesión exitoso!"
+    },
+    "signup": {
+      "title": "ACTION-REACTION",
+      "subtitle": "Crea tu cuenta",
+      "displayName": "Nombre para mostrar",
+      "displayNamePlaceholder": "Tu nombre",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "passwordPlaceholder": "••••••••",
+      "emailPlaceholder": "tu@ejemplo.com",
+      "submit": "Crear cuenta",
+      "submitting": "Creando...",
+      "hasAccount": "¿Ya tienes una cuenta?",
+      "login": "Iniciar sesión",
+      "error": "Error al crear la cuenta",
+      "fillFields": "Por favor completa todos los campos",
+      "passwordMismatch": "Las contraseñas no coinciden",
+      "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
+      "success": "¡Cuenta creada con éxito!"
+    }
+  },
+  "home": {
+    "title": "ACTION-REACTION",
+    "subtitle": "Automatiza tus tareas conectando tus servicios favoritos",
+    "description": "Crea automatizaciones inteligentes: cuando ocurre una acción, activa una reacción",
+    "createAccount": "Crear una cuenta",
+    "login": "Iniciar sesión",
+    "connect": {
+      "title": "Conecta",
+      "description": "Gmail, GitHub, Discord y más"
+    },
+    "automate": {
+      "title": "Automatiza",
+      "description": "Crea flujos de trabajo inteligentes"
+    },
+    "optimize": {
+      "title": "Optimiza",
+      "description": "Ahorra tiempo en tus tareas"
+    }
+  },
+  "dashboard": {
+    "title": "Panel de control",
+    "subtitle": "Gestiona tus automatizaciones",
+    "createArea": "Nueva AREA",
+    "total": "Total",
+    "active": "Activas",
+    "inactive": "Inactivas",
+    "myAreas": "Mis AREAs",
+    "noAreas": {
+      "title": "No se ha creado ninguna AREA",
+      "description": "Comienza creando tu primera automatización",
+      "button": "Crear una AREA"
+    },
+    "createdOn": "Creada el",
+    "lastTriggered": "Última:",
+    "builtin": "Integrado",
+    "activate": "Activar",
+    "deactivate": "Desactivar",
+    "configure": "Configurar"
+  },
+  "areas": {
+    "create": {
+      "title": "Crear una AREA",
+      "formMode": "Formulario",
+      "builderMode": "Constructor",
+      "step": {
+        "info": "Información",
+        "action": "Acción",
+        "reaction": "Reacción",
+        "review": "Revisar"
+      },
+      "name": "Nombre de la AREA",
+      "namePlaceholder": "Ej: Notificación de Discord cuando hay un nuevo commit en GitHub",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Describe qué hace esta AREA",
+      "selectActionService": "Seleccionar un servicio de acción",
+      "selectAction": "Seleccionar una acción",
+      "selectReactionService": "Seleccionar un servicio de reacción",
+      "selectReaction": "Seleccionar una reacción",
+      "twitchUserLogin": "Nombre de usuario de Twitch",
+      "twitchUserLoginPlaceholder": "ej: ninja",
+      "spotifyTrackUrl": "URL de la pista de Spotify",
+      "spotifyTrackUrlPlaceholder": "https://open.spotify.com/track/...",
+      "spotifyDeviceId": "ID del dispositivo de Spotify (opcional)",
+      "spotifyDeviceIdPlaceholder": "Dejar vacío para usar el dispositivo predeterminado",
+      "review": "Revisar",
+      "creating": "Creando...",
+      "create": "Crear AREA",
+      "success": "¡AREA creada con éxito!",
+      "error": "Error al crear",
+      "notImplemented": "Creación en backend no implementada para esta combinación (por ahora).",
+      "twitchNotFound": "Servicio de Twitch no encontrado en el backend",
+      "spotifyNotFound": "Servicio de Spotify no encontrado en el backend",
+      "spotifyUrlRequired": "URL de la pista de Spotify requerida",
+      "spotifyNotConnected": "Spotify no conectado: conecta Spotify en /services antes de crear esta AREA"
+    }
+  },
+  "builder": {
+    "title": "Crear una AREA",
+    "palette": {
+      "title": "Paleta de nodos",
+      "searchPlaceholder": "Buscar un servicio...",
+      "all": "Todos",
+      "actions": "Acciones",
+      "reactions": "Reacciones",
+      "noServices": "No se encontraron servicios",
+      "action": "Acción",
+      "reaction": "Reacción"
+    },
+    "config": {
+      "title": "Configuración",
+      "service": "Servicio",
+      "action": "Acción",
+      "reaction": "Reacción",
+      "parameters": "Parámetros",
+      "saving": "Guardando...",
+      "save": "Guardar",
+      "cancel": "Cancelar"
+    },
+    "nodes": {
+      "action": "Acción",
+      "reaction": "Reacción",
+      "configured": "Configurado",
+      "toConfigure": "Por configurar",
+      "service": "Servicio"
+    },
+    "create": "Crear AREA",
+    "cancel": "Cancelar",
+    "errors": "Errores",
+    "warnings": "Advertencias",
+    "continueAnyway": "¿Continuar de todos modos?",
+    "createError": "Error al crear"
+  },
+  "services": {
+    "title": "Servicios",
+    "subtitle": "Conecta tus servicios para crear automatizaciones",
+    "spotify": {
+      "name": "Spotify",
+      "connected": "Conectado",
+      "notConnected": "No conectado",
+      "connectedAs": "Conectado como {{name}}"
+    },
+    "twitch": {
+      "name": "Twitch",
+      "available": "Disponible",
+      "noConnectionRequired": "No se requiere conexión"
+    },
+    "actions": "ACCIONES",
+    "reactions": "REACCIONES",
+    "none": "Ninguna",
+    "category": {
+      "social": "Redes sociales",
+      "productivity": "Productividad",
+      "storage": "Almacenamiento",
+      "communication": "Comunicación",
+      "time": "Tiempo"
+    }
+  },
+  "profile": {
+    "title": "Perfil",
+    "subtitle": "Gestiona tu información personal",
+    "accountInfo": {
+      "title": "Información de la cuenta",
+      "email": "Correo electrónico",
+      "userId": "ID de usuario",
+      "createdAt": "Creado el"
+    },
+    "dangerZone": {
+      "title": "Zona de peligro",
+      "description": "Cierra sesión en tu cuenta",
+      "signOut": "Cerrar sesión"
+    }
+  },
+  "errors": {
+    "generic": "Ocurrió un error",
+    "network": "Error de red",
+    "unauthorized": "No autorizado",
+    "notFound": "Recurso no encontrado",
+    "serverError": "Error del servidor"
+  }
+}
+

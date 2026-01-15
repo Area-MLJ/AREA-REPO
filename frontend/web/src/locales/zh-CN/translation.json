@@ -1,0 +1,229 @@
+{
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "close": "关闭",
+    "back": "返回",
+    "next": "下一步",
+    "previous": "上一步",
+    "confirm": "确认",
+    "search": "搜索",
+    "filter": "筛选",
+    "all": "全部",
+    "none": "无",
+    "create": "创建",
+    "update": "更新",
+    "activate": "激活",
+    "deactivate": "停用",
+    "configure": "配置",
+    "connect": "连接",
+    "disconnect": "断开",
+    "reconnect": "重新连接",
+    "connected": "已连接",
+    "notConnected": "未连接",
+    "available": "可用",
+    "required": "必填"
+  },
+  "auth": {
+    "login": {
+      "title": "ACTION-REACTION",
+      "subtitle": "登录您的账户",
+      "email": "邮箱",
+      "password": "密码",
+      "emailPlaceholder": "you@example.com",
+      "passwordPlaceholder": "••••••••",
+      "submit": "登录",
+      "submitting": "登录中...",
+      "noAccount": "还没有账户？",
+      "createAccount": "创建账户",
+      "error": "登录错误",
+      "fillFields": "请填写所有字段",
+      "success": "登录成功！"
+    },
+    "signup": {
+      "title": "ACTION-REACTION",
+      "subtitle": "创建您的账户",
+      "displayName": "显示名称",
+      "displayNamePlaceholder": "您的姓名",
+      "email": "邮箱",
+      "password": "密码",
+      "confirmPassword": "确认密码",
+      "passwordPlaceholder": "••••••••",
+      "emailPlaceholder": "you@example.com",
+      "submit": "创建账户",
+      "submitting": "创建中...",
+      "hasAccount": "已有账户？",
+      "login": "登录",
+      "error": "创建账户时出错",
+      "fillFields": "请填写所有字段",
+      "passwordMismatch": "密码不匹配",
+      "passwordTooShort": "密码至少需要6个字符",
+      "success": "账户创建成功！"
+    }
+  },
+  "home": {
+    "title": "ACTION-REACTION",
+    "subtitle": "通过连接您喜爱的服务来自动化您的任务",
+    "description": "创建智能自动化：当发生操作时，触发反应",
+    "createAccount": "创建账户",
+    "login": "登录",
+    "connect": {
+      "title": "连接",
+      "description": "Gmail、GitHub、Discord 等"
+    },
+    "automate": {
+      "title": "自动化",
+      "description": "创建智能工作流"
+    },
+    "optimize": {
+      "title": "优化",
+      "description": "节省您任务的时间"
+    }
+  },
+  "dashboard": {
+    "title": "仪表板",
+    "subtitle": "管理您的自动化",
+    "createArea": "新建 AREA",
+    "total": "总计",
+    "active": "活跃",
+    "inactive": "非活跃",
+    "myAreas": "我的 AREA",
+    "noAreas": {
+      "title": "尚未创建 AREA",
+      "description": "开始创建您的第一个自动化",
+      "button": "创建 AREA"
+    },
+    "createdOn": "创建于",
+    "lastTriggered": "最后触发：",
+    "builtin": "内置",
+    "activate": "激活",
+    "deactivate": "停用",
+    "configure": "配置"
+  },
+  "areas": {
+    "create": {
+      "title": "创建 AREA",
+      "formMode": "表单",
+      "builderMode": "构建器",
+      "step": {
+        "info": "信息",
+        "action": "操作",
+        "reaction": "反应",
+        "review": "预览"
+      },
+      "name": "AREA 名称",
+      "namePlaceholder": "例如：GitHub 新提交时 Discord 通知",
+      "description": "描述",
+      "descriptionPlaceholder": "描述此 AREA 的功能",
+      "selectActionService": "选择操作服务",
+      "selectAction": "选择操作",
+      "selectReactionService": "选择反应服务",
+      "selectReaction": "选择反应",
+      "twitchUserLogin": "Twitch 用户名",
+      "twitchUserLoginPlaceholder": "例如：ninja",
+      "spotifyTrackUrl": "Spotify 曲目链接",
+      "spotifyTrackUrlPlaceholder": "https://open.spotify.com/track/...",
+      "spotifyDeviceId": "Spotify 设备 ID（可选）",
+      "spotifyDeviceIdPlaceholder": "留空以使用默认设备",
+      "review": "预览",
+      "creating": "创建中...",
+      "create": "创建 AREA",
+      "success": "AREA 创建成功！",
+      "error": "创建时出错",
+      "notImplemented": "此组合的后端创建尚未实现（目前）。",
+      "twitchNotFound": "后端未找到 Twitch 服务",
+      "spotifyNotFound": "后端未找到 Spotify 服务",
+      "spotifyUrlRequired": "需要 Spotify 曲目链接",
+      "spotifyNotConnected": "Spotify 未连接：在创建此 AREA 之前，请在 /services 中连接 Spotify"
+    }
+  },
+  "builder": {
+    "title": "创建 AREA",
+    "palette": {
+      "title": "节点面板",
+      "searchPlaceholder": "搜索服务...",
+      "all": "全部",
+      "actions": "操作",
+      "reactions": "反应",
+      "noServices": "未找到服务",
+      "action": "操作",
+      "reaction": "反应"
+    },
+    "config": {
+      "title": "配置",
+      "service": "服务",
+      "action": "操作",
+      "reaction": "反应",
+      "parameters": "参数",
+      "saving": "保存中...",
+      "save": "保存",
+      "cancel": "取消"
+    },
+    "nodes": {
+      "action": "操作",
+      "reaction": "反应",
+      "configured": "已配置",
+      "toConfigure": "待配置",
+      "service": "服务"
+    },
+    "create": "创建 AREA",
+    "cancel": "取消",
+    "errors": "错误",
+    "warnings": "警告",
+    "continueAnyway": "仍要继续？",
+    "createError": "创建时出错"
+  },
+  "services": {
+    "title": "服务",
+    "subtitle": "连接您的服务以创建自动化",
+    "spotify": {
+      "name": "Spotify",
+      "connected": "已连接",
+      "notConnected": "未连接",
+      "connectedAs": "已连接为 {{name}}"
+    },
+    "twitch": {
+      "name": "Twitch",
+      "available": "可用",
+      "noConnectionRequired": "无需连接"
+    },
+    "actions": "操作",
+    "reactions": "反应",
+    "none": "无",
+    "category": {
+      "social": "社交网络",
+      "productivity": "生产力",
+      "storage": "存储",
+      "communication": "通信",
+      "time": "时间"
+    }
+  },
+  "profile": {
+    "title": "个人资料",
+    "subtitle": "管理您的个人信息",
+    "accountInfo": {
+      "title": "账户信息",
+      "email": "邮箱",
+      "userId": "用户 ID",
+      "createdAt": "创建于"
+    },
+    "dangerZone": {
+      "title": "危险区域",
+      "description": "退出您的账户",
+      "signOut": "退出"
+    }
+  },
+  "errors": {
+    "generic": "发生错误",
+    "network": "网络错误",
+    "unauthorized": "未授权",
+    "notFound": "未找到资源",
+    "serverError": "服务器错误"
+  }
+}
+
