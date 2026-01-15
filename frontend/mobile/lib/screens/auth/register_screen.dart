@@ -216,7 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               child: ElevatedButton(
                                 onPressed: authProvider.isLoading ? null : _register,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue[600],
+                                  backgroundColor: Color(0xFF0A4A0E),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
