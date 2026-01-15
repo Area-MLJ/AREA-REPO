@@ -7,7 +7,7 @@ class ApiConfig {
   // - Physical Device: Use your computer's IP address
   
   // To get your IP: Run ./get-ip.sh or use `ip addr show` (Linux) / `ifconfig` (Mac)
-  static const String host = String.fromEnvironment('API_HOST', defaultValue: '10.74.253.210');
+  static const String host = String.fromEnvironment('API_HOST', defaultValue: 'localhost');
   static const String port = String.fromEnvironment('API_PORT', defaultValue: '8080');
   
   static String get baseUrl => 'http://$host:$port/api';
