@@ -4,6 +4,7 @@
  */
 
 import { useState, FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../temp-shared';
 import { Button } from '../../DesignSystem/components/Button';
 import { Input } from '../../DesignSystem/components/Input';
@@ -12,6 +13,7 @@ import { useToast } from '../../components/Toast';
 import { useNavigate } from 'react-router-dom';
 
 export default function SignupPage() {
+  const { t } = useTranslation();
   const { register, isLoading } = useAuth();
   const { showToast, ToastContainer } = useToast();
   const navigate = useNavigate();
@@ -26,28 +28,28 @@ export default function SignupPage() {
     setError('');
 
     if (!email || !password || !confirmPassword || !displayName) {
-      setError('Veuillez remplir tous les champs');
+      setError(t('auth.signup.fillFields'));
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Les mots de passe ne correspondent pas');
+      setError(t('auth.signup.passwordMismatch'));
       return;
     }
 
     if (password.length < 6) {
-      setError('Le mot de passe doit contenir au moins 6 caractères');
+      setError(t('auth.signup.passwordTooShort'));
       return;
     }
 
     const result = await register(email, password, displayName);
 
     if (result.success) {
-      showToast('Compte créé avec succès !', 'success');
+      showToast(t('auth.signup.success'), 'success');
       navigate('/dashboard');
     } else {
-      setError(result.error || 'Erreur lors de la création du compte');
-      showToast(result.error || 'Erreur lors de la création du compte', 'error');
+      setError(result.error || t('auth.signup.error'));
+      showToast(result.error || t('auth.signup.error'), 'error');
     }
   };
 
@@ -56,16 +58,16 @@ export default function SignupPage() {
       <Card variant="elevated" className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-semibold text-[#0a4a0e] mb-2">
-            ACTION-REACTION
+            {t('auth.signup.title')}
           </h1>
-          <p className="text-[#6B6962]">Créez votre compte</p>
+          <p className="text-[#6B6962]">{t('auth.signup.subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             type="text"
-            label="Nom d'affichage"
-            placeholder="Votre nom"
+            label={t('auth.signup.displayName')}
+            placeholder={t('auth.signup.displayNamePlaceholder')}
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
             required
@@ -74,8 +76,8 @@ export default function SignupPage() {
 
           <Input
             type="email"
-            label="Email"
-            placeholder="vous@exemple.com"
+            label={t('auth.signup.email')}
+            placeholder={t('auth.signup.emailPlaceholder')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -84,8 +86,8 @@ export default function SignupPage() {
 
           <Input
             type="password"
-            label="Mot de passe"
-            placeholder="••••••••"
+            label={t('auth.signup.password')}
+            placeholder={t('auth.signup.passwordPlaceholder')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -94,8 +96,8 @@ export default function SignupPage() {
 
           <Input
             type="password"
-            label="Confirmer le mot de passe"
-            placeholder="••••••••"
+            label={t('auth.signup.confirmPassword')}
+            placeholder={t('auth.signup.passwordPlaceholder')}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
@@ -113,15 +115,15 @@ export default function SignupPage() {
             fullWidth
             disabled={isLoading}
           >
-            {isLoading ? 'Création...' : 'Créer le compte'}
+            {isLoading ? t('auth.signup.submitting') : t('auth.signup.submit')}
           </Button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-[#6B6962]">
-            Déjà un compte ?{' '}
+            {t('auth.signup.hasAccount')}{' '}
             <a href="/login" className="text-[#0a4a0e] font-medium hover:underline">
-              Se connecter
+              {t('auth.signup.login')}
             </a>
           </p>
         </div>

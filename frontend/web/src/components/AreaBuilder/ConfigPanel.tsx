@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { WorkflowNode, WorkflowNodeData, NodeConfig } from './types';
 import { Service, ServiceAction, ServiceReaction } from '../../lib/api';
 import { Card } from '../../DesignSystem/components/Card';
@@ -20,6 +21,7 @@ export function ConfigPanel({
   onClose,
   getUserServiceId 
 }: ConfigPanelProps) {
+  const { t } = useTranslation();
   const [paramValues, setParamValues] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [userServiceId, setUserServiceId] = useState<string | undefined>();
@@ -113,7 +115,7 @@ export function ConfigPanel({
     <Card variant="elevated" className="w-full max-w-md p-4 fixed right-4 top-20 bottom-4 overflow-y-auto z-50">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-[#1A1A18]">
-          Configuration
+          {t('builder.config.title')}
         </h3>
         <Button 
           variant="outlined" 
@@ -127,7 +129,7 @@ export function ConfigPanel({
       <div className="space-y-4 mb-4">
         <div>
           <div className="text-sm font-medium text-[#1A1A18] mb-1">
-            Service
+            {t('builder.config.service')}
           </div>
           <div className="text-sm text-[#6B6962]">
             {service.displayName || service.display_name}
@@ -136,7 +138,7 @@ export function ConfigPanel({
 
         <div>
           <div className="text-sm font-medium text-[#1A1A18] mb-1">
-            {nodeData?.type === 'action' ? 'Action' : 'Réaction'}
+            {nodeData?.type === 'action' ? t('builder.config.action') : t('builder.config.reaction')}
           </div>
           <div className="text-sm text-[#6B6962]">
             {action?.display_name || reaction?.display_name}
@@ -146,7 +148,7 @@ export function ConfigPanel({
         {params.length > 0 && (
           <div>
             <div className="text-sm font-medium text-[#1A1A18] mb-2">
-              Paramètres
+              {t('builder.config.parameters')}
             </div>
             <div className="space-y-3">
               {params.map((param) => (
@@ -187,7 +189,7 @@ export function ConfigPanel({
           onClick={onClose}
           className="flex-1"
         >
-          Annuler
+          {t('builder.config.cancel')}
         </Button>
         <Button
           variant="primary"
@@ -195,7 +197,7 @@ export function ConfigPanel({
           disabled={!isFormValid() || loading}
           className="flex-1"
         >
-          {loading ? 'Enregistrement...' : 'Enregistrer'}
+          {loading ? t('builder.config.saving') : t('builder.config.save')}
         </Button>
       </div>
     </Card>

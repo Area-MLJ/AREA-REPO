@@ -85,7 +85,13 @@ case "${1:-}" in
     log_info "Mise à jour du backend..."
     cd "$PROJECT_ROOT"
     run_compose pull 2>/dev/null || log_warning "Impossible de pull les images"
-    run_compose up -d --build
+    if [ "${2:-}" = "--no-cache" ]; then
+      log_info "Reconstruction sans cache..."
+      run_compose build --no-cache
+      run_compose up -d
+    else
+      run_compose up -d --build
+    fi
     log_success "Backend mis à jour"
     ;;
   

@@ -4,6 +4,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MOCK_SERVICES } from '../../temp-shared';
 import { Card } from '../../DesignSystem/components/Card';
 import { Button } from '../../DesignSystem/components/Button';
@@ -11,6 +12,7 @@ import { Badge } from '../../DesignSystem/components/Badge';
 import { apiClient, Service, UserService } from '../../lib/api';
 
 export default function ServicesPage() {
+  const { t } = useTranslation();
   const [services, setServices] = useState(MOCK_SERVICES);
   const [dbServices, setDbServices] = useState<Service[]>([]);
   const [userServices, setUserServices] = useState<UserService[]>([]);
@@ -64,41 +66,34 @@ export default function ServicesPage() {
     ));
   };
 
-  const categoryLabels = {
-    social: 'Réseaux sociaux',
-    productivity: 'Productivité',
-    storage: 'Stockage',
-    communication: 'Communication',
-    time: 'Temps',
-  };
-
   const getCategoryLabel = (category: string) => {
-    return categoryLabels[category as keyof typeof categoryLabels] || category;
+    const key = `services.category.${category}` as keyof typeof t;
+    return t(key as any) || category;
   };
 
   return (
     <div className="space-y-4 md:space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-semibold text-[#1A1A18]">Services</h1>
+        <h1 className="text-2xl md:text-3xl font-semibold text-[#1A1A18]">{t('services.title')}</h1>
         <p className="text-sm md:text-base text-[#6B6962] mt-1">
-          Connectez vos services pour créer des automatisations
+          {t('services.subtitle')}
         </p>
       </div>
 
       <Card variant="outlined" padding="sm" className="md:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <div className="text-base md:text-lg font-semibold text-[#1A1A18]">Spotify</div>
+            <div className="text-base md:text-lg font-semibold text-[#1A1A18]">{t('services.spotify.name')}</div>
             <div className="text-xs md:text-sm text-[#6B6962]">
               {spotifyUserService
-                ? `Connecté : ${spotifyUserService.display_name || 'Compte Spotify'}`
-                : 'Non connecté'}
+                ? t('services.spotify.connectedAs', { name: spotifyUserService.display_name || t('services.spotify.name') })
+                : t('services.spotify.notConnected')}
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <Badge variant={spotifyUserService ? 'success' : 'neutral'} size="sm">
-              {spotifyUserService ? 'Connecté' : 'Non connecté'}
+              {spotifyUserService ? t('services.spotify.connected') : t('services.spotify.notConnected')}
             </Badge>
             <Button
               variant={spotifyUserService ? 'outline' : 'primary'}
@@ -106,7 +101,7 @@ export default function ServicesPage() {
               onClick={handleConnectSpotify}
               disabled={spotifyLoading}
             >
-              {spotifyUserService ? 'Reconnecter' : 'Connecter'}
+              {spotifyUserService ? t('common.reconnect') : t('common.connect')}
             </Button>
           </div>
         </div>
@@ -115,18 +110,18 @@ export default function ServicesPage() {
       <Card variant="outlined" padding="sm" className="md:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <div className="text-base md:text-lg font-semibold text-[#1A1A18]">Twitch</div>
+            <div className="text-base md:text-lg font-semibold text-[#1A1A18]">{t('services.twitch.name')}</div>
             <div className="text-xs md:text-sm text-[#6B6962]">
-              Aucune connexion requise
+              {t('services.twitch.noConnectionRequired')}
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <Badge variant="success" size="sm">
-              Disponible
+              {t('services.twitch.available')}
             </Badge>
             <Button variant="outline" size="sm" disabled>
-              Connecté
+              {t('common.connected')}
             </Button>
           </div>
         </div>
@@ -152,7 +147,7 @@ export default function ServicesPage() {
                 </div>
               </div>
               <Badge variant={service.isConnected ? 'success' : 'neutral'} size="sm">
-                {service.isConnected ? 'Connecté' : 'Non connecté'}
+                {service.isConnected ? t('common.connected') : t('common.notConnected')}
               </Badge>
             </div>
 
@@ -163,19 +158,19 @@ export default function ServicesPage() {
             <div className="space-y-2 md:space-y-3 mb-3 md:mb-4">
               <div>
                 <div className="text-xs font-medium text-[#8B8980] mb-1">
-                  ACTIONS ({service.actions.length})
+                  {t('services.actions')} ({service.actions.length})
                 </div>
                 <div className="text-xs md:text-sm text-[#4D4C47] line-clamp-2">
-                  {service.actions.map(a => a.name).join(', ') || 'Aucune'}
+                  {service.actions.map(a => a.name).join(', ') || t('services.none')}
                 </div>
               </div>
 
               <div>
                 <div className="text-xs font-medium text-[#8B8980] mb-1">
-                  REACTIONS ({service.reactions.length})
+                  {t('services.reactions')} ({service.reactions.length})
                 </div>
                 <div className="text-xs md:text-sm text-[#4D4C47] line-clamp-2">
-                  {service.reactions.map(r => r.name).join(', ') || 'Aucune'}
+                  {service.reactions.map(r => r.name).join(', ') || t('services.none')}
                 </div>
               </div>
             </div>
@@ -186,7 +181,7 @@ export default function ServicesPage() {
               fullWidth
               onClick={() => toggleConnection(service.id)}
             >
-              {service.isConnected ? 'Déconnecter' : 'Connecter'}
+              {service.isConnected ? t('common.disconnect') : t('common.connect')}
             </Button>
           </Card>
         ))}

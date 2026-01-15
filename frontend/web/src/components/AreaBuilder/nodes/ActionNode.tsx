@@ -1,9 +1,11 @@
 import { Handle, Position, NodeProps } from 'reactflow';
+import { useTranslation } from 'react-i18next';
 import { WorkflowNodeData } from '../types';
 import { Card } from '../../../DesignSystem/components/Card';
 import { Badge } from '../../../DesignSystem/components/Badge';
 
 export function ActionNode({ data, selected }: NodeProps<WorkflowNodeData>) {
+  const { t } = useTranslation();
   const { config, isConfigured, action, service } = data;
 
   return (
@@ -22,20 +24,20 @@ export function ActionNode({ data, selected }: NodeProps<WorkflowNodeData>) {
           )}
           <div className="flex-1">
             <div className="font-semibold text-sm text-[#1A1A18]">
-              {action?.display_name || config?.actionName || 'Action'}
+              {action?.display_name || config?.actionName || t('builder.nodes.action')}
             </div>
             <div className="text-xs text-[#6B6962]">
-              {service?.displayName || service?.display_name || config?.serviceName || 'Service'}
+              {service?.displayName || service?.display_name || config?.serviceName || t('builder.nodes.service')}
             </div>
           </div>
         </div>
         
         <div className="flex items-center justify-between">
           <Badge variant={isConfigured ? 'success' : 'warning'} size="sm">
-            {isConfigured ? 'Configuré' : 'À configurer'}
+            {isConfigured ? t('builder.nodes.configured') : t('builder.nodes.toConfigure')}
           </Badge>
           <Badge variant="primary" size="sm">
-            Action
+            {t('builder.nodes.action')}
           </Badge>
         </div>
       </Card>

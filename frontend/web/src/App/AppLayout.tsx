@@ -4,24 +4,27 @@
  */
 
 import { ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../temp-shared';
 import { Link, useLocation } from 'react-router-dom';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 
 interface AppLayoutProps {
   children: ReactNode;
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
   const location = useLocation();
   const currentPath = location.pathname;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { path: '/dashboard', label: 'Dashboard', icon: '📊' },
-    { path: '/services', label: 'Services', icon: '🔌' },
-    { path: '/area/create', label: 'Créer', icon: '✨' },
-    { path: '/profile', label: 'Profil', icon: '👤' },
+    { path: '/dashboard', label: t('dashboard.title'), icon: '📊' },
+    { path: '/services', label: t('services.title'), icon: '🔌' },
+    { path: '/area/create', label: t('common.create'), icon: '✨' },
+    { path: '/profile', label: t('profile.title'), icon: '👤' },
   ];
 
   return (
@@ -64,6 +67,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             </button>
 
             <div className="hidden md:flex items-center gap-3">
+              <LanguageSwitcher />
               <div className="text-sm text-[#6B6962] max-w-[200px] truncate">
                 {user?.email}
               </div>
@@ -71,7 +75,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 onClick={logout}
                 className="text-sm px-3 py-1 text-[#6B6962] hover:text-[#0a4a0e] hover:bg-[#E8E6E1] rounded-lg transition-colors"
               >
-                Déconnexion
+                {t('profile.dangerZone.signOut')}
               </button>
             </div>
           </div>

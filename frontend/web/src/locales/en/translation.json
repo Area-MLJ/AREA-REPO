@@ -1,0 +1,229 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "confirm": "Confirm",
+    "search": "Search",
+    "filter": "Filter",
+    "all": "All",
+    "none": "None",
+    "create": "Create",
+    "update": "Update",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "configure": "Configure",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "reconnect": "Reconnect",
+    "connected": "Connected",
+    "notConnected": "Not connected",
+    "available": "Available",
+    "required": "Required"
+  },
+  "auth": {
+    "login": {
+      "title": "ACTION-REACTION",
+      "subtitle": "Sign in to your account",
+      "email": "Email",
+      "password": "Password",
+      "emailPlaceholder": "you@example.com",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Sign in",
+      "submitting": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create an account",
+      "error": "Sign in error",
+      "fillFields": "Please fill in all fields",
+      "success": "Sign in successful!"
+    },
+    "signup": {
+      "title": "ACTION-REACTION",
+      "subtitle": "Create your account",
+      "displayName": "Display name",
+      "displayNamePlaceholder": "Your name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "passwordPlaceholder": "••••••••",
+      "emailPlaceholder": "you@example.com",
+      "submit": "Create account",
+      "submitting": "Creating...",
+      "hasAccount": "Already have an account?",
+      "login": "Sign in",
+      "error": "Error creating account",
+      "fillFields": "Please fill in all fields",
+      "passwordMismatch": "Passwords do not match",
+      "passwordTooShort": "Password must be at least 6 characters",
+      "success": "Account created successfully!"
+    }
+  },
+  "home": {
+    "title": "ACTION-REACTION",
+    "subtitle": "Automate your tasks by connecting your favorite services",
+    "description": "Create smart automations: when an action occurs, trigger a reaction",
+    "createAccount": "Create an account",
+    "login": "Sign in",
+    "connect": {
+      "title": "Connect",
+      "description": "Gmail, GitHub, Discord and more"
+    },
+    "automate": {
+      "title": "Automate",
+      "description": "Create smart workflows"
+    },
+    "optimize": {
+      "title": "Optimize",
+      "description": "Save time on your tasks"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Manage your automations",
+    "createArea": "New AREA",
+    "total": "Total",
+    "active": "Active",
+    "inactive": "Inactive",
+    "myAreas": "My AREAs",
+    "noAreas": {
+      "title": "No AREA created",
+      "description": "Start by creating your first automation",
+      "button": "Create an AREA"
+    },
+    "createdOn": "Created on",
+    "lastTriggered": "Last:",
+    "builtin": "Built-in",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "configure": "Configure"
+  },
+  "areas": {
+    "create": {
+      "title": "Create an AREA",
+      "formMode": "Form",
+      "builderMode": "Builder",
+      "step": {
+        "info": "Information",
+        "action": "Action",
+        "reaction": "Reaction",
+        "review": "Review"
+      },
+      "name": "AREA name",
+      "namePlaceholder": "Ex: Discord notification on new GitHub commit",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe what this AREA does",
+      "selectActionService": "Select an action service",
+      "selectAction": "Select an action",
+      "selectReactionService": "Select a reaction service",
+      "selectReaction": "Select a reaction",
+      "twitchUserLogin": "Twitch username",
+      "twitchUserLoginPlaceholder": "e.g. ninja",
+      "spotifyTrackUrl": "Spotify track URL",
+      "spotifyTrackUrlPlaceholder": "https://open.spotify.com/track/...",
+      "spotifyDeviceId": "Spotify device ID (optional)",
+      "spotifyDeviceIdPlaceholder": "Leave empty to use default device",
+      "review": "Review",
+      "creating": "Creating...",
+      "create": "Create AREA",
+      "success": "AREA created successfully!",
+      "error": "Error creating",
+      "notImplemented": "Backend creation not implemented for this combination (for now).",
+      "twitchNotFound": "Twitch service not found on backend",
+      "spotifyNotFound": "Spotify service not found on backend",
+      "spotifyUrlRequired": "Spotify track URL required",
+      "spotifyNotConnected": "Spotify not connected: connect Spotify in /services before creating this AREA"
+    }
+  },
+  "builder": {
+    "title": "Create an AREA",
+    "palette": {
+      "title": "Node palette",
+      "searchPlaceholder": "Search for a service...",
+      "all": "All",
+      "actions": "Actions",
+      "reactions": "Reactions",
+      "noServices": "No services found",
+      "action": "Action",
+      "reaction": "Reaction"
+    },
+    "config": {
+      "title": "Configuration",
+      "service": "Service",
+      "action": "Action",
+      "reaction": "Reaction",
+      "parameters": "Parameters",
+      "saving": "Saving...",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "nodes": {
+      "action": "Action",
+      "reaction": "Reaction",
+      "configured": "Configured",
+      "toConfigure": "To configure",
+      "service": "Service"
+    },
+    "create": "Create AREA",
+    "cancel": "Cancel",
+    "errors": "Errors",
+    "warnings": "Warnings",
+    "continueAnyway": "Continue anyway?",
+    "createError": "Error creating"
+  },
+  "services": {
+    "title": "Services",
+    "subtitle": "Connect your services to create automations",
+    "spotify": {
+      "name": "Spotify",
+      "connected": "Connected",
+      "notConnected": "Not connected",
+      "connectedAs": "Connected as {{name}}"
+    },
+    "twitch": {
+      "name": "Twitch",
+      "available": "Available",
+      "noConnectionRequired": "No connection required"
+    },
+    "actions": "ACTIONS",
+    "reactions": "REACTIONS",
+    "none": "None",
+    "category": {
+      "social": "Social networks",
+      "productivity": "Productivity",
+      "storage": "Storage",
+      "communication": "Communication",
+      "time": "Time"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Manage your personal information",
+    "accountInfo": {
+      "title": "Account information",
+      "email": "Email",
+      "userId": "User ID",
+      "createdAt": "Created on"
+    },
+    "dangerZone": {
+      "title": "Danger zone",
+      "description": "Sign out of your account",
+      "signOut": "Sign out"
+    }
+  },
+  "errors": {
+    "generic": "An error occurred",
+    "network": "Network error",
+    "unauthorized": "Unauthorized",
+    "notFound": "Resource not found",
+    "serverError": "Server error"
+  }
+}
+

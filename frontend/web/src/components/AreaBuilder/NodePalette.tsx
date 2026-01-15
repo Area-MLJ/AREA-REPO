@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Service, ServiceAction, ServiceReaction } from '../../lib/api';
 import { Card } from '../../DesignSystem/components/Card';
 import { Input } from '../../DesignSystem/components/Input';
@@ -11,6 +12,7 @@ interface NodePaletteProps {
 }
 
 export function NodePalette({ services, onDragStart, onDragEnd }: NodePaletteProps) {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'actions' | 'reactions'>('all');
 
@@ -55,12 +57,12 @@ export function NodePalette({ services, onDragStart, onDragEnd }: NodePalettePro
     <Card variant="elevated" className="w-64 p-4 h-full overflow-y-auto">
       <div className="mb-4">
         <h3 className="text-lg font-semibold text-[#1A1A18] mb-3">
-          Palette de nœuds
+          {t('builder.palette.title')}
         </h3>
         
         <Input
           type="text"
-          placeholder="Rechercher un service..."
+          placeholder={t('builder.palette.searchPlaceholder')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="mb-3"
@@ -75,7 +77,7 @@ export function NodePalette({ services, onDragStart, onDragEnd }: NodePalettePro
                 : 'bg-[#E8E6E1] text-[#1A1A18]'
             }`}
           >
-            Tous
+            {t('builder.palette.all')}
           </button>
           <button
             onClick={() => setSelectedCategory('actions')}
@@ -85,7 +87,7 @@ export function NodePalette({ services, onDragStart, onDragEnd }: NodePalettePro
                 : 'bg-[#E8E6E1] text-[#1A1A18]'
             }`}
           >
-            Actions
+            {t('builder.palette.actions')}
           </button>
           <button
             onClick={() => setSelectedCategory('reactions')}
@@ -95,7 +97,7 @@ export function NodePalette({ services, onDragStart, onDragEnd }: NodePalettePro
                 : 'bg-[#E8E6E1] text-[#1A1A18]'
             }`}
           >
-            Réactions
+            {t('builder.palette.reactions')}
           </button>
         </div>
       </div>
@@ -103,7 +105,7 @@ export function NodePalette({ services, onDragStart, onDragEnd }: NodePalettePro
       <div className="space-y-4">
         {filteredServices.length === 0 ? (
           <div className="text-sm text-[#6B6962] text-center py-4">
-            Aucun service trouvé
+            {t('builder.palette.noServices')}
           </div>
         ) : (
           filteredServices.map((service) => (
@@ -133,7 +135,7 @@ export function NodePalette({ services, onDragStart, onDragEnd }: NodePalettePro
                         <span className="text-xs font-medium text-[#1A1A18]">
                           {action.display_name}
                         </span>
-                        <Badge variant="primary" size="sm">Action</Badge>
+                        <Badge variant="primary" size="sm">{t('builder.palette.action')}</Badge>
                       </div>
                     </div>
                   ))}
@@ -156,7 +158,7 @@ export function NodePalette({ services, onDragStart, onDragEnd }: NodePalettePro
                         <span className="text-xs font-medium text-[#1A1A18]">
                           {reaction.display_name}
                         </span>
-                        <Badge variant="primary" size="sm">Réaction</Badge>
+                        <Badge variant="primary" size="sm">{t('builder.palette.reaction')}</Badge>
                       </div>
                     </div>
                   ))}
