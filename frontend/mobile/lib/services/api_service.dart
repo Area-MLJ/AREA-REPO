@@ -244,6 +244,42 @@ class ApiService {
     }
   }
 
+  // User Services endpoints
+  static Future<List<UserService>> getUserServices() async {
+    final response = await _requestWithRetry(
+      () async => http.get(
+        Uri.parse('$baseUrl/me/services'),
+        headers: await getHeaders(),
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> userServicesJson = json.decode(response.body) as List<dynamic>;
+      return userServicesJson.map((json) => UserService.fromJson(json as Map<String, dynamic>)).toList();
+    } else {
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      throw Exception(data['error'] ?? 'Failed to fetch user services');
+    }
+  }
+
+  // Spotify OAuth
+  static Future<Map<String, dynamic>> spotifyAuthorize() async {
+    final response = await _requestWithRetry(
+      () async => http.post(
+        Uri.parse('$baseUrl/oauth/spotify/authorize'),
+        headers: await getHeaders(),
+      ),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      return data;
+    } else {
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      throw Exception(data['error'] ?? 'Failed to authorize Spotify');
+    }
+  }
+
   // About endpoint (public) - not under /api
   static Future<Map<String, dynamic>> getAbout() async {
     final response = await http.get(

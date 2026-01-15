@@ -11,7 +11,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: Text('Profil'),
         automaticallyImplyLeading: false,
       ),
       body: Consumer<AuthProvider>(
@@ -19,7 +19,7 @@ class ProfileScreen extends StatelessWidget {
           final user = authProvider.user;
           
           if (user == null) {
-            return Center(child: Text('Not logged in'));
+            return Center(child: Text('Non connecté'));
           }
 
           return SingleChildScrollView(
@@ -36,11 +36,9 @@ class ProfileScreen extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 40,
-                          backgroundColor: Color(0xFF0A4A0E),
+                          backgroundColor: Color(0xff0a4a0e),
                           child: Text(
-                            user.displayName != null && user.displayName!.isNotEmpty
-                                ? user.displayName![0].toUpperCase()
-                                : user.email[0].toUpperCase(),
+                            user.email[0].toUpperCase(),
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -50,19 +48,19 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 16),
                         Text(
-                          user.displayName ?? 'User',
+                          user.email,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.grey[800],
                           ),
                         ),
-                        SizedBox(height: 4),
+                        SizedBox(height: 8),
                         Text(
-                          user.email,
+                          'Gérez vos informations personnelles',
                           style: TextStyle(
                             color: Colors.grey[600],
-                            fontSize: 16,
+                            fontSize: 14,
                           ),
                         ),
                         SizedBox(height: 8),
@@ -116,15 +114,15 @@ class ProfileScreen extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: _buildStatItem(
-                                    'Total Areas',
+                                    'Total AREAs',
                                     '${areasProvider.areas.length}',
                                     Icons.wb_auto,
-                                    Colors.blue,
+                                    Color(0xff0a4a0e),
                                   ),
                                 ),
                                 Expanded(
                                   child: _buildStatItem(
-                                    'Active Areas',
+                                    'AREAs actives',
                                     '${areasProvider.areas.where((area) => area.enabled).length}',
                                     Icons.play_circle,
                                     Colors.green,
@@ -160,9 +158,9 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 16),
                         ListTile(
-                          leading: Icon(Icons.refresh, color: Color(0xFF0A4A0E)),
-                          title: Text('Refresh Data'),
-                          subtitle: Text('Reload areas and services'),
+                          leading: Icon(Icons.refresh, color: Color(0xff0a4a0e)),
+                          title: Text('Actualiser les données'),
+                          subtitle: Text('Recharger les AREAs et les services'),
                           onTap: () async {
                             final areasProvider = Provider.of<AreasProvider>(context, listen: false);
                             final servicesProvider = Provider.of<ServicesProvider>(context, listen: false);
@@ -171,15 +169,15 @@ class ProfileScreen extends StatelessWidget {
                               servicesProvider.fetchServices(),
                             ]);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Data refreshed')),
+                              SnackBar(content: Text('Données actualisées')),
                             );
                           },
                         ),
                         Divider(),
                         ListTile(
-                          leading: Icon(Icons.info, color: Color(0xFF0A4A0E)),
-                          title: Text('About'),
-                          subtitle: Text('Learn more about AREA'),
+                          leading: Icon(Icons.info, color: Color(0xff0a4a0e)),
+                          title: Text('À propos'),
+                          subtitle: Text('En savoir plus sur AREA'),
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(builder: (_) => AboutScreen()),
@@ -189,23 +187,23 @@ class ProfileScreen extends StatelessWidget {
                         Divider(),
                         ListTile(
                           leading: Icon(Icons.logout, color: Colors.red[600]),
-                          title: Text('Logout'),
-                          subtitle: Text('Sign out of your account'),
+                          title: Text('Déconnexion'),
+                          subtitle: Text('Se déconnecter de votre compte'),
                           onTap: () async {
                             final confirm = await showDialog<bool>(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: Text('Logout'),
-                                content: Text('Are you sure you want to logout?'),
+                                title: Text('Déconnexion'),
+                                content: Text('Êtes-vous sûr de vouloir vous déconnecter ?'),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context, false),
-                                    child: Text('Cancel'),
+                                    child: Text('Annuler'),
                                   ),
                                   TextButton(
                                     onPressed: () => Navigator.pop(context, true),
                                     child: Text(
-                                      'Logout',
+                                      'Déconnexion',
                                       style: TextStyle(color: Colors.red),
                                     ),
                                   ),
