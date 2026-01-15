@@ -10,8 +10,10 @@ import { Button } from '../../DesignSystem/components/Button';
 import { Input } from '../../DesignSystem/components/Input';
 import { Badge } from '../../DesignSystem/components/Badge';
 import { apiClient, Service, UserService } from '../../lib/api';
+import { AreaBuilder } from '../../components/AreaBuilder/AreaBuilder';
 
 export default function AreaCreatorPage() {
+  const [mode, setMode] = useState<'form' | 'builder'>('form');
   const [step, setStep] = useState<'info' | 'action' | 'reaction' | 'review'>('info');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -209,14 +211,138 @@ export default function AreaCreatorPage() {
     }
   };
 
-  return (
-    <div className="max-w-4xl mx-auto space-y-4 md:space-y-6">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-semibold text-[#1A1A18]">Créer une AREA</h1>
-        <p className="text-sm md:text-base text-[#6B6962] mt-1">
-          Connectez une Action à une REAction
-        </p>
+  const handleBuilderSave = (areaId: string) => {
+    alert('AREA créée avec succès !');
+    window.location.href = '/dashboard';
+  };
+
+  const handleBuilderCancel = () => {
+    window.location.href = '/dashboard';
+  };
+
+  // Charger les services avec leurs actions et réactions pour le builder
+  const [servicesWithDetails, setServicesWithDetails] = useState<Service[]>([]);
+
+  useEffect(() => {
+    if (mode === 'builder' && backendServices.length > 0) {
+      const loadServicesDetails = async () => {
+        try {
+          const servicesPromises = backendServices.map(async (service) => {
+            try {
+              const [actionsRes, reactionsRes] = await Promise.all([
+                apiClient.getServiceActions(service.id),
+                apiClient.getServiceReactions(service.id),
+              ]);
+
+              return {
+                ...service,
+                actions: actionsRes.success && actionsRes.data ? actionsRes.data : [],
+                reactions: reactionsRes.success && reactionsRes.data ? reactionsRes.data : [],
+              };
+            } catch (error) {
+              console.error(`Error loading details for service ${service.id}:`, error);
+              return {
+                ...service,
+                actions: [],
+                reactions: [],
+              };
+            }
+          });
+
+          const services = await Promise.all(servicesPromises);
+          console.log('Loaded services with details:', services);
+          setServicesWithDetails(services);
+        } catch (error) {
+          console.error('Error loading services details:', error);
+        }
+      };
+
+      loadServicesDetails();
+    } else if (mode === 'builder' && backendServices.length === 0) {
+      // Réinitialiser si on passe en mode builder mais qu'il n'y a pas encore de services
+      setServicesWithDetails([]);
+    }
+  }, [mode, backendServices]);
+
+  // Si mode builder, afficher le builder
+  if (mode === 'builder') {
+    return (
+      <div className="h-screen flex flex-col bg-[#FAF9F7]">
+        <div className="p-4 border-b border-[#E8E6E1] bg-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold text-[#1A1A18]">Créer une AREA</h1>
+              <p className="text-sm text-[#6B6962] mt-1">
+                Builder visuel - Glissez et déposez les nœuds pour créer votre workflow
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant={mode === 'form' ? 'primary' : 'outlined'}
+                size="sm"
+                onClick={() => setMode('form')}
+              >
+                Formulaire
+              </Button>
+              <Button
+                variant={mode === 'builder' ? 'primary' : 'outlined'}
+                size="sm"
+                onClick={() => setMode('builder')}
+              >
+                Builder visuel
+              </Button>
+            </div>
+          </div>
+        </div>
+        {servicesWithDetails.length === 0 && backendServices.length > 0 ? (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center">
+              <p className="text-[#6B6962] mb-4">Chargement des services...</p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex-1 overflow-hidden">
+            <AreaBuilder
+              services={servicesWithDetails}
+              userServices={backendUserServices}
+              name={name || 'Nouvelle AREA'}
+              description={description}
+              onSave={handleBuilderSave}
+              onCancel={handleBuilderCancel}
+            />
+          </div>
+        )}
       </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#FAF9F7] p-4 md:p-6 lg:p-8">
+      <div className="max-w-4xl mx-auto space-y-4 md:space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-semibold text-[#1A1A18]">Créer une AREA</h1>
+            <p className="text-sm md:text-base text-[#6B6962] mt-1">
+              Connectez une Action à une REAction
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant={mode === 'form' ? 'primary' : 'outlined'}
+              size="sm"
+              onClick={() => setMode('form')}
+            >
+              Formulaire
+            </Button>
+            <Button
+              variant={mode === 'builder' ? 'primary' : 'outlined'}
+              size="sm"
+              onClick={() => setMode('builder')}
+            >
+              Builder visuel
+            </Button>
+          </div>
+        </div>
 
       <div className="flex items-center gap-1 md:gap-2 mb-6 md:mb-8">
         {['info', 'action', 'reaction', 'review'].map((s, idx) => (
@@ -528,6 +654,7 @@ export default function AreaCreatorPage() {
         >
           {step === 'review' ? 'Créer l\'AREA' : 'Suivant'}
         </Button>
+      </div>
       </div>
     </div>
   );
