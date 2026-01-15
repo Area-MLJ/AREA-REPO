@@ -6,12 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 import '../models/area.dart';
 import '../models/service.dart';
+import '../config/api_config.dart';
 
 class ApiService {
-  // Base URL can be configured via environment or build config
-  // For now, using localhost for dev, can be changed for production
-  static const String baseUrl = 'http://localhost:8080/api';
-  static const String aboutBaseUrl = 'http://localhost:8080';
+  static String get baseUrl => ApiConfig.baseUrl;
+  static String get aboutBaseUrl => ApiConfig.aboutBaseUrl;
 
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
@@ -163,6 +162,13 @@ class ApiService {
 
   // Areas endpoints
   static Future<List<Area>> getAreas() async {
+    print('📡 API: GET /me/areas');
+    final token = await getToken();
+    print('🔑 Token exists: ${token != null}');
+    if (token != null) {
+      print('🔑 Token (first 20): ${token.substring(0, token.length > 20 ? 20 : token.length)}...');
+    }
+    
     final response = await _requestWithRetry(
       () async => http.get(
         Uri.parse('$baseUrl/me/areas'),
@@ -170,9 +176,13 @@ class ApiService {
       ),
     );
 
+    print('📥 Response status: ${response.statusCode}');
+    print('📥 Response body: ${response.body.substring(0, response.body.length > 200 ? 200 : response.body.length)}...');
+
     if (response.statusCode == 200) {
       // Backend returns array directly, not wrapped
       final List<dynamic> areasJson = json.decode(response.body) as List<dynamic>;
+      print('✅ Parsed ${areasJson.length} areas from JSON');
       return areasJson.map((json) => Area.fromJson(json as Map<String, dynamic>)).toList();
     } else {
       final data = json.decode(response.body) as Map<String, dynamic>;

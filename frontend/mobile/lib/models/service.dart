@@ -20,22 +20,30 @@ class Service {
   });
 
   factory Service.fromJson(Map<String, dynamic> json) {
-    return Service(
-      id: json['id'],
-      name: json['name'],
-      displayName: json['display_name'],
-      description: json['description'],
-      iconUrl: json['icon_url'],
-      createdAt: DateTime.parse(json['created_at']),
-      actions: (json['service_actions'] as List<dynamic>?)
-              ?.map((action) => ServiceAction.fromJson(action))
-              .toList() ??
-          [],
-      reactions: (json['service_reactions'] as List<dynamic>?)
-              ?.map((reaction) => ServiceReaction.fromJson(reaction))
-              .toList() ??
-          [],
-    );
+    try {
+      return Service(
+        id: json['id'] as String? ?? '',
+        name: json['name'] as String? ?? '',
+        displayName: json['display_name'] as String? ?? json['name'] as String? ?? '',
+        description: json['description'] as String?,
+        iconUrl: json['icon_url'] as String?,
+        createdAt: json['created_at'] != null
+            ? DateTime.parse(json['created_at'] as String)
+            : DateTime.now(),
+        actions: (json['service_actions'] as List<dynamic>?)
+                ?.map((action) => ServiceAction.fromJson(action as Map<String, dynamic>))
+                .toList() ??
+            [],
+        reactions: (json['service_reactions'] as List<dynamic>?)
+                ?.map((reaction) => ServiceReaction.fromJson(reaction as Map<String, dynamic>))
+                .toList() ??
+            [],
+      );
+    } catch (e) {
+      print('❌ Error parsing Service from JSON: $e');
+      print('📦 JSON data: $json');
+      rethrow;
+    }
   }
 }
 
@@ -63,19 +71,27 @@ class ServiceAction {
   });
 
   factory ServiceAction.fromJson(Map<String, dynamic> json) {
-    return ServiceAction(
-      id: json['id'],
-      serviceId: json['service_id'],
-      name: json['name'],
-      displayName: json['display_name'],
-      description: json['description'],
-      pollingSupported: json['polling_supported'] ?? false,
-      webhookSupported: json['webhook_supported'] ?? false,
-      createdAt: DateTime.parse(json['created_at']),
-      service: json['services'] != null
-          ? Service.fromJson(json['services'])
-          : null,
-    );
+    try {
+      return ServiceAction(
+        id: json['id'] as String? ?? '',
+        serviceId: json['service_id'] as String? ?? '',
+        name: json['name'] as String? ?? '',
+        displayName: json['display_name'] as String? ?? json['name'] as String?,
+        description: json['description'] as String?,
+        pollingSupported: json['polling_supported'] as bool? ?? false,
+        webhookSupported: json['webhook_supported'] as bool? ?? false,
+        createdAt: json['created_at'] != null
+            ? DateTime.parse(json['created_at'] as String)
+            : DateTime.now(),
+        service: json['services'] != null
+            ? Service.fromJson(json['services'] as Map<String, dynamic>)
+            : null,
+      );
+    } catch (e) {
+      print('❌ Error parsing ServiceAction from JSON: $e');
+      print('📦 JSON data: $json');
+      rethrow;
+    }
   }
 }
 
@@ -99,17 +115,25 @@ class ServiceReaction {
   });
 
   factory ServiceReaction.fromJson(Map<String, dynamic> json) {
-    return ServiceReaction(
-      id: json['id'],
-      serviceId: json['service_id'],
-      name: json['name'],
-      displayName: json['display_name'],
-      description: json['description'],
-      createdAt: DateTime.parse(json['created_at']),
-      service: json['services'] != null
-          ? Service.fromJson(json['services'])
-          : null,
-    );
+    try {
+      return ServiceReaction(
+        id: json['id'] as String? ?? '',
+        serviceId: json['service_id'] as String? ?? '',
+        name: json['name'] as String? ?? '',
+        displayName: json['display_name'] as String? ?? json['name'] as String?,
+        description: json['description'] as String?,
+        createdAt: json['created_at'] != null
+            ? DateTime.parse(json['created_at'] as String)
+            : DateTime.now(),
+        service: json['services'] != null
+            ? Service.fromJson(json['services'] as Map<String, dynamic>)
+            : null,
+      );
+    } catch (e) {
+      print('❌ Error parsing ServiceReaction from JSON: $e');
+      print('📦 JSON data: $json');
+      rethrow;
+    }
   }
 }
 
@@ -131,13 +155,21 @@ class UserService {
   });
 
   factory UserService.fromJson(Map<String, dynamic> json) {
-    return UserService(
-      id: json['id'],
-      userId: json['user_id'],
-      serviceId: json['service_id'],
-      displayName: json['display_name'],
-      oauthAccountId: json['oauth_account_id'],
-      createdAt: DateTime.parse(json['created_at']),
-    );
+    try {
+      return UserService(
+        id: json['id'] as String? ?? '',
+        userId: json['user_id'] as String? ?? '',
+        serviceId: json['service_id'] as String? ?? '',
+        displayName: json['display_name'] as String?,
+        oauthAccountId: json['oauth_account_id'] as String?,
+        createdAt: json['created_at'] != null
+            ? DateTime.parse(json['created_at'] as String)
+            : DateTime.now(),
+      );
+    } catch (e) {
+      print('❌ Error parsing UserService from JSON: $e');
+      print('📦 JSON data: $json');
+      rethrow;
+    }
   }
 }

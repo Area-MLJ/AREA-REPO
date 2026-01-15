@@ -45,7 +45,32 @@ The app follows a clean architecture pattern with:
 
 ### Configuration
 
-Update the API base URL in `lib/services/api_service.dart` to match your backend URL.
+**IMPORTANT**: Before running the app, you need to configure the API URL based on your setup:
+
+1. Edit `lib/config/api_config.dart`
+2. Update the `host` value:
+   - For **Android Emulator**: Use `10.0.2.2`
+   - For **iOS Simulator**: Use `localhost`
+   - For **Physical Device**: Use your computer's IP address (e.g., `10.74.253.210`)
+   
+   To find your IP address:
+   ```bash
+   # On Linux/Mac
+   ip -4 addr show | grep inet
+   # or
+   ifconfig | grep inet
+   ```
+
+Example configuration in `lib/config/api_config.dart`:
+```dart
+class ApiConfig {
+  static const String host = '10.74.253.210'; // Your computer's IP
+  static const String port = '8080';
+  
+  static String get baseUrl => 'http://$host:$port/api';
+  static String get aboutBaseUrl => 'http://$host:$port';
+}
+```
 
 ## Project Structure
 

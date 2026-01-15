@@ -17,9 +17,12 @@ class AreasProvider with ChangeNotifier {
     notifyListeners();
 
     try {
+      print('🔄 Fetching areas...');
       _areas = await ApiService.getAreas();
+      print('✅ Fetched ${_areas.length} areas');
       _error = null;
     } catch (e) {
+      print('❌ Error fetching areas: $e');
       _error = e.toString();
     }
 

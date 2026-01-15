@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../../providers/areas_provider.dart';
 import '../../models/area.dart';
 import '../../services/api_service.dart';
@@ -18,6 +17,11 @@ class _AreasScreenState extends State<AreasScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<AreasProvider>(context, listen: false).fetchAreas();
     });
+  }
+
+  String _formatDate(DateTime date) {
+    final months = ['jan.', 'fév.', 'mar.', 'avr.', 'mai', 'juin', 'juil.', 'aoû.', 'sep.', 'oct.', 'nov.', 'déc.'];
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 
   @override
@@ -166,7 +170,7 @@ class _AreasScreenState extends State<AreasScreen> {
             SizedBox(height: 8),
             if (area.description != null) Text(area.description!, style: TextStyle(fontSize: 13, color: Color(0xFF6B6962))),
             SizedBox(height: 12),
-            Text('Créée le ${DateFormat.yMMMd('fr_FR').format(area.createdAt)}', style: TextStyle(fontSize: 12, color: Color(0xFF8B8980))),
+            Text('Créée le ${_formatDate(area.createdAt)}', style: TextStyle(fontSize: 12, color: Color(0xFF8B8980))),
             SizedBox(height: 12),
             Row(
               children: [

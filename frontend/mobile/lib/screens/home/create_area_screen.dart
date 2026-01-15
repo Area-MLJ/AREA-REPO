@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/areas_provider.dart';
 import '../../providers/services_provider.dart';
 import '../../models/service.dart';
+import '../../data/mock_services.dart';
 
 class CreateAreaScreen extends StatefulWidget {
   @override
@@ -218,13 +219,10 @@ class _CreateAreaScreenState extends State<CreateAreaScreen> {
   }
 
   Widget _buildActionSelection(ServicesProvider provider) {
-    if (provider.isLoading) {
-      return Center(child: CircularProgressIndicator());
-    }
-
-    final servicesWithActions = provider.services.where((s) => s.actions.isNotEmpty).toList();
+    // Utiliser les services mock avec actions/réactions
+    final servicesWithActions = MOCK_SERVICES.where((s) => s.actions.isNotEmpty).toList();
     
-    Service? selectedService;
+    MockService? selectedService;
     if (_selectedActionServiceId != null) {
       try {
         selectedService = servicesWithActions.firstWhere((s) => s.id == _selectedActionServiceId);
@@ -233,7 +231,7 @@ class _CreateAreaScreenState extends State<CreateAreaScreen> {
       }
     }
     
-    ServiceAction? selectedAction;
+    MockServiceAction? selectedAction;
     if (selectedService != null && _selectedActionId != null) {
       try {
         selectedAction = selectedService.actions.firstWhere((a) => a.id == _selectedActionId);
@@ -259,7 +257,7 @@ class _CreateAreaScreenState extends State<CreateAreaScreen> {
           items: servicesWithActions.map((service) {
             return DropdownMenuItem(
               value: service.id,
-              child: Text(service.displayName ?? service.name),
+              child: Text(service.displayName),
             );
           }).toList(),
           onChanged: (serviceId) {
@@ -280,7 +278,7 @@ class _CreateAreaScreenState extends State<CreateAreaScreen> {
             items: selectedService.actions.map((action) {
               return DropdownMenuItem(
                 value: action.id,
-                child: Text(action.displayName ?? action.name),
+                child: Text(action.name),
               );
             }).toList(),
             onChanged: (actionId) {
@@ -299,16 +297,14 @@ class _CreateAreaScreenState extends State<CreateAreaScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      selectedAction.displayName ?? selectedAction.name,
+                      selectedAction.name,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    if (selectedAction.description != null) ...[
-                      SizedBox(height: 4),
-                      Text(
-                        selectedAction.description!,
-                        style: TextStyle(fontSize: 12, color: Colors.grey[700]),
-                      ),
-                    ],
+                    SizedBox(height: 4),
+                    Text(
+                      selectedAction.description,
+                      style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                    ),
                   ],
                 ),
               ),
@@ -320,13 +316,10 @@ class _CreateAreaScreenState extends State<CreateAreaScreen> {
   }
 
   Widget _buildReactionSelection(ServicesProvider provider) {
-    if (provider.isLoading) {
-      return Center(child: CircularProgressIndicator());
-    }
-
-    final servicesWithReactions = provider.services.where((s) => s.reactions.isNotEmpty).toList();
+    // Utiliser les services mock avec actions/réactions
+    final servicesWithReactions = MOCK_SERVICES.where((s) => s.reactions.isNotEmpty).toList();
     
-    Service? selectedService;
+    MockService? selectedService;
     if (_selectedReactionServiceId != null) {
       try {
         selectedService = servicesWithReactions.firstWhere((s) => s.id == _selectedReactionServiceId);
@@ -335,7 +328,7 @@ class _CreateAreaScreenState extends State<CreateAreaScreen> {
       }
     }
     
-    ServiceReaction? selectedReaction;
+    MockServiceReaction? selectedReaction;
     if (selectedService != null && _selectedReactionId != null) {
       try {
         selectedReaction = selectedService.reactions.firstWhere((r) => r.id == _selectedReactionId);
@@ -361,7 +354,7 @@ class _CreateAreaScreenState extends State<CreateAreaScreen> {
           items: servicesWithReactions.map((service) {
             return DropdownMenuItem(
               value: service.id,
-              child: Text(service.displayName ?? service.name),
+              child: Text(service.displayName),
             );
           }).toList(),
           onChanged: (serviceId) {
@@ -382,7 +375,7 @@ class _CreateAreaScreenState extends State<CreateAreaScreen> {
             items: selectedService.reactions.map((reaction) {
               return DropdownMenuItem(
                 value: reaction.id,
-                child: Text(reaction.displayName ?? reaction.name),
+                child: Text(reaction.name),
               );
             }).toList(),
             onChanged: (reactionId) {
@@ -401,16 +394,14 @@ class _CreateAreaScreenState extends State<CreateAreaScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      selectedReaction.displayName ?? selectedReaction.name,
+                      selectedReaction.name,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    if (selectedReaction.description != null) ...[
-                      SizedBox(height: 4),
-                      Text(
-                        selectedReaction.description!,
-                        style: TextStyle(fontSize: 12, color: Colors.grey[700]),
-                      ),
-                    ],
+                    SizedBox(height: 4),
+                    Text(
+                      selectedReaction.description,
+                      style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                    ),
                   ],
                 ),
               ),
