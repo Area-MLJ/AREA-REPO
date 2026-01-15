@@ -1,0 +1,206 @@
+/* Styles pour le Area Builder */
+
+.area-builder-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+/* Styles pour les nœuds */
+.action-node,
+.reaction-node {
+  position: relative;
+}
+
+.action-node.selected .react-flow__handle {
+  border-color: #0a4a0e;
+  background-color: #0a4a0e;
+}
+
+.reaction-node.selected .react-flow__handle {
+  border-color: #0a4a0e;
+  background-color: #0a4a0e;
+}
+
+.action-node.configured {
+  opacity: 1;
+}
+
+.action-node.not-configured {
+  opacity: 0.7;
+}
+
+.reaction-node.configured {
+  opacity: 1;
+}
+
+.reaction-node.not-configured {
+  opacity: 0.7;
+}
+
+/* Styles pour React Flow */
+.react-flow {
+  background-color: #FAF9F7;
+}
+
+.react-flow__node {
+  cursor: move;
+}
+
+.react-flow__node.selected {
+  outline: none;
+}
+
+.react-flow__handle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: #0a4a0e;
+}
+
+.react-flow__handle-left {
+  left: -6px;
+}
+
+.react-flow__handle-right {
+  right: -6px;
+}
+
+.react-flow__edge {
+  stroke: #0a4a0e;
+  stroke-width: 2;
+}
+
+.react-flow__edge.selected {
+  stroke: #0a4a0e;
+  stroke-width: 3;
+}
+
+.react-flow__edge-path {
+  stroke: #0a4a0e;
+  stroke-width: 2;
+}
+
+.react-flow__connection-line {
+  stroke: #0a4a0e;
+  stroke-width: 2;
+  stroke-dasharray: 5, 5;
+}
+
+.react-flow__connection {
+  stroke: #0a4a0e;
+  stroke-width: 2;
+}
+
+/* Styles pour les contrôles */
+.react-flow__controls {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.react-flow__controls-button {
+  background-color: white;
+  border: 1px solid #E8E6E1;
+  color: #1A1A18;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.react-flow__controls-button:hover {
+  background-color: #f0f9f4;
+}
+
+.react-flow__controls-button:active {
+  background-color: #e0f0e8;
+}
+
+/* Styles pour la minimap */
+.react-flow__minimap {
+  background-color: white;
+  border: 1px solid #E8E6E1;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles pour le panneau de configuration */
+.config-panel {
+  position: fixed;
+  right: 16px;
+  top: 80px;
+  bottom: 16px;
+  width: 400px;
+  max-width: calc(100vw - 32px);
+  z-index: 1000;
+  overflow-y: auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Styles pour la palette */
+.node-palette {
+  height: 100%;
+  overflow-y: auto;
+  background-color: white;
+}
+
+.node-palette-item {
+  padding: 8px;
+  margin-bottom: 4px;
+  background-color: #f0f9f4;
+  border: 1px solid #E8E6E1;
+  border-radius: 4px;
+  cursor: move;
+  transition: all 0.2s;
+}
+
+.node-palette-item:hover {
+  border-color: #0a4a0e;
+  background-color: #e0f0e8;
+}
+
+.node-palette-item:active {
+  opacity: 0.7;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .config-panel {
+    width: 100%;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 0;
+  }
+
+  .area-builder-container {
+    flex-direction: column;
+  }
+
+  .node-palette {
+    height: 200px;
+    border-bottom: 1px solid #E8E6E1;
+  }
+}
+
+/* Animation pour les nœuds */
+@keyframes nodePulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.action-node.not-configured,
+.reaction-node.not-configured {
+  animation: nodePulse 2s ease-in-out infinite;
+}
+

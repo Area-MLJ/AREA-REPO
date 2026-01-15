@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  mobile-builder:
+    build:
+      context: ./frontend/mobile
+      dockerfile: Dockerfile
+    volumes:
+      - mobile-build:/app/build
+    # Service de build uniquement, pas de service continu
+
+volumes:
+  mobile-build:
+

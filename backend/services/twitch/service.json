@@ -1,0 +1,8 @@
+{
+  "name": "twitch",
+  "display_name": "Twitch",
+  "description": "Service Twitch pour détecter les streams en live",
+  "icon_url": "https://cdn-icons-png.flaticon.com/512/5968/5968819.png",
+  "built_in": true,
+  "oauth_required": false
+}

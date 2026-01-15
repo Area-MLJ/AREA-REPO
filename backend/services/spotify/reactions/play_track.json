@@ -1,0 +1,21 @@
+{
+  "name": "play_track",
+  "display_name": "Lancer un morceau",
+  "description": "Lance un morceau Spotify via son URL",
+  "params": [
+    {
+      "name": "track_url",
+      "display_name": "URL du morceau",
+      "description": "URL Spotify du morceau (https://open.spotify.com/track/...) ou URI spotify:track:...",
+      "type": "text",
+      "required": true
+    },
+    {
+      "name": "device_id",
+      "display_name": "Device ID (optionnel)",
+      "description": "Device Spotify cible (optionnel). Sinon device actif.",
+      "type": "text",
+      "required": false
+    }
+  ]
+}

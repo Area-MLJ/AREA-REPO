@@ -1,0 +1,29 @@
+{
+  "name": "send_email",
+  "display_name": "Envoyer un Email",
+  "description": "Envoie un email avec le contenu de l'action déclenchée. Si l'action contient des données d'article de news, un email formaté sera envoyé automatiquement.",
+  "params": [
+    {
+      "name": "to",
+      "display_name": "Destinataire",
+      "description": "Adresse email du destinataire",
+      "type": "email",
+      "required": true
+    },
+    {
+      "name": "subject",
+      "display_name": "Sujet",
+      "description": "Sujet de l'email (optionnel, peut être généré depuis l'action)",
+      "type": "text",
+      "required": false
+    },
+    {
+      "name": "body",
+      "display_name": "Corps",
+      "description": "Corps de l'email (optionnel, peut être généré depuis l'action)",
+      "type": "text",
+      "required": false
+    }
+  ]
+}
+

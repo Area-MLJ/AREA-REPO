@@ -1,0 +1,8 @@
+{
+  "name": "spotify",
+  "display_name": "Spotify",
+  "description": "Service Spotify pour contrôler la lecture",
+  "icon_url": "https://cdn-icons-png.flaticon.com/512/174/174872.png",
+  "built_in": true,
+  "oauth_required": false
+}

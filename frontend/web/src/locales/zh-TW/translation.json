@@ -1,0 +1,229 @@
+{
+  "common": {
+    "save": "儲存",
+    "cancel": "取消",
+    "delete": "刪除",
+    "edit": "編輯",
+    "loading": "載入中...",
+    "error": "錯誤",
+    "success": "成功",
+    "close": "關閉",
+    "back": "返回",
+    "next": "下一步",
+    "previous": "上一步",
+    "confirm": "確認",
+    "search": "搜尋",
+    "filter": "篩選",
+    "all": "全部",
+    "none": "無",
+    "create": "建立",
+    "update": "更新",
+    "activate": "啟用",
+    "deactivate": "停用",
+    "configure": "設定",
+    "connect": "連接",
+    "disconnect": "中斷",
+    "reconnect": "重新連接",
+    "connected": "已連接",
+    "notConnected": "未連接",
+    "available": "可用",
+    "required": "必填"
+  },
+  "auth": {
+    "login": {
+      "title": "ACTION-REACTION",
+      "subtitle": "登入您的帳戶",
+      "email": "電子郵件",
+      "password": "密碼",
+      "emailPlaceholder": "you@example.com",
+      "passwordPlaceholder": "••••••••",
+      "submit": "登入",
+      "submitting": "登入中...",
+      "noAccount": "還沒有帳戶？",
+      "createAccount": "建立帳戶",
+      "error": "登入錯誤",
+      "fillFields": "請填寫所有欄位",
+      "success": "登入成功！"
+    },
+    "signup": {
+      "title": "ACTION-REACTION",
+      "subtitle": "建立您的帳戶",
+      "displayName": "顯示名稱",
+      "displayNamePlaceholder": "您的姓名",
+      "email": "電子郵件",
+      "password": "密碼",
+      "confirmPassword": "確認密碼",
+      "passwordPlaceholder": "••••••••",
+      "emailPlaceholder": "you@example.com",
+      "submit": "建立帳戶",
+      "submitting": "建立中...",
+      "hasAccount": "已有帳戶？",
+      "login": "登入",
+      "error": "建立帳戶時發生錯誤",
+      "fillFields": "請填寫所有欄位",
+      "passwordMismatch": "密碼不相符",
+      "passwordTooShort": "密碼至少需要6個字元",
+      "success": "帳戶建立成功！"
+    }
+  },
+  "home": {
+    "title": "ACTION-REACTION",
+    "subtitle": "透過連接您喜愛的服務來自動化您的任務",
+    "description": "建立智慧自動化：當發生動作時，觸發反應",
+    "createAccount": "建立帳戶",
+    "login": "登入",
+    "connect": {
+      "title": "連接",
+      "description": "Gmail、GitHub、Discord 等"
+    },
+    "automate": {
+      "title": "自動化",
+      "description": "建立智慧工作流程"
+    },
+    "optimize": {
+      "title": "最佳化",
+      "description": "節省您任務的時間"
+    }
+  },
+  "dashboard": {
+    "title": "儀表板",
+    "subtitle": "管理您的自動化",
+    "createArea": "新增 AREA",
+    "total": "總計",
+    "active": "啟用中",
+    "inactive": "停用中",
+    "myAreas": "我的 AREA",
+    "noAreas": {
+      "title": "尚未建立 AREA",
+      "description": "開始建立您的第一個自動化",
+      "button": "建立 AREA"
+    },
+    "createdOn": "建立於",
+    "lastTriggered": "最後觸發：",
+    "builtin": "內建",
+    "activate": "啟用",
+    "deactivate": "停用",
+    "configure": "設定"
+  },
+  "areas": {
+    "create": {
+      "title": "建立 AREA",
+      "formMode": "表單",
+      "builderMode": "建構器",
+      "step": {
+        "info": "資訊",
+        "action": "動作",
+        "reaction": "反應",
+        "review": "預覽"
+      },
+      "name": "AREA 名稱",
+      "namePlaceholder": "例如：GitHub 新提交時 Discord 通知",
+      "description": "描述",
+      "descriptionPlaceholder": "描述此 AREA 的功能",
+      "selectActionService": "選擇動作服務",
+      "selectAction": "選擇動作",
+      "selectReactionService": "選擇反應服務",
+      "selectReaction": "選擇反應",
+      "twitchUserLogin": "Twitch 使用者名稱",
+      "twitchUserLoginPlaceholder": "例如：ninja",
+      "spotifyTrackUrl": "Spotify 曲目連結",
+      "spotifyTrackUrlPlaceholder": "https://open.spotify.com/track/...",
+      "spotifyDeviceId": "Spotify 裝置 ID（選填）",
+      "spotifyDeviceIdPlaceholder": "留空以使用預設裝置",
+      "review": "預覽",
+      "creating": "建立中...",
+      "create": "建立 AREA",
+      "success": "AREA 建立成功！",
+      "error": "建立時發生錯誤",
+      "notImplemented": "此組合的後端建立尚未實作（目前）。",
+      "twitchNotFound": "後端找不到 Twitch 服務",
+      "spotifyNotFound": "後端找不到 Spotify 服務",
+      "spotifyUrlRequired": "需要 Spotify 曲目連結",
+      "spotifyNotConnected": "Spotify 未連接：在建立此 AREA 之前，請在 /services 中連接 Spotify"
+    }
+  },
+  "builder": {
+    "title": "建立 AREA",
+    "palette": {
+      "title": "節點面板",
+      "searchPlaceholder": "搜尋服務...",
+      "all": "全部",
+      "actions": "動作",
+      "reactions": "反應",
+      "noServices": "找不到服務",
+      "action": "動作",
+      "reaction": "反應"
+    },
+    "config": {
+      "title": "設定",
+      "service": "服務",
+      "action": "動作",
+      "reaction": "反應",
+      "parameters": "參數",
+      "saving": "儲存中...",
+      "save": "儲存",
+      "cancel": "取消"
+    },
+    "nodes": {
+      "action": "動作",
+      "reaction": "反應",
+      "configured": "已設定",
+      "toConfigure": "待設定",
+      "service": "服務"
+    },
+    "create": "建立 AREA",
+    "cancel": "取消",
+    "errors": "錯誤",
+    "warnings": "警告",
+    "continueAnyway": "仍要繼續？",
+    "createError": "建立時發生錯誤"
+  },
+  "services": {
+    "title": "服務",
+    "subtitle": "連接您的服務以建立自動化",
+    "spotify": {
+      "name": "Spotify",
+      "connected": "已連接",
+      "notConnected": "未連接",
+      "connectedAs": "已連接為 {{name}}"
+    },
+    "twitch": {
+      "name": "Twitch",
+      "available": "可用",
+      "noConnectionRequired": "無需連接"
+    },
+    "actions": "動作",
+    "reactions": "反應",
+    "none": "無",
+    "category": {
+      "social": "社交網路",
+      "productivity": "生產力",
+      "storage": "儲存",
+      "communication": "通訊",
+      "time": "時間"
+    }
+  },
+  "profile": {
+    "title": "個人資料",
+    "subtitle": "管理您的個人資訊",
+    "accountInfo": {
+      "title": "帳戶資訊",
+      "email": "電子郵件",
+      "userId": "使用者 ID",
+      "createdAt": "建立於"
+    },
+    "dangerZone": {
+      "title": "危險區域",
+      "description": "登出您的帳戶",
+      "signOut": "登出"
+    }
+  },
+  "errors": {
+    "generic": "發生錯誤",
+    "network": "網路錯誤",
+    "unauthorized": "未授權",
+    "notFound": "找不到資源",
+    "serverError": "伺服器錯誤"
+  }
+}
+
