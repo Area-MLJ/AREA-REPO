@@ -1,17 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/user.dart';
 import '../models/area.dart';
 import '../models/service.dart';
+import '../config/api_config.dart';
 
 class ApiService {
-  // Base URL can be configured via environment or build config
-  // For now, using localhost for dev, can be changed for production
-  static const String baseUrl = 'http://localhost:8080/api';
-  static const String aboutBaseUrl = 'http://localhost:8080';
+  static String get baseUrl => ApiConfig.baseUrl;
+  static String get aboutBaseUrl => ApiConfig.aboutBaseUrl;
 
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
@@ -163,12 +162,26 @@ class ApiService {
 
   // Areas endpoints
   static Future<List<Area>> getAreas() async {
+    if (kDebugMode) {
+      print('📡 API: GET /me/areas');
+      final token = await getToken();
+      print('🔑 Token exists: ${token != null}');
+    }
+    
     final response = await _requestWithRetry(
       () async => http.get(
         Uri.parse('$baseUrl/me/areas'),
         headers: await getHeaders(),
       ),
     );
+
+    if (kDebugMode) {
+      print('📥 Response status: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final count = (json.decode(response.body) as List).length;
+        print('✅ Parsed $count areas from JSON');
+      }
+    }
 
     if (response.statusCode == 200) {
       // Backend returns array directly, not wrapped
@@ -241,6 +254,42 @@ class ApiService {
     } else {
       final data = json.decode(response.body) as Map<String, dynamic>;
       throw Exception(data['error'] ?? 'Failed to fetch services');
+    }
+  }
+
+  // User Services endpoints
+  static Future<List<UserService>> getUserServices() async {
+    final response = await _requestWithRetry(
+      () async => http.get(
+        Uri.parse('$baseUrl/me/services'),
+        headers: await getHeaders(),
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> userServicesJson = json.decode(response.body) as List<dynamic>;
+      return userServicesJson.map((json) => UserService.fromJson(json as Map<String, dynamic>)).toList();
+    } else {
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      throw Exception(data['error'] ?? 'Failed to fetch user services');
+    }
+  }
+
+  // Spotify OAuth
+  static Future<Map<String, dynamic>> spotifyAuthorize() async {
+    final response = await _requestWithRetry(
+      () async => http.post(
+        Uri.parse('$baseUrl/oauth/spotify/authorize'),
+        headers: await getHeaders(),
+      ),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      return data;
+    } else {
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      throw Exception(data['error'] ?? 'Failed to authorize Spotify');
     }
   }
 

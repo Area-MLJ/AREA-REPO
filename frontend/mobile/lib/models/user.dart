@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 class User {
   final String id;
   final String email;
@@ -12,13 +13,19 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      id: json['id'],
-      email: json['email'],
-      // Backend returns display_name, map to displayName
-      displayName: json['display_name'] ?? json['displayName'],
-      isVerified: json['isVerified'] ?? false,
-    );
+    try {
+      return User(
+        id: json['id'] as String? ?? '',
+        email: json['email'] as String? ?? '',
+        // Backend returns display_name, map to displayName
+        displayName: json['display_name'] as String? ?? json['displayName'] as String?,
+        isVerified: json['isVerified'] as bool? ?? json['is_verified'] as bool? ?? false,
+      );
+    } catch (e) {
+      debugPrint('❌ Error parsing User from JSON: $e');
+      debugPrint('📦 JSON data: $json');
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {

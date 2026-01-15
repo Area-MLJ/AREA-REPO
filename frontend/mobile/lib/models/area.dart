@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'service.dart';
 
 class Area {
@@ -26,24 +27,36 @@ class Area {
   });
 
   factory Area.fromJson(Map<String, dynamic> json) {
-    return Area(
-      id: json['id'],
-      userId: json['user_id'],
-      name: json['name'],
-      description: json['description'],
-      enabled: json['enabled'] ?? false,
-      isBuiltin: json['is_builtin'] ?? false,
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at'] ?? json['created_at']),
-      actions: (json['area_actions'] as List<dynamic>?)
-              ?.map((action) => AreaAction.fromJson(action))
-              .toList() ??
-          [],
-      reactions: (json['area_reactions'] as List<dynamic>?)
-              ?.map((reaction) => AreaReaction.fromJson(reaction))
-              .toList() ??
-          [],
-    );
+    try {
+      return Area(
+        id: json['id'] as String? ?? '',
+        userId: json['user_id'] as String? ?? '',
+        name: json['name'] as String?,
+        description: json['description'] as String?,
+        enabled: json['enabled'] as bool? ?? false,
+        isBuiltin: json['is_builtin'] as bool? ?? false,
+        createdAt: json['created_at'] != null 
+            ? DateTime.parse(json['created_at'] as String)
+            : DateTime.now(),
+        updatedAt: json['updated_at'] != null
+            ? DateTime.parse(json['updated_at'] as String)
+            : (json['created_at'] != null 
+                ? DateTime.parse(json['created_at'] as String)
+                : DateTime.now()),
+        actions: (json['area_actions'] as List<dynamic>?)
+                ?.map((action) => AreaAction.fromJson(action as Map<String, dynamic>))
+                .toList() ??
+            [],
+        reactions: (json['area_reactions'] as List<dynamic>?)
+                ?.map((reaction) => AreaReaction.fromJson(reaction as Map<String, dynamic>))
+                .toList() ??
+            [],
+      );
+    } catch (e) {
+      debugPrint('❌ Error parsing Area from JSON: $e');
+      debugPrint('📦 JSON data: $json');
+      rethrow;
+    }
   }
 }
 
@@ -67,19 +80,25 @@ class AreaAction {
   });
 
   factory AreaAction.fromJson(Map<String, dynamic> json) {
-    return AreaAction(
-      id: json['id'],
-      areaId: json['area_id'],
-      serviceActionId: json['service_action_id'],
-      userServiceId: json['user_service_id'],
-      parameters: json['parameters'],
-      serviceAction: json['service_actions'] != null
-          ? ServiceAction.fromJson(json['service_actions'])
-          : null,
-      userService: json['user_services'] != null
-          ? UserService.fromJson(json['user_services'])
-          : null,
-    );
+    try {
+      return AreaAction(
+        id: json['id'] as String? ?? '',
+        areaId: json['area_id'] as String? ?? '',
+        serviceActionId: json['service_action_id'] as String? ?? '',
+        userServiceId: json['user_service_id'] as String? ?? '',
+        parameters: json['parameters'] as Map<String, dynamic>?,
+        serviceAction: json['service_actions'] != null
+            ? ServiceAction.fromJson(json['service_actions'] as Map<String, dynamic>)
+            : null,
+        userService: json['user_services'] != null
+            ? UserService.fromJson(json['user_services'] as Map<String, dynamic>)
+            : null,
+      );
+    } catch (e) {
+      debugPrint('❌ Error parsing AreaAction from JSON: $e');
+      debugPrint('📦 JSON data: $json');
+      rethrow;
+    }
   }
 }
 
@@ -103,18 +122,24 @@ class AreaReaction {
   });
 
   factory AreaReaction.fromJson(Map<String, dynamic> json) {
-    return AreaReaction(
-      id: json['id'],
-      areaId: json['area_id'],
-      serviceReactionId: json['service_reaction_id'],
-      userServiceId: json['user_service_id'],
-      parameters: json['parameters'],
-      serviceReaction: json['service_reactions'] != null
-          ? ServiceReaction.fromJson(json['service_reactions'])
-          : null,
-      userService: json['user_services'] != null
-          ? UserService.fromJson(json['user_services'])
-          : null,
-    );
+    try {
+      return AreaReaction(
+        id: json['id'] as String? ?? '',
+        areaId: json['area_id'] as String? ?? '',
+        serviceReactionId: json['service_reaction_id'] as String? ?? '',
+        userServiceId: json['user_service_id'] as String? ?? '',
+        parameters: json['parameters'] as Map<String, dynamic>?,
+        serviceReaction: json['service_reactions'] != null
+            ? ServiceReaction.fromJson(json['service_reactions'] as Map<String, dynamic>)
+            : null,
+        userService: json['user_services'] != null
+            ? UserService.fromJson(json['user_services'] as Map<String, dynamic>)
+            : null,
+      );
+    } catch (e) {
+      debugPrint('❌ Error parsing AreaReaction from JSON: $e');
+      debugPrint('📦 JSON data: $json');
+      rethrow;
+    }
   }
 }

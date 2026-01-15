@@ -57,7 +57,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF0A4A0E).withOpacity(0.7), Color(0xFF0A4A0E)],
+            colors: [Color(0xff0a4a0e).withOpacity(0.7), Color(0xff0a4a0e)],
           ),
         ),
         child: SafeArea(
@@ -74,14 +74,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.person_add,
-                          size: 64,
-                          color: Colors.blue[600],
-                        ),
-                        SizedBox(height: 16),
                         Text(
-                          'Create Account',
+                          'ACTION-REACTION',
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF0a4a0e),
+                            letterSpacing: 2,
+                          ),
+                        ),
+                        SizedBox(height: 24),
+                        Text(
+                          'Créer un compte',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -90,7 +94,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          'Join AREA today',
+                          'Rejoignez AREA aujourd\'hui',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.grey[600],
@@ -121,7 +125,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         TextFormField(
                           controller: _displayNameController,
                           decoration: InputDecoration(
-                            labelText: 'Display Name (Optional)',
+                            labelText: 'Nom d\'affichage (Optionnel)',
                             prefixIcon: Icon(Icons.person),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -133,7 +137,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: _passwordController,
                           obscureText: _obscurePassword,
                           decoration: InputDecoration(
-                            labelText: 'Password',
+                            labelText: 'Mot de passe',
                             prefixIcon: Icon(Icons.lock),
                             suffixIcon: IconButton(
                               icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
@@ -149,10 +153,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your password';
+                              return 'Veuillez entrer un mot de passe';
                             }
                             if (value.length < 6) {
-                              return 'Password must be at least 6 characters';
+                              return 'Le mot de passe doit contenir au moins 6 caractères';
                             }
                             return null;
                           },
@@ -162,7 +166,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: _confirmPasswordController,
                           obscureText: _obscureConfirmPassword,
                           decoration: InputDecoration(
-                            labelText: 'Confirm Password',
+                            labelText: 'Confirmer le mot de passe',
                             prefixIcon: Icon(Icons.lock_outline),
                             suffixIcon: IconButton(
                               icon: Icon(_obscureConfirmPassword ? Icons.visibility : Icons.visibility_off),
@@ -178,10 +182,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please confirm your password';
+                              return 'Veuillez confirmer votre mot de passe';
                             }
                             if (value != _passwordController.text) {
-                              return 'Passwords do not match';
+                              return 'Les mots de passe ne correspondent pas';
                             }
                             return null;
                           },
@@ -216,7 +220,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               child: ElevatedButton(
                                 onPressed: authProvider.isLoading ? null : _register,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(0xFF0A4A0E),
+                                  backgroundColor: Color(0xff0a4a0e),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -224,7 +228,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 child: authProvider.isLoading
                                     ? CircularProgressIndicator(color: Colors.white)
                                     : Text(
-                                        'Sign Up',
+                                        'S\'inscrire',
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
@@ -240,7 +244,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Already have an account? ",
+                              "Vous avez déjà un compte ? ",
                               style: TextStyle(color: Colors.grey[600]),
                             ),
                             TextButton(
@@ -248,9 +252,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 Navigator.of(context).pop();
                               },
                               child: Text(
-                                'Sign In',
+                                'Se connecter',
                                 style: TextStyle(
-                                  color: Color(0xFF0A4A0E),
+                                  color: Color(0xff0a4a0e),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),

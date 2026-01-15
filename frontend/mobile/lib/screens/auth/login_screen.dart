@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF0A4A0E).withOpacity(0.7), Color(0xFF0A4A0E)],
+            colors: [Color(0xff0a4a0e).withOpacity(0.7), Color(0xff0a4a0e)],
           ),
         ),
         child: SafeArea(
@@ -60,14 +60,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.wb_auto,
-                          size: 64,
-                          color: Color(0xFF0A4A0E),
-                        ),
-                        SizedBox(height: 16),
                         Text(
-                          'Welcome to AREA',
+                          'ACTION-REACTION',
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF0a4a0e),
+                            letterSpacing: 2,
+                          ),
+                        ),
+                        SizedBox(height: 24),
+                        Text(
+                          'Automatisez vos tâches en connectant vos services préférés',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -76,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          'Sign in to continue',
+                          'Connectez-vous pour continuer',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.grey[600],
@@ -95,10 +99,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
+                              return 'Veuillez entrer votre email';
                             }
                             if (!value.contains('@')) {
-                              return 'Please enter a valid email';
+                              return 'Veuillez entrer un email valide';
                             }
                             return null;
                           },
@@ -108,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _passwordController,
                           obscureText: _obscurePassword,
                           decoration: InputDecoration(
-                            labelText: 'Password',
+                            labelText: 'Mot de passe',
                             prefixIcon: Icon(Icons.lock),
                             suffixIcon: IconButton(
                               icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
@@ -124,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your password';
+                              return 'Veuillez entrer votre mot de passe';
                             }
                             return null;
                           },
@@ -159,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: ElevatedButton(
                                 onPressed: authProvider.isLoading ? null : _login,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF0A4A0E),
+                                  backgroundColor: const Color(0xff0a4a0e),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -167,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: authProvider.isLoading
                                     ? CircularProgressIndicator(color: Colors.white)
                                     : Text(
-                                        'Sign In',
+                                        'Se connecter',
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
@@ -183,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Don't have an account? ",
+                              "Pas de compte ? ",
                               style: TextStyle(color: Colors.grey[600]),
                             ),
                             TextButton(
@@ -193,9 +197,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 );
                               },
                               child: Text(
-                                'Sign Up',
+                                'S\'inscrire',
                                 style: TextStyle(
-                                  color: Color(0xFF0A4A0E),
+                                  color: Color(0xff0a4a0e),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),

@@ -42,7 +42,7 @@ class _AboutScreenState extends State<AboutScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('About AREA'),
-        backgroundColor: Color(0xFF0A4A0E),
+        backgroundColor: Color(0xff0a4a0e),
         foregroundColor: Colors.white,
       ),
       body: _buildContent(),
@@ -92,7 +92,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   Icon(
                     Icons.wb_auto,
                     size: 64,
-                    color: Color(0xFF0A4A0E),
+                    color: Color(0xff0a4a0e),
                   ),
                   SizedBox(height: 16),
                   Text(

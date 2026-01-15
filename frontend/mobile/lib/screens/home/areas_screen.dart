@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../../providers/areas_provider.dart';
 import '../../models/area.dart';
 import '../../services/api_service.dart';
@@ -20,131 +19,140 @@ class _AreasScreenState extends State<AreasScreen> {
     });
   }
 
+  String _formatDate(DateTime date) {
+    final months = ['jan.', 'fév.', 'mar.', 'avr.', 'mai', 'juin', 'juil.', 'aoû.', 'sep.', 'oct.', 'nov.', 'déc.'];
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('ACTION-REACTION'),
+        title: Text('Dashboard', style: TextStyle(color: Color(0xFF1A1A18))),
+        backgroundColor: Colors.white,
+        elevation: 0,
         automaticallyImplyLeading: false,
       ),
       body: Consumer<AreasProvider>(
         builder: (context, areasProvider, child) {
-          if (areasProvider.isLoading && areasProvider.areas.isEmpty) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          if (areasProvider.error != null) {
-            return Center(
+          return RefreshIndicator(
+            onRefresh: areasProvider.fetchAreas,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(16),
+              physics: AlwaysScrollableScrollPhysics(),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: Colors.red[400],
-                  ),
+                  Text('Dashboard', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600, color: Color(0xFF1A1A18))),
+                  SizedBox(height: 4),
+                  Text('Gérez vos automatisations', style: TextStyle(fontSize: 14, color: Color(0xFF6B6962))),
                   SizedBox(height: 16),
-                  Text(
-                    'Error loading areas',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red[700],
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    areasProvider.error!,
-                    style: TextStyle(color: Colors.red[600]),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => areasProvider.fetchAreas(),
-                    child: Text('Retry'),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          if (areasProvider.areas.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.wb_auto,
-                    size: 80,
-                    color: Colors.grey[400],
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'No areas yet',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Create your first automation area',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
+                  
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => CreateAreaScreen())),
+                      style: ElevatedButton.styleFrom(backgroundColor: Color(0xff0a4a0e), foregroundColor: Colors.white, padding: EdgeInsets.symmetric(vertical: 12), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+                      child: Text('+ Nouvelle AREA', style: TextStyle(fontSize: 16)),
                     ),
                   ),
                   SizedBox(height: 24),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => CreateAreaScreen()),
-                      );
-                    },
-                    icon: Icon(Icons.add),
-                    label: Text('Create Area'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF0A4A0E),
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+
+                  if (areasProvider.isLoading && areasProvider.areas.isEmpty)
+                    Center(child: Padding(padding: EdgeInsets.all(32), child: CircularProgressIndicator()))
+                  else ...[
+                    Row(
+                      children: [
+                        Expanded(child: _buildStatCard('Total', '${areasProvider.areas.length}', Color(0xff0a4a0e))),
+                        SizedBox(width: 12),
+                        Expanded(child: _buildStatCard('Actives', '${areasProvider.areas.where((a) => a.enabled).length}', Color(0xFF10B981))),
+                        SizedBox(width: 12),
+                        Expanded(child: _buildStatCard('Inactives', '${areasProvider.areas.where((a) => !a.enabled).length}', Color(0xFF8B8980))),
+                      ],
                     ),
-                  ),
+                    SizedBox(height: 24),
+
+                    Text('Mes AREAs', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Color(0xFF1A1A18))),
+                    SizedBox(height: 16),
+
+                    if (areasProvider.error != null)
+                      Card(
+                        color: Colors.orange[50],
+                        child: Padding(
+                          padding: EdgeInsets.all(12),
+                          child: Row(
+                            children: [
+                              Icon(Icons.warning, color: Colors.orange[700]),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Impossible de charger certaines données. ${areasProvider.error}',
+                                  style: TextStyle(color: Colors.orange[900], fontSize: 12),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    
+                    if (areasProvider.error != null) SizedBox(height: 16),
+
+                    if (areasProvider.areas.isEmpty) _buildEmptyState() else ...areasProvider.areas.map((area) => _buildAreaCard(area)).toList(),
+                  ],
                 ],
               ),
-            );
-          }
-
-          return RefreshIndicator(
-            onRefresh: areasProvider.fetchAreas,
-            child: ListView.builder(
-              padding: EdgeInsets.all(16),
-              itemCount: areasProvider.areas.length,
-              itemBuilder: (context, index) {
-                final area = areasProvider.areas[index];
-                return _buildAreaCard(area);
-              },
             ),
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => CreateAreaScreen()),
-          );
-        },
-        backgroundColor: Color(0xFF0A4A0E),
-        child: Icon(Icons.add, color: Colors.white),
+    );
+  }
+
+  Widget _buildStatCard(String label, String value, Color color) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide(color: Color(0xFFE5E3DD))),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label, style: TextStyle(fontSize: 12, color: Color(0xFF6B6962))),
+            SizedBox(height: 4),
+            Text(value, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600, color: color)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide(color: Color(0xFFE5E3DD))),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+        child: Column(
+          children: [
+            Text('🤖', style: TextStyle(fontSize: 48)),
+            SizedBox(height: 16),
+            Text('Aucune AREA créée', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Color(0xFF1A1A18))),
+            SizedBox(height: 8),
+            Text('Commencez par créer votre première automation', style: TextStyle(fontSize: 14, color: Color(0xFF6B6962)), textAlign: TextAlign.center),
+            SizedBox(height: 24),
+            ElevatedButton(onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => CreateAreaScreen())), style: ElevatedButton.styleFrom(backgroundColor: Color(0xff0a4a0e), foregroundColor: Colors.white, padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))), child: Text('Créer une AREA')),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildAreaCard(Area area) {
     return Card(
-      elevation: 4,
-      margin: EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 2,
+      margin: EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -152,155 +160,27 @@ class _AreasScreenState extends State<AreasScreen> {
           children: [
             Row(
               children: [
-                Expanded(
-                  child: Text(
-                    area.name ?? 'Unnamed Area',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[800],
-                    ),
-                  ),
-                ),
-                if (area.isBuiltin) ...[
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.blue[100],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      'Built-in',
-                      style: TextStyle(
-                        color: Colors.blue[800],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                ],
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: area.enabled ? Colors.green[100] : Colors.red[100],
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    area.enabled ? 'Active' : 'Inactive',
-                    style: TextStyle(
-                      color: area.enabled ? Colors.green[800] : Colors.red[800],
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            if (area.description != null) ...[
-              SizedBox(height: 8),
-              Text(
-                area.description!,
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
-                ),
-              ),
-            ],
-            SizedBox(height: 12),
-            Row(
-              children: [
-                _buildCountChip(
-                  Icons.play_arrow,
-                  '${area.actions.length} action${area.actions.length != 1 ? 's' : ''}',
-                  Colors.blue,
-                ),
+                Flexible(child: Text(area.name ?? 'Sans nom', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Color(0xFF1A1A18)))),
                 SizedBox(width: 8),
-                _buildCountChip(
-                  Icons.bolt,
-                  '${area.reactions.length} reaction${area.reactions.length != 1 ? 's' : ''}',
-                  Colors.orange,
-                ),
+                if (area.isBuiltin) Container(padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: Color(0xff0a4a0e).withOpacity(0.1), borderRadius: BorderRadius.circular(4)), child: Text('Built-in', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xff0a4a0e)))),
+                SizedBox(width: 8),
+                Container(padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: area.enabled ? Color(0xFF10B981).withOpacity(0.1) : Colors.grey.withOpacity(0.1), borderRadius: BorderRadius.circular(4)), child: Text(area.enabled ? 'Active' : 'Inactive', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: area.enabled ? Color(0xFF10B981) : Colors.grey))),
               ],
             ),
+            SizedBox(height: 8),
+            if (area.description != null) Text(area.description!, style: TextStyle(fontSize: 13, color: Color(0xFF6B6962))),
+            SizedBox(height: 12),
+            Text('Créée le ${_formatDate(area.createdAt)}', style: TextStyle(fontSize: 12, color: Color(0xFF8B8980))),
             SizedBox(height: 12),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Created ${DateFormat.yMMMd().format(area.createdAt)}',
-                  style: TextStyle(
-                    color: Colors.grey[500],
-                    fontSize: 12,
-                  ),
-                ),
-                Row(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        try {
-                          await ApiService.updateArea(area.id, enabled: !area.enabled);
-                          Provider.of<AreasProvider>(context, listen: false).fetchAreas();
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Error: ${e.toString()}')),
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: area.enabled ? Colors.red[50] : Colors.green[50],
-                        foregroundColor: area.enabled ? Colors.red[800] : Colors.green[800],
-                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        minimumSize: Size(0, 32),
-                      ),
-                      child: Text(area.enabled ? 'Disable' : 'Enable', style: TextStyle(fontSize: 12)),
-                    ),
-                    SizedBox(width: 8),
-                    OutlinedButton(
-                      onPressed: () {
-                        // TODO: Navigate to area configuration screen
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Configuration screen coming soon')),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        minimumSize: Size(0, 32),
-                      ),
-                      child: Text('Configure', style: TextStyle(fontSize: 12)),
-                    ),
-                  ],
-                ),
+                Expanded(child: ElevatedButton(onPressed: () async {try {await ApiService.updateArea(area.id, enabled: !area.enabled); Provider.of<AreasProvider>(context, listen: false).fetchAreas();} catch (e) {ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur : ${e.toString()}')));}}, style: ElevatedButton.styleFrom(backgroundColor: area.enabled ? Colors.white : Color(0xff0a4a0e), foregroundColor: area.enabled ? Color(0xff0a4a0e) : Colors.white, elevation: 0, side: area.enabled ? BorderSide(color: Color(0xFFE5E3DD)) : null, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))), child: Text(area.enabled ? 'Désactiver' : 'Activer', style: TextStyle(fontSize: 13)))),
+                SizedBox(width: 8),
+                Expanded(child: ElevatedButton(onPressed: () {}, style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Color(0xff0a4a0e), elevation: 0, side: BorderSide(color: Color(0xFFE5E3DD)), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))), child: Text('Configurer', style: TextStyle(fontSize: 13)))),
               ],
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildCountChip(IconData icon, String label, Color color) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: color),
-          SizedBox(width: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
       ),
     );
   }
