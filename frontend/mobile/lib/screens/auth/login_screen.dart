@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../l10n/app_localizations.dart';
 import '../home/home_screen.dart';
 import 'register_screen.dart';
 
@@ -37,6 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -61,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'ACTION-REACTION',
+                          localizations?.translate('login_title') ?? 'ACTION-REACTION',
                           style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
@@ -71,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         SizedBox(height: 24),
                         Text(
-                          'Automatisez vos tâches en connectant vos services préférés',
+                          localizations?.translate('automate_tasks') ?? 'Automatisez vos tâches en connectant vos services préférés',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -80,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          'Connectez-vous pour continuer',
+                          localizations?.translate('login_to_continue') ?? 'Connectez-vous pour continuer',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.grey[600],
@@ -91,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                            labelText: 'Email',
+                            labelText: localizations?.translate('email') ?? 'Email',
                             prefixIcon: Icon(Icons.email),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -99,10 +102,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Veuillez entrer votre email';
+                              return localizations?.translate('enter_email') ?? 'Veuillez entrer votre email';
                             }
                             if (!value.contains('@')) {
-                              return 'Veuillez entrer un email valide';
+                              return localizations?.translate('enter_valid_email') ?? 'Veuillez entrer un email valide';
                             }
                             return null;
                           },
@@ -112,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _passwordController,
                           obscureText: _obscurePassword,
                           decoration: InputDecoration(
-                            labelText: 'Mot de passe',
+                            labelText: localizations?.translate('password') ?? 'Mot de passe',
                             prefixIcon: Icon(Icons.lock),
                             suffixIcon: IconButton(
                               icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
@@ -128,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Veuillez entrer votre mot de passe';
+                              return localizations?.translate('enter_password') ?? 'Veuillez entrer votre mot de passe';
                             }
                             return null;
                           },
@@ -171,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: authProvider.isLoading
                                     ? CircularProgressIndicator(color: Colors.white)
                                     : Text(
-                                        'Se connecter',
+                                        localizations?.translate('login_button') ?? 'Se connecter',
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
@@ -187,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Pas de compte ? ",
+                              localizations?.translate('no_account_question') ?? "Pas de compte ? ",
                               style: TextStyle(color: Colors.grey[600]),
                             ),
                             TextButton(
@@ -197,7 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 );
                               },
                               child: Text(
-                                'S\'inscrire',
+                                localizations?.translate('register') ?? 'S\'inscrire',
                                 style: TextStyle(
                                   color: Color(0xff0a4a0e),
                                   fontWeight: FontWeight.bold,

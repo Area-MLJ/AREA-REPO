@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import '../l10n/app_localizations.dart';
 import 'auth/login_screen.dart';
 import 'home/areas_screen.dart';
 import 'home/services_screen.dart';
@@ -29,6 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    
     return Consumer<AuthProvider>(
       builder: (context, authProvider, child) {
         if (!authProvider.isAuthenticated) {
@@ -65,15 +68,15 @@ class _HomeScreenState extends State<HomeScreen> {
             items: [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                label: 'AREAs',
+                label: localizations?.translate('nav_areas') ?? 'AREAs',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.apps),
-                label: 'Services',
+                label: localizations?.translate('nav_services') ?? 'Services',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.person),
-                label: 'Profil',
+                label: localizations?.translate('nav_profile') ?? 'Profil',
               ),
             ],
             selectedItemColor: Color(0xff0a4a0e),
