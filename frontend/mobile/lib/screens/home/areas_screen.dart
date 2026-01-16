@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/areas_provider.dart';
 import '../../models/area.dart';
 import '../../services/api_service.dart';
+import '../../l10n/app_localizations.dart';
 import 'create_area_screen.dart';
 
 class AreasScreen extends StatefulWidget {
@@ -26,10 +27,12 @@ class _AreasScreenState extends State<AreasScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Dashboard', style: TextStyle(color: Color(0xFF1A1A18))),
+        title: Text(localizations?.translate('dashboard') ?? 'Dashboard', style: TextStyle(color: Color(0xFF1A1A18))),
         backgroundColor: Colors.white,
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -44,9 +47,9 @@ class _AreasScreenState extends State<AreasScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Dashboard', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600, color: Color(0xFF1A1A18))),
+                  Text(localizations?.translate('dashboard') ?? 'Dashboard', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600, color: Color(0xFF1A1A18))),
                   SizedBox(height: 4),
-                  Text('Gérez vos automatisations', style: TextStyle(fontSize: 14, color: Color(0xFF6B6962))),
+                  Text(localizations?.translate('manage_automations') ?? 'Gérez vos automatisations', style: TextStyle(fontSize: 14, color: Color(0xFF6B6962))),
                   SizedBox(height: 16),
                   
                   SizedBox(
@@ -54,7 +57,7 @@ class _AreasScreenState extends State<AreasScreen> {
                     child: ElevatedButton(
                       onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => CreateAreaScreen())),
                       style: ElevatedButton.styleFrom(backgroundColor: Color(0xff0a4a0e), foregroundColor: Colors.white, padding: EdgeInsets.symmetric(vertical: 12), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
-                      child: Text('+ Nouvelle AREA', style: TextStyle(fontSize: 16)),
+                      child: Text(localizations?.translate('new_area_button') ?? '+ Nouvelle AREA', style: TextStyle(fontSize: 16)),
                     ),
                   ),
                   SizedBox(height: 24),
@@ -64,16 +67,16 @@ class _AreasScreenState extends State<AreasScreen> {
                   else ...[
                     Row(
                       children: [
-                        Expanded(child: _buildStatCard('Total', '${areasProvider.areas.length}', Color(0xff0a4a0e))),
+                        Expanded(child: _buildStatCard(localizations?.translate('total') ?? 'Total', '${areasProvider.areas.length}', Color(0xff0a4a0e))),
                         SizedBox(width: 12),
-                        Expanded(child: _buildStatCard('Actives', '${areasProvider.areas.where((a) => a.enabled).length}', Color(0xFF10B981))),
+                        Expanded(child: _buildStatCard(localizations?.translate('active') ?? 'Actives', '${areasProvider.areas.where((a) => a.enabled).length}', Color(0xFF10B981))),
                         SizedBox(width: 12),
-                        Expanded(child: _buildStatCard('Inactives', '${areasProvider.areas.where((a) => !a.enabled).length}', Color(0xFF8B8980))),
+                        Expanded(child: _buildStatCard(localizations?.translate('inactive') ?? 'Inactives', '${areasProvider.areas.where((a) => !a.enabled).length}', Color(0xFF8B8980))),
                       ],
                     ),
                     SizedBox(height: 24),
 
-                    Text('Mes AREAs', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Color(0xFF1A1A18))),
+                    Text(localizations?.translate('my_areas') ?? 'Mes AREAs', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Color(0xFF1A1A18))),
                     SizedBox(height: 16),
 
                     if (areasProvider.error != null)
@@ -87,7 +90,7 @@ class _AreasScreenState extends State<AreasScreen> {
                               SizedBox(width: 8),
                               Expanded(
                                 child: Text(
-                                  'Impossible de charger certaines données. ${areasProvider.error}',
+                                  '${localizations?.translate('error_loading') ?? 'Impossible de charger certaines données.'} ${areasProvider.error}',
                                   style: TextStyle(color: Colors.orange[900], fontSize: 12),
                                 ),
                               ),
@@ -98,7 +101,7 @@ class _AreasScreenState extends State<AreasScreen> {
                     
                     if (areasProvider.error != null) SizedBox(height: 16),
 
-                    if (areasProvider.areas.isEmpty) _buildEmptyState() else ...areasProvider.areas.map((area) => _buildAreaCard(area)).toList(),
+                    if (areasProvider.areas.isEmpty) _buildEmptyState(localizations) else ...areasProvider.areas.map((area) => _buildAreaCard(area, localizations)).toList(),
                   ],
                 ],
               ),
@@ -127,7 +130,7 @@ class _AreasScreenState extends State<AreasScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(AppLocalizations? localizations) {
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide(color: Color(0xFFE5E3DD))),
@@ -137,18 +140,18 @@ class _AreasScreenState extends State<AreasScreen> {
           children: [
             Text('🤖', style: TextStyle(fontSize: 48)),
             SizedBox(height: 16),
-            Text('Aucune AREA créée', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Color(0xFF1A1A18))),
+            Text(localizations?.translate('no_areas') ?? 'Aucune AREA créée', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Color(0xFF1A1A18))),
             SizedBox(height: 8),
-            Text('Commencez par créer votre première automation', style: TextStyle(fontSize: 14, color: Color(0xFF6B6962)), textAlign: TextAlign.center),
+            Text(localizations?.translate('no_areas_desc') ?? 'Commencez par créer votre première automation', style: TextStyle(fontSize: 14, color: Color(0xFF6B6962)), textAlign: TextAlign.center),
             SizedBox(height: 24),
-            ElevatedButton(onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => CreateAreaScreen())), style: ElevatedButton.styleFrom(backgroundColor: Color(0xff0a4a0e), foregroundColor: Colors.white, padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))), child: Text('Créer une AREA')),
+            ElevatedButton(onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => CreateAreaScreen())), style: ElevatedButton.styleFrom(backgroundColor: Color(0xff0a4a0e), foregroundColor: Colors.white, padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))), child: Text(localizations?.translate('create_area') ?? 'Créer une AREA')),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildAreaCard(Area area) {
+  Widget _buildAreaCard(Area area, AppLocalizations? localizations) {
     return Card(
       elevation: 2,
       margin: EdgeInsets.only(bottom: 12),
@@ -162,21 +165,21 @@ class _AreasScreenState extends State<AreasScreen> {
               children: [
                 Flexible(child: Text(area.name ?? 'Sans nom', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Color(0xFF1A1A18)))),
                 SizedBox(width: 8),
-                if (area.isBuiltin) Container(padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: Color(0xff0a4a0e).withOpacity(0.1), borderRadius: BorderRadius.circular(4)), child: Text('Built-in', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xff0a4a0e)))),
+                if (area.isBuiltin) Container(padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: Color(0xff0a4a0e).withOpacity(0.1), borderRadius: BorderRadius.circular(4)), child: Text(localizations?.translate('builtin') ?? 'Built-in', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xff0a4a0e)))),
                 SizedBox(width: 8),
-                Container(padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: area.enabled ? Color(0xFF10B981).withOpacity(0.1) : Colors.grey.withOpacity(0.1), borderRadius: BorderRadius.circular(4)), child: Text(area.enabled ? 'Active' : 'Inactive', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: area.enabled ? Color(0xFF10B981) : Colors.grey))),
+                Container(padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: area.enabled ? Color(0xFF10B981).withOpacity(0.1) : Colors.grey.withOpacity(0.1), borderRadius: BorderRadius.circular(4)), child: Text(area.enabled ? (localizations?.translate('active') ?? 'Active') : (localizations?.translate('inactive') ?? 'Inactive'), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: area.enabled ? Color(0xFF10B981) : Colors.grey))),
               ],
             ),
             SizedBox(height: 8),
             if (area.description != null) Text(area.description!, style: TextStyle(fontSize: 13, color: Color(0xFF6B6962))),
             SizedBox(height: 12),
-            Text('Créée le ${_formatDate(area.createdAt)}', style: TextStyle(fontSize: 12, color: Color(0xFF8B8980))),
+            Text('${localizations?.translate('created_on') ?? 'Créée le'} ${_formatDate(area.createdAt)}', style: TextStyle(fontSize: 12, color: Color(0xFF8B8980))),
             SizedBox(height: 12),
             Row(
               children: [
-                Expanded(child: ElevatedButton(onPressed: () async {try {await ApiService.updateArea(area.id, enabled: !area.enabled); Provider.of<AreasProvider>(context, listen: false).fetchAreas();} catch (e) {ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur : ${e.toString()}')));}}, style: ElevatedButton.styleFrom(backgroundColor: area.enabled ? Colors.white : Color(0xff0a4a0e), foregroundColor: area.enabled ? Color(0xff0a4a0e) : Colors.white, elevation: 0, side: area.enabled ? BorderSide(color: Color(0xFFE5E3DD)) : null, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))), child: Text(area.enabled ? 'Désactiver' : 'Activer', style: TextStyle(fontSize: 13)))),
+                Expanded(child: ElevatedButton(onPressed: () async {try {await ApiService.updateArea(area.id, enabled: !area.enabled); Provider.of<AreasProvider>(context, listen: false).fetchAreas();} catch (e) {ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur : ${e.toString()}')));}}, style: ElevatedButton.styleFrom(backgroundColor: area.enabled ? Colors.white : Color(0xff0a4a0e), foregroundColor: area.enabled ? Color(0xff0a4a0e) : Colors.white, elevation: 0, side: area.enabled ? BorderSide(color: Color(0xFFE5E3DD)) : null, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))), child: Text(area.enabled ? (localizations?.translate('deactivate') ?? 'Désactiver') : (localizations?.translate('activate') ?? 'Activer'), style: TextStyle(fontSize: 13)))),
                 SizedBox(width: 8),
-                Expanded(child: ElevatedButton(onPressed: () {}, style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Color(0xff0a4a0e), elevation: 0, side: BorderSide(color: Color(0xFFE5E3DD)), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))), child: Text('Configurer', style: TextStyle(fontSize: 13)))),
+                Expanded(child: ElevatedButton(onPressed: () {}, style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Color(0xff0a4a0e), elevation: 0, side: BorderSide(color: Color(0xFFE5E3DD)), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))), child: Text(localizations?.translate('configure') ?? 'Configurer', style: TextStyle(fontSize: 13)))),
               ],
             ),
           ],
