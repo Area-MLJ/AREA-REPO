@@ -101,10 +101,19 @@
     },
     "createdOn": "Créée le",
     "lastTriggered": "Dernière :",
-    "builtin": "Built-in",
+    "builtin": "Intégré",
     "activate": "Activer",
     "deactivate": "Désactiver",
-    "configure": "Configurer"
+    "configure": "Configurer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "editArea": "Modifier l'AREA",
+    "deleteArea": "Supprimer l'AREA",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette AREA ? Cette action est irréversible.",
+    "areaDeleted": "AREA supprimée avec succès",
+    "areaUpdated": "AREA mise à jour avec succès",
+    "areaName": "Nom de l'AREA",
+    "areaDescription": "Description"
   },
   "areas": {
     "create": {

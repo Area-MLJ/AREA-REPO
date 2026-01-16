@@ -14,10 +14,6 @@ class ProfileScreen extends StatelessWidget {
     final localizations = AppLocalizations.of(context);
     
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations?.translate('profile_title') ?? 'Profil'),
-        automaticallyImplyLeading: false,
-      ),
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
           final user = authProvider.user;

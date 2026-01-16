@@ -15,7 +15,7 @@ export function Badge({ variant = 'neutral', size = 'md', children }: BadgeProps
   const baseStyles = 'inline-flex items-center font-medium rounded-full';
 
   const variantStyles = {
-    success: 'bg-[#10B981]/10 text-[#059669]',
+    success: 'bg-[#0a4a0e]/10 text-[#0a4a0e]',
     warning: 'bg-[#F59E0B]/10 text-[#D97706]',
     error: 'bg-[#EF4444]/10 text-[#DC2626]',
     neutral: 'bg-[#E8E6E1] text-[#4D4C47]',

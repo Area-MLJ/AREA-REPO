@@ -31,12 +31,6 @@ class _AreasScreenState extends State<AreasScreen> {
     
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(localizations?.translate('dashboard') ?? 'Dashboard', style: TextStyle(color: Color(0xFF1A1A18))),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-      ),
       body: Consumer<AreasProvider>(
         builder: (context, areasProvider, child) {
           return RefreshIndicator(
@@ -179,11 +173,108 @@ class _AreasScreenState extends State<AreasScreen> {
               children: [
                 Expanded(child: ElevatedButton(onPressed: () async {try {await ApiService.updateArea(area.id, enabled: !area.enabled); Provider.of<AreasProvider>(context, listen: false).fetchAreas();} catch (e) {ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur : ${e.toString()}')));}}, style: ElevatedButton.styleFrom(backgroundColor: area.enabled ? Colors.white : Color(0xff0a4a0e), foregroundColor: area.enabled ? Color(0xff0a4a0e) : Colors.white, elevation: 0, side: area.enabled ? BorderSide(color: Color(0xFFE5E3DD)) : null, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))), child: Text(area.enabled ? (localizations?.translate('deactivate') ?? 'Désactiver') : (localizations?.translate('activate') ?? 'Activer'), style: TextStyle(fontSize: 13)))),
                 SizedBox(width: 8),
-                Expanded(child: ElevatedButton(onPressed: () {}, style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Color(0xff0a4a0e), elevation: 0, side: BorderSide(color: Color(0xFFE5E3DD)), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))), child: Text(localizations?.translate('configure') ?? 'Configurer', style: TextStyle(fontSize: 13)))),
+                Expanded(child: ElevatedButton(onPressed: () => _showEditDialog(context, area, localizations), style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Color(0xff0a4a0e), elevation: 0, side: BorderSide(color: Color(0xFFE5E3DD)), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))), child: Text(localizations?.translate('edit_area') ?? 'Modifier', style: TextStyle(fontSize: 13)))),
+                SizedBox(width: 8),
+                Expanded(child: ElevatedButton(onPressed: () => _showDeleteDialog(context, area, localizations), style: ElevatedButton.styleFrom(backgroundColor: Colors.red[50], foregroundColor: Colors.red[700], elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))), child: Text(localizations?.translate('delete_area') ?? 'Supprimer', style: TextStyle(fontSize: 13)))),
               ],
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showEditDialog(BuildContext context, Area area, AppLocalizations? localizations) {
+    final nameController = TextEditingController(text: area.name);
+    final descriptionController = TextEditingController(text: area.description);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(localizations?.translate('edit_area_title') ?? 'Modifier l\'AREA'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(
+                labelText: localizations?.translate('area_name') ?? 'Nom de l\'AREA',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16),
+            TextField(
+              controller: descriptionController,
+              decoration: InputDecoration(
+                labelText: localizations?.translate('area_description') ?? 'Description',
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 3,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(localizations?.translate('cancel') ?? 'Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              try {
+                await ApiService.updateArea(
+                  area.id,
+                  name: nameController.text,
+                  description: descriptionController.text,
+                );
+                Navigator.pop(context);
+                Provider.of<AreasProvider>(context, listen: false).fetchAreas();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(localizations?.translate('area_updated') ?? 'AREA mise à jour')),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Erreur : ${e.toString()}')),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Color(0xff0a4a0e)),
+            child: Text(localizations?.translate('save') ?? 'Enregistrer', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteDialog(BuildContext context, Area area, AppLocalizations? localizations) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(localizations?.translate('delete_confirm_title') ?? 'Supprimer l\'AREA'),
+        content: Text(localizations?.translate('delete_confirm_message') ?? 'Êtes-vous sûr de vouloir supprimer cette AREA ? Cette action est irréversible.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(localizations?.translate('cancel') ?? 'Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              try {
+                await ApiService.deleteArea(area.id);
+                Navigator.pop(context);
+                Provider.of<AreasProvider>(context, listen: false).fetchAreas();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(localizations?.translate('area_deleted') ?? 'AREA supprimée')),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Erreur : ${e.toString()}')),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red[700]),
+            child: Text(localizations?.translate('delete') ?? 'Supprimer', style: TextStyle(color: Colors.white)),
+          ),
+        ],
       ),
     );
   }

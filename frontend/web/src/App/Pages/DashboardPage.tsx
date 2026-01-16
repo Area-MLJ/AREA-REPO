@@ -3,6 +3,7 @@
  * Page principale avec vue d'ensemble des AREAs
  */
 
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAreas, useAuth } from '../../temp-shared';
 import { Card } from '../../DesignSystem/components/Card';
@@ -12,8 +13,11 @@ import { apiClient } from '../../lib/api';
 
 export default function DashboardPage() {
   const { t, i18n } = useTranslation();
-  const { areas, loading, error } = useAreas();
+  const { areas, loading, error, refetch } = useAreas();
   const { user } = useAuth();
+  const [editingArea, setEditingArea] = useState<any>(null);
+  const [deletingArea, setDeletingArea] = useState<any>(null);
+  const [editForm, setEditForm] = useState({ name: '', description: '' });
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString(i18n.language, {
@@ -120,7 +124,7 @@ export default function DashboardPage() {
                           try {
                             const response = await apiClient.updateArea(area.id, { enabled: !area.isActive });
                             if (response.success) {
-                              window.location.reload();
+                              refetch?.();
                             }
                           } catch (error) {
                             console.error('Error updating area:', error);
@@ -132,9 +136,20 @@ export default function DashboardPage() {
                       <Button 
                         size="sm" 
                         variant="outlined"
-                        onClick={() => window.location.href = `/area/${area.id}`}
+                        onClick={() => {
+                          setEditingArea(area);
+                          setEditForm({ name: area.name, description: area.description });
+                        }}
                       >
-                        {t('dashboard.configure')}
+                        {t('dashboard.edit')}
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outlined"
+                        onClick={() => setDeletingArea(area)}
+                        className="!text-red-600 !border-red-600 hover:!bg-red-50"
+                      >
+                        {t('dashboard.delete')}
                       </Button>
                     </div>
                   </div>
@@ -144,6 +159,104 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
+
+      {/* Edit Modal */}
+      {editingArea && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <h2 className="text-xl font-semibold mb-4">{t('dashboard.editArea')}</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('dashboard.areaName')}
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0a4a0e]"
+                  value={editForm.name}
+                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('dashboard.areaDescription')}
+                </label>
+                <textarea
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0a4a0e]"
+                  rows={3}
+                  value={editForm.description}
+                  onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="flex gap-2 mt-6">
+              <Button
+                variant="outlined"
+                onClick={() => setEditingArea(null)}
+                className="flex-1"
+              >
+                {t('common.cancel')}
+              </Button>
+              <Button
+                onClick={async () => {
+                  try {
+                    const response = await apiClient.updateArea(editingArea.id, {
+                      name: editForm.name,
+                      description: editForm.description,
+                    });
+                    if (response.success) {
+                      setEditingArea(null);
+                      refetch?.();
+                    }
+                  } catch (error) {
+                    console.error('Error updating area:', error);
+                  }
+                }}
+                className="flex-1"
+              >
+                {t('common.save')}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deletingArea && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <h2 className="text-xl font-semibold mb-4">{t('dashboard.deleteArea')}</h2>
+            <p className="text-gray-600 mb-6">
+              {t('dashboard.deleteConfirm')}
+            </p>
+            <div className="flex gap-2">
+              <Button
+                variant="outlined"
+                onClick={() => setDeletingArea(null)}
+                className="flex-1"
+              >
+                {t('common.cancel')}
+              </Button>
+              <Button
+                onClick={async () => {
+                  try {
+                    const response = await apiClient.deleteArea(deletingArea.id);
+                    if (response.success) {
+                      setDeletingArea(null);
+                      refetch?.();
+                    }
+                  } catch (error) {
+                    console.error('Error deleting area:', error);
+                  }
+                }}
+                className="flex-1 !bg-red-600 hover:!bg-red-700"
+              >
+                {t('common.delete')}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
