@@ -7,12 +7,14 @@ import { registerAction, registerReaction } from './registry';
 import { timerAction } from './actions/timer';
 import { newsAction } from './actions/news';
 import { twitchStreamOnline } from './actions/twitch';
+import { spotifyTrackChanged } from './actions/spotify';
 
 // Reactions
 import { discordSendMessage } from './reactions/discord';
 import { emailSend } from './reactions/email';
 import { mailSend } from './reactions/mail';
 import { spotifyPlayTrack } from './reactions/spotify';
+import { twitchSendChatMessage } from './reactions/twitch';
 
 /**
  * Initialise le registry avec tous les modules disponibles
@@ -23,11 +25,13 @@ export function initializeRegistry(): void {
   registerAction(timerAction);
   registerAction(newsAction);
   registerAction(twitchStreamOnline);
+  registerAction(spotifyTrackChanged);
 
   // Enregistrer les réactions
   registerReaction(discordSendMessage);
   registerReaction(emailSend);
   registerReaction(mailSend);
   registerReaction(spotifyPlayTrack);
+  registerReaction(twitchSendChatMessage);
 }
 

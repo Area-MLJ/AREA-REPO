@@ -1,0 +1,8 @@
+{
+  "name": "track_changed",
+  "display_name": "Changement de morceau",
+  "description": "Déclenché quand le morceau Spotify en cours change (polling)",
+  "polling_supported": true,
+  "webhook_supported": false,
+  "params": []
+}

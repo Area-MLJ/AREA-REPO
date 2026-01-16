@@ -26,6 +26,8 @@ export default function AreaCreatorPage() {
   const [selectedReaction, setSelectedReaction] = useState('');
   const [spotifyTrackUrl, setSpotifyTrackUrl] = useState('');
   const [spotifyDeviceId, setSpotifyDeviceId] = useState('');
+  const [twitchBroadcasterLogin, setTwitchBroadcasterLogin] = useState('');
+  const [twitchChatMessage, setTwitchChatMessage] = useState('');
   const [backendServices, setBackendServices] = useState<Service[]>([]);
   const [backendUserServices, setBackendUserServices] = useState<UserService[]>([]);
   const [creating, setCreating] = useState(false);
@@ -196,6 +198,116 @@ export default function AreaCreatorPage() {
       return;
     }
 
+    if (selectedAction === 'spotify_track_changed' && selectedReaction === 'twitch_send_chat_message') {
+      if (!spotifyServiceId) {
+        alert('Service Spotify introuvable côté backend');
+        return;
+      }
+      if (!twitchServiceId) {
+        alert('Service Twitch introuvable côté backend');
+        return;
+      }
+      if (!twitchBroadcasterLogin.trim()) {
+        alert('Login Twitch de la chaîne requis');
+        return;
+      }
+      if (!twitchChatMessage.trim()) {
+        alert('Message requis');
+        return;
+      }
+
+      setCreating(true);
+      try {
+        const areaRes = await apiClient.createArea({ name, description, enabled: true });
+        if (!areaRes.success || !areaRes.data?.id) {
+          throw new Error(areaRes.error || 'Failed to create area');
+        }
+
+        const spotifyUserService = backendUserServices.find((us) => us.service_id === spotifyServiceId);
+        if (!spotifyUserService) {
+          throw new Error('Spotify non connecté: connecte Spotify dans /services avant de créer cette AREA');
+        }
+
+        const twitchUserService = await getOrCreateUserService(twitchServiceId, 'Twitch');
+
+        const [spotifyActionsRes, twitchReactionsRes] = await Promise.all([
+          apiClient.getServiceActions(spotifyServiceId),
+          apiClient.getServiceReactions(twitchServiceId),
+        ]);
+
+        if (!spotifyActionsRes.success || !spotifyActionsRes.data) {
+          throw new Error(spotifyActionsRes.error || 'Failed to load Spotify actions');
+        }
+        if (!twitchReactionsRes.success || !twitchReactionsRes.data) {
+          throw new Error(twitchReactionsRes.error || 'Failed to load Twitch reactions');
+        }
+
+        const spotifyAction = spotifyActionsRes.data.find((a) => a.name === 'track_changed');
+        if (!spotifyAction) {
+          throw new Error('Action Spotify track_changed introuvable');
+        }
+
+        const twitchReaction = twitchReactionsRes.data.find((r) => r.name === 'send_chat_message');
+        if (!twitchReaction) {
+          throw new Error('Réaction Twitch send_chat_message introuvable');
+        }
+
+        const twitchBroadcasterLoginParamId = twitchReaction.service_reaction_params?.find((p) => p.name === 'broadcaster_login')?.id;
+        const twitchMessageParamId = twitchReaction.service_reaction_params?.find((p) => p.name === 'message')?.id;
+        if (!twitchBroadcasterLoginParamId || !twitchMessageParamId) {
+          throw new Error('Paramètres Twitch broadcaster_login/message introuvables');
+        }
+
+        const actionRes = await apiClient.createAreaAction(areaRes.data.id, {
+          service_action_id: spotifyAction.id,
+          user_service_id: spotifyUserService.id,
+          enabled: true,
+        });
+        if (!actionRes.success) {
+          throw new Error(actionRes.error || 'Failed to create area action');
+        }
+
+        const reactionRes = await apiClient.createAreaReaction(areaRes.data.id, {
+          service_reaction_id: twitchReaction.id,
+          user_service_id: twitchUserService.id,
+          enabled: true,
+          position: 0,
+          param_values: [
+            {
+              service_reaction_param_id: twitchBroadcasterLoginParamId,
+              value_text: twitchBroadcasterLogin.trim(),
+            },
+            {
+              service_reaction_param_id: twitchMessageParamId,
+              value_text: twitchChatMessage.trim(),
+            },
+          ],
+        });
+        if (!reactionRes.success) {
+          throw new Error(reactionRes.error || 'Failed to create area reaction');
+        }
+
+        alert(t('areas.create.success'));
+        window.location.href = '/dashboard';
+      } catch (e: any) {
+        const errorMsg = e?.message || t('areas.create.error');
+        if (errorMsg.includes('Twitch')) {
+          alert(t('areas.create.twitchNotFound'));
+        } else if (errorMsg.includes('Spotify')) {
+          if (errorMsg.includes('connecté')) {
+            alert(t('areas.create.spotifyNotConnected'));
+          } else {
+            alert(t('areas.create.spotifyNotFound'));
+          }
+        } else {
+          alert(errorMsg);
+        }
+      } finally {
+        setCreating(false);
+      }
+      return;
+    }
+
     alert(t('areas.create.notImplemented'));
   };
 
@@ -217,6 +329,9 @@ export default function AreaCreatorPage() {
         }
         if (selectedReaction === 'spotify_play_track') {
           return spotifyTrackUrl.trim() !== '';
+        }
+        if (selectedReaction === 'twitch_send_chat_message') {
+          return twitchBroadcasterLogin.trim() !== '' && twitchChatMessage.trim() !== '';
         }
         return true;
       case 'review':
@@ -293,14 +408,14 @@ export default function AreaCreatorPage() {
             </div>
             <div className="flex gap-2">
               <Button
-                variant={mode === 'form' ? 'primary' : 'outlined'}
+                variant="outline"
                 size="sm"
                 onClick={() => setMode('form')}
               >
                 {t('areas.create.formMode')}
               </Button>
               <Button
-                variant={mode === 'builder' ? 'primary' : 'outlined'}
+                variant="primary"
                 size="sm"
                 onClick={() => setMode('builder')}
               >
@@ -343,14 +458,14 @@ export default function AreaCreatorPage() {
           </div>
           <div className="flex gap-2">
             <Button
-              variant={mode === 'form' ? 'primary' : 'outlined'}
+              variant="primary"
               size="sm"
               onClick={() => setMode('form')}
             >
               {t('areas.create.formMode')}
             </Button>
             <Button
-              variant={mode === 'builder' ? 'primary' : 'outlined'}
+              variant="outline"
               size="sm"
               onClick={() => setMode('builder')}
             >
@@ -564,7 +679,7 @@ export default function AreaCreatorPage() {
                   </div>
 
                   {selectedReaction === 'spotify_play_track' && (
-                    <div className="mt-4 space-y-4">
+                    <div className="space-y-4">
                       <Input
                         label={t('areas.create.spotifyTrackUrl')}
                         placeholder={t('areas.create.spotifyTrackUrlPlaceholder')}
@@ -576,6 +691,23 @@ export default function AreaCreatorPage() {
                         placeholder={t('areas.create.spotifyDeviceIdPlaceholder')}
                         value={spotifyDeviceId}
                         onChange={(e) => setSpotifyDeviceId(e.target.value)}
+                      />
+                    </div>
+                  )}
+
+                  {selectedReaction === 'twitch_send_chat_message' && (
+                    <div className="space-y-4">
+                      <Input
+                        label="Login Twitch de la chaîne"
+                        placeholder="ex: gotaga"
+                        value={twitchBroadcasterLogin}
+                        onChange={(e) => setTwitchBroadcasterLogin(e.target.value)}
+                      />
+                      <Input
+                        label="Message"
+                        placeholder="Now playing: {{track_name}} - {{artist_name}}"
+                        value={twitchChatMessage}
+                        onChange={(e) => setTwitchChatMessage(e.target.value)}
                       />
                     </div>
                   )}
@@ -629,6 +761,12 @@ export default function AreaCreatorPage() {
                 {selectedReaction === 'spotify_play_track' && (
                   <div className="text-xs md:text-sm text-[#4D4C47] mt-1">
                     Morceau : {spotifyTrackUrl}
+                  </div>
+                )}
+
+                {selectedReaction === 'twitch_send_chat_message' && (
+                  <div className="text-xs md:text-sm text-[#4D4C47] mt-1">
+                    Chaîne : {twitchBroadcasterLogin}
                   </div>
                 )}
               </div>

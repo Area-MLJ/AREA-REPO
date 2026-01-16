@@ -295,7 +295,13 @@ export const MOCK_SERVICES = [
         description: 'Déclenche quand le streamer (user_login) passe en live',
       },
     ],
-    reactions: [],
+    reactions: [
+      {
+        id: 'twitch_send_chat_message',
+        name: 'Envoyer un message dans le chat',
+        description: 'Envoie un message dans le chat Twitch (bot)',
+      },
+    ],
   }
   ,
   {
@@ -306,7 +312,13 @@ export const MOCK_SERVICES = [
     iconUrl: 'https://cdn-icons-png.flaticon.com/512/2111/2111624.png',
     category: 'social',
     isConnected: true,
-    actions: [],
+    actions: [
+      {
+        id: 'spotify_track_changed',
+        name: 'Changement de morceau',
+        description: 'Déclenché quand le morceau Spotify en cours change (polling)',
+      },
+    ],
     reactions: [
       {
         id: 'spotify_play_track',

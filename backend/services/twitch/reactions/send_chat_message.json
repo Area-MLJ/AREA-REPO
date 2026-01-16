@@ -1,0 +1,21 @@
+{
+  "name": "send_chat_message",
+  "display_name": "Envoyer un message dans le chat",
+  "description": "Envoie un message dans le chat Twitch via un bot (sans OAuth utilisateur)",
+  "params": [
+    {
+      "name": "broadcaster_login",
+      "display_name": "Chaîne Twitch",
+      "description": "Login Twitch de la chaîne (ex: gotaga)",
+      "type": "text",
+      "required": true
+    },
+    {
+      "name": "message",
+      "display_name": "Message",
+      "description": "Message à envoyer (supporte {{track_name}} et {{artist_name}})",
+      "type": "text",
+      "required": true
+    }
+  ]
+}
