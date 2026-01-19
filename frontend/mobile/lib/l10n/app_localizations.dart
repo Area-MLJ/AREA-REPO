@@ -43,7 +43,7 @@ class AppLocalizations {
       'deactivate': 'Désactiver',
       
       // Navigation
-      'nav_areas': 'AREAs',
+      'nav_areas': 'Dashboard',
       'nav_services': 'Services',
       'nav_profile': 'Profil',
       
@@ -112,6 +112,15 @@ class AppLocalizations {
       'enter_password': 'Veuillez entrer votre mot de passe',
       'no_account_question': 'Pas de compte ? ',
       'register': 'S\'inscrire',
+      'edit_area': 'Modifier',
+      'delete_area': 'Supprimer',
+      'edit_area_title': 'Modifier l\'AREA',
+      'area_name': 'Nom de l\'AREA',
+      'area_description': 'Description',
+      'delete_confirm_title': 'Supprimer l\'AREA',
+      'delete_confirm_message': 'Êtes-vous sûr de vouloir supprimer cette AREA ? Cette action est irréversible.',
+      'area_deleted': 'AREA supprimée',
+      'area_updated': 'AREA mise à jour',
       
       // Welcome
       'welcome_title': 'Bienvenue',
@@ -141,7 +150,7 @@ class AppLocalizations {
       'deactivate': 'Deactivate',
       
       // Navigation
-      'nav_areas': 'AREAs',
+      'nav_areas': 'Dashboard',
       'nav_services': 'Services',
       'nav_profile': 'Profile',
       
@@ -210,6 +219,15 @@ class AppLocalizations {
       'enter_password': 'Please enter your password',
       'no_account_question': 'Don\'t have an account? ',
       'register': 'Sign up',
+      'edit_area': 'Edit',
+      'delete_area': 'Delete',
+      'edit_area_title': 'Edit AREA',
+      'area_name': 'AREA Name',
+      'area_description': 'Description',
+      'delete_confirm_title': 'Delete AREA',
+      'delete_confirm_message': 'Are you sure you want to delete this AREA? This action cannot be undone.',
+      'area_deleted': 'AREA deleted',
+      'area_updated': 'AREA updated',
       
       // Welcome
       'welcome_title': 'Welcome',
@@ -239,7 +257,7 @@ class AppLocalizations {
       'deactivate': 'Desactivar',
       
       // Navigation
-      'nav_areas': 'AREAs',
+      'nav_areas': 'Dashboard',
       'nav_services': 'Servicios',
       'nav_profile': 'Perfil',
       
@@ -337,7 +355,7 @@ class AppLocalizations {
       'deactivate': 'Disattiva',
       
       // Navigation
-      'nav_areas': 'AREAs',
+      'nav_areas': 'Dashboard',
       'nav_services': 'Servizi',
       'nav_profile': 'Profilo',
       
@@ -435,7 +453,7 @@ class AppLocalizations {
       'deactivate': 'Deaktivieren',
       
       // Navigation
-      'nav_areas': 'AREAs',
+      'nav_areas': 'Dashboard',
       'nav_services': 'Dienste',
       'nav_profile': 'Profil',
       
@@ -533,7 +551,7 @@ class AppLocalizations {
       'deactivate': '停用',
       
       // Navigation
-      'nav_areas': 'AREAs',
+      'nav_areas': 'Dashboard',
       'nav_services': '服务',
       'nav_profile': '个人资料',
       
@@ -631,7 +649,7 @@ class AppLocalizations {
       'deactivate': '停用',
       
       // Navigation
-      'nav_areas': 'AREAs',
+      'nav_areas': 'Dashboard',
       'nav_services': '服務',
       'nav_profile': '個人資料',
       

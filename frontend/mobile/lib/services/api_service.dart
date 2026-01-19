@@ -238,6 +238,20 @@ class ApiService {
     }
   }
 
+  static Future<void> deleteArea(String id) async {
+    final response = await _requestWithRetry(
+      () async => http.delete(
+        Uri.parse('$baseUrl/me/areas/$id'),
+        headers: await getHeaders(),
+      ),
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      throw Exception(data['error'] ?? 'Failed to delete area');
+    }
+  }
+
   // Services endpoints
   static Future<List<Service>> getServices() async {
     final response = await _requestWithRetry(

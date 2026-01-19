@@ -103,7 +103,16 @@
     "builtin": "Built-in",
     "activate": "Activate",
     "deactivate": "Deactivate",
-    "configure": "Configure"
+    "configure": "Configure",
+    "edit": "Edit",
+    "delete": "Delete",
+    "editArea": "Edit AREA",
+    "deleteArea": "Delete AREA",
+    "deleteConfirm": "Are you sure you want to delete this AREA? This action cannot be undone.",
+    "areaDeleted": "AREA deleted successfully",
+    "areaUpdated": "AREA updated successfully",
+    "areaName": "AREA name",
+    "areaDescription": "Description"
   },
   "areas": {
     "create": {

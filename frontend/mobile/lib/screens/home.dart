@@ -32,6 +32,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     
+    // Get current page title
+    final titles = [
+      localizations?.translate('dashboard') ?? 'Dashboard',
+      localizations?.translate('services_title') ?? 'Services',
+      localizations?.translate('profile_title') ?? 'Profil',
+    ];
+    
     return Consumer<AuthProvider>(
       builder: (context, authProvider, child) {
         if (!authProvider.isAuthenticated) {
@@ -44,6 +51,31 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         return Scaffold(
+          appBar: AppBar(
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'ACTION-REACTION',
+                  style: TextStyle(
+                    color: Color(0xff0a4a0e),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  titles[_currentIndex],
+                  style: TextStyle(
+                    color: Color(0xFF1A1A18),
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: Colors.white,
+            elevation: 0,
+            automaticallyImplyLeading: false,
+          ),
           body: PageView(
             controller: _pageController,
             onPageChanged: (index) {
