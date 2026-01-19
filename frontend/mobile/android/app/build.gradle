@@ -13,10 +13,12 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        encoding = 'UTF-8'
     }
 
     kotlinOptions {
         jvmTarget = '17'
+        freeCompilerArgs += ['-Xjvm-default=all']
     }
 
     defaultConfig {
@@ -41,4 +43,14 @@ android {
 
 flutter {
     source = "../.."
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        freeCompilerArgs += ['-Xjvm-default=all']
+    }
 }
