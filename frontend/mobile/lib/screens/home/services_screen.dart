@@ -9,6 +9,8 @@ class ServicesScreen extends StatefulWidget {
 }
 
 class _ServicesScreenState extends State<ServicesScreen> {
+  Map<String, bool> _mockServiceConnections = {};
+
   @override
   void initState() {
     super.initState();
@@ -23,6 +25,12 @@ class _ServicesScreenState extends State<ServicesScreen> {
     if (service == null) return false;
     
     return provider.userServices.any((us) => us.serviceId == service.id);
+  }
+
+  void _toggleMockServiceConnection(String serviceId) {
+    setState(() {
+      _mockServiceConnections[serviceId] = !(_mockServiceConnections[serviceId] ?? false);
+    });
   }
 
   @override
@@ -145,10 +153,9 @@ class _ServicesScreenState extends State<ServicesScreen> {
                         ? null
                         : () => provider.handleConnectSpotify(),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isConnected ? Colors.white : Color(0xff0a4a0e),
-                      foregroundColor: isConnected ? Color(0xff0a4a0e) : Colors.white,
+                      backgroundColor: isConnected ? Colors.red : Color(0xff0a4a0e),
+                      foregroundColor: Colors.white,
                       elevation: 0,
-                      side: isConnected ? BorderSide(color: Color(0xFFE5E3DD)) : null,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -157,7 +164,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
                     child: Text(
                       provider.spotifyLoading
                           ? 'Chargement...'
-                          : (isConnected ? 'Reconnecter' : 'Connecter'),
+                          : (isConnected ? 'Déconnecter' : 'Connecter'),
                       style: TextStyle(fontSize: 13),
                     ),
                   ),
@@ -244,7 +251,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
   Widget _buildMockServiceCard(MockService service) {
     return Consumer<ServicesProvider>(
       builder: (context, provider, child) {
-        final isConnected = _isServiceConnected(service.name, provider);
+        final isConnected = _mockServiceConnections[service.id] ?? false;
         
         return Card(
           elevation: 0,
@@ -361,21 +368,18 @@ class _ServicesScreenState extends State<ServicesScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: null, // Mock services don't have real connect/disconnect
+                    onPressed: () => _toggleMockServiceConnection(service.id),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isConnected ? Colors.white : Color(0xff0a4a0e),
-                      foregroundColor: isConnected ? Color(0xff0a4a0e) : Colors.white,
+                      backgroundColor: isConnected ? Colors.red : Color(0xff0a4a0e),
+                      foregroundColor: Colors.white,
                       elevation: 0,
-                      side: isConnected ? BorderSide(color: Color(0xFFE5E3DD)) : null,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
                       padding: EdgeInsets.symmetric(vertical: 10),
-                      disabledBackgroundColor: isConnected ? Colors.white : Color(0xff0a4a0e),
-                      disabledForegroundColor: isConnected ? Color(0xff0a4a0e) : Colors.white,
                     ),
                     child: Text(
-                      isConnected ? 'Connecté' : 'Non disponible',
+                      isConnected ? 'Déconnecter' : 'Connecter',
                       style: TextStyle(fontSize: 13),
                     ),
                   ),
