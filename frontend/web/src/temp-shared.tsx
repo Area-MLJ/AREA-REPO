@@ -166,9 +166,12 @@ export const useAreas = () => {
   const [areas, setAreas] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [refetchTrigger, setRefetchTrigger] = useState(0);
 
   useEffect(() => {
     const fetchAreas = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const response = await apiClient.getAreas();
         if (response.success && response.data) {
@@ -199,13 +202,13 @@ export const useAreas = () => {
     };
 
     fetchAreas();
-  }, []);
+  }, [refetchTrigger]);
 
-  return { areas, loading, error, refetch: () => {
-    setLoading(true);
-    setError(null);
-    // Re-run effect
-  }};
+  const refetch = () => {
+    setRefetchTrigger(prev => prev + 1);
+  };
+
+  return { areas, loading, error, refetch };
 };
 
 // Fallback mock data for development
