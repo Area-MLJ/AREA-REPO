@@ -13,12 +13,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // TODO: Vérifier que l'utilisateur est admin
-    // Pour l'instant, on autorise tous les utilisateurs authentifiés
-
     logger.info(`Manual service sync requested by user ${userId}`);
 
-    // Forcer la synchronisation
     await syncServices();
 
     return NextResponse.json({
