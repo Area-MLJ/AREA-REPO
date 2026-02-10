@@ -41,6 +41,7 @@ export async function middleware(request: NextRequest) {
         '/api/oauth/spotify/callback',
         '/api/webhooks',
         '/api/health',
+        '/api/test', // Allow test endpoints without auth
       ];
 
       // Routes admin (nécessitent authentification mais pas de vérification admin pour l'instant)

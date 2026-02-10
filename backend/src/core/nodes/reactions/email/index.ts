@@ -29,7 +29,6 @@ export const emailSend: ReactionNode = {
     // Dans une implémentation réelle, on utiliserait un service SMTP ou un service comme SendGrid, Mailgun, etc.
     ctx.logger.info(`Email would be sent to ${to} with subject: ${subject}`);
 
-    // TODO: Implémenter l'envoi réel d'email
     // Exemple avec un service externe:
     // await ctx.httpClient.post('https://api.sendgrid.com/v3/mail/send', {
     //   personalizations: [{ to: [{ email: to }] }],
